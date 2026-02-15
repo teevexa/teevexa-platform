@@ -14,7 +14,123 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      consultation_bookings: {
+        Row: {
+          company: string | null
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          meeting_type: string
+          notes: string | null
+          phone: string | null
+          selected_date: string
+          selected_time: string
+          timezone: string
+        }
+        Insert: {
+          company?: string | null
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          meeting_type?: string
+          notes?: string | null
+          phone?: string | null
+          selected_date: string
+          selected_time: string
+          timezone?: string
+        }
+        Update: {
+          company?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          meeting_type?: string
+          notes?: string | null
+          phone?: string | null
+          selected_date?: string
+          selected_time?: string
+          timezone?: string
+        }
+        Relationships: []
+      }
+      contact_submissions: {
+        Row: {
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          message: string
+          subject: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          message: string
+          subject: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          message?: string
+          subject?: string
+        }
+        Relationships: []
+      }
+      project_inquiries: {
+        Row: {
+          additional_details: string | null
+          budget: string | null
+          company: string | null
+          country: string | null
+          created_at: string
+          email: string
+          features: string[] | null
+          full_name: string
+          id: string
+          phone: string | null
+          project_type: string
+          timeline: string | null
+          urgency: string | null
+        }
+        Insert: {
+          additional_details?: string | null
+          budget?: string | null
+          company?: string | null
+          country?: string | null
+          created_at?: string
+          email: string
+          features?: string[] | null
+          full_name: string
+          id?: string
+          phone?: string | null
+          project_type: string
+          timeline?: string | null
+          urgency?: string | null
+        }
+        Update: {
+          additional_details?: string | null
+          budget?: string | null
+          company?: string | null
+          country?: string | null
+          created_at?: string
+          email?: string
+          features?: string[] | null
+          full_name?: string
+          id?: string
+          phone?: string | null
+          project_type?: string
+          timeline?: string | null
+          urgency?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
