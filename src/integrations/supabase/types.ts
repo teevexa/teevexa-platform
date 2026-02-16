@@ -86,6 +86,7 @@ export type Database = {
       project_inquiries: {
         Row: {
           additional_details: string | null
+          attachment_urls: string[] | null
           budget: string | null
           company: string | null
           country: string | null
@@ -101,6 +102,7 @@ export type Database = {
         }
         Insert: {
           additional_details?: string | null
+          attachment_urls?: string[] | null
           budget?: string | null
           company?: string | null
           country?: string | null
@@ -116,6 +118,7 @@ export type Database = {
         }
         Update: {
           additional_details?: string | null
+          attachment_urls?: string[] | null
           budget?: string | null
           company?: string | null
           country?: string | null

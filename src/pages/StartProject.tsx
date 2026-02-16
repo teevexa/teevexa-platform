@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { z } from "zod";
 import SectionHeading from "@/components/SectionHeading";
 import { Button } from "@/components/ui/button";
@@ -25,6 +25,8 @@ import {
   ArrowRight,
   ArrowLeft,
   Upload,
+  X,
+  FileText,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -80,6 +82,8 @@ const StartProject = () => {
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [files, setFiles] = useState<File[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const set = (key: string, value: string | string[]) => {
     setForm((f) => ({ ...f, [key]: value }));
@@ -134,8 +138,34 @@ const StartProject = () => {
   };
   const back = () => setStep((s) => Math.max(s - 1, 0));
 
+  const handleFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const newFiles = Array.from(e.target.files).filter(
+        (f) => f.size <= 10 * 1024 * 1024 // 10MB limit
+      );
+      setFiles((prev) => [...prev, ...newFiles].slice(0, 5));
+    }
+  };
+
+  const removeFile = (index: number) => {
+    setFiles((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const submit = async () => {
     setSubmitting(true);
+
+    // Upload files
+    const uploadedUrls: string[] = [];
+    for (const file of files) {
+      const filePath = `${Date.now()}-${file.name}`;
+      const { error: uploadError } = await supabase.storage
+        .from("project-attachments")
+        .upload(filePath, file);
+      if (!uploadError) {
+        uploadedUrls.push(filePath);
+      }
+    }
+
     const { error } = await supabase.from("project_inquiries").insert({
       full_name: form.fullName.trim(),
       email: form.email.trim(),
@@ -148,6 +178,7 @@ const StartProject = () => {
       timeline: form.timeline,
       urgency: form.urgency || null,
       additional_details: form.additionalDetails?.trim() || null,
+      attachment_urls: uploadedUrls.length > 0 ? uploadedUrls : null,
     });
     setSubmitting(false);
     if (error) {
@@ -324,11 +355,36 @@ const StartProject = () => {
                     placeholder="Describe your vision, reference sites, existing branding, technical requirements…"
                   />
                 </div>
-                <div className="glass rounded-xl p-6 border-dashed border-2 border-border text-center text-muted-foreground">
+                <div
+                  className="glass rounded-xl p-6 border-dashed border-2 border-border text-center text-muted-foreground cursor-pointer hover:border-primary/50 transition-colors"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    multiple
+                    accept=".pdf,.doc,.docx,.png,.jpg,.jpeg,.svg,.fig,.sketch,.zip"
+                    onChange={handleFiles}
+                    className="hidden"
+                  />
                   <Upload className="mx-auto mb-2" size={24} />
-                  <p className="text-sm">File upload coming soon</p>
-                  <p className="text-xs">You'll be able to share briefs, mockups, and documents here.</p>
+                  <p className="text-sm font-medium">Click to upload files</p>
+                  <p className="text-xs">PDF, images, wireframes, logos — max 10MB each, up to 5 files</p>
                 </div>
+                {files.length > 0 && (
+                  <div className="space-y-2 mt-3">
+                    {files.map((file, i) => (
+                      <div key={i} className="flex items-center gap-2 glass rounded-lg px-3 py-2 text-sm">
+                        <FileText size={14} className="text-primary shrink-0" />
+                        <span className="truncate flex-1">{file.name}</span>
+                        <span className="text-xs text-muted-foreground">{(file.size / 1024).toFixed(0)}KB</span>
+                        <button onClick={() => removeFile(i)} className="text-muted-foreground hover:text-destructive">
+                          <X size={14} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
 
