@@ -11,6 +11,13 @@ import ServiceDetail from "@/pages/ServiceDetail";
 import Contact from "@/pages/Contact";
 import StartProject from "@/pages/StartProject";
 import BookConsultation from "@/pages/BookConsultation";
+import Auth from "@/pages/Auth";
+import PortalLayout from "@/components/portal/PortalLayout";
+import Dashboard from "@/pages/portal/Dashboard";
+import Projects from "@/pages/portal/Projects";
+import Messages from "@/pages/portal/Messages";
+import Invoices from "@/pages/portal/Invoices";
+import PortalSettings from "@/pages/portal/PortalSettings";
 import PlaceholderPage from "@/pages/PlaceholderPage";
 import NotFound from "@/pages/NotFound";
 
@@ -40,7 +47,14 @@ const App = () => (
             <Route path="/book-consultation" element={<BookConsultation />} />
             <Route path="/legal/privacy-policy" element={<PlaceholderPage label="Legal" title="Privacy Policy" />} />
             <Route path="/legal/terms-of-service" element={<PlaceholderPage label="Legal" title="Terms of Service" />} />
-            <Route path="/client-portal/*" element={<PlaceholderPage label="Portal" title="Client Portal" description="Dashboard mockup — coming soon." />} />
+          </Route>
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/client-portal" element={<PortalLayout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="projects" element={<Projects />} />
+            <Route path="messages" element={<Messages />} />
+            <Route path="invoices" element={<Invoices />} />
+            <Route path="settings" element={<PortalSettings />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
