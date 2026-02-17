@@ -12,12 +12,29 @@ import Contact from "@/pages/Contact";
 import StartProject from "@/pages/StartProject";
 import BookConsultation from "@/pages/BookConsultation";
 import Auth from "@/pages/Auth";
+import ForgotPassword from "@/pages/ForgotPassword";
+import ResetPassword from "@/pages/ResetPassword";
+import Careers from "@/pages/Careers";
+import CareerDetail from "@/pages/CareerDetail";
 import PortalLayout from "@/components/portal/PortalLayout";
 import Dashboard from "@/pages/portal/Dashboard";
 import Projects from "@/pages/portal/Projects";
+import ProjectDetail from "@/pages/portal/ProjectDetail";
+import Files from "@/pages/portal/Files";
 import Messages from "@/pages/portal/Messages";
 import Invoices from "@/pages/portal/Invoices";
 import PortalSettings from "@/pages/portal/PortalSettings";
+import AdminLayout from "@/components/admin/AdminLayout";
+import AdminDashboard from "@/pages/admin/AdminDashboard";
+import Leads from "@/pages/admin/Leads";
+import Consultations from "@/pages/admin/Consultations";
+import AdminProjects from "@/pages/admin/AdminProjects";
+import AdminUsers from "@/pages/admin/AdminUsers";
+import AdminInvoices from "@/pages/admin/AdminInvoices";
+import AdminCareers from "@/pages/admin/AdminCareers";
+import Waitlist from "@/pages/admin/Waitlist";
+import AuditLogs from "@/pages/admin/AuditLogs";
+import AdminPlaceholder from "@/pages/admin/AdminPlaceholder";
 import PlaceholderPage from "@/pages/PlaceholderPage";
 import NotFound from "@/pages/NotFound";
 
@@ -30,12 +47,15 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
+          {/* Public pages */}
           <Route element={<Layout />}>
             <Route path="/" element={<Index />} />
             <Route path="/about" element={<About />} />
             <Route path="/services" element={<Services />} />
             <Route path="/services/:slug" element={<ServiceDetail />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/careers" element={<Careers />} />
+            <Route path="/careers/:slug" element={<CareerDetail />} />
             <Route path="/industries" element={<PlaceholderPage label="Industries" title="Industries We Serve" />} />
             <Route path="/industries/:slug" element={<PlaceholderPage label="Industry" title="Industry Details" />} />
             <Route path="/portfolio" element={<PlaceholderPage label="Portfolio" title="Our Work" />} />
@@ -48,14 +68,40 @@ const App = () => (
             <Route path="/legal/privacy-policy" element={<PlaceholderPage label="Legal" title="Privacy Policy" />} />
             <Route path="/legal/terms-of-service" element={<PlaceholderPage label="Legal" title="Terms of Service" />} />
           </Route>
+
+          {/* Auth */}
           <Route path="/auth" element={<Auth />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+
+          {/* Client Portal */}
           <Route path="/client-portal" element={<PortalLayout />}>
             <Route index element={<Dashboard />} />
             <Route path="projects" element={<Projects />} />
+            <Route path="projects/:id" element={<ProjectDetail />} />
+            <Route path="files" element={<Files />} />
             <Route path="messages" element={<Messages />} />
             <Route path="invoices" element={<Invoices />} />
             <Route path="settings" element={<PortalSettings />} />
           </Route>
+
+          {/* Admin Portal */}
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="leads" element={<Leads />} />
+            <Route path="consultations" element={<Consultations />} />
+            <Route path="projects" element={<AdminProjects />} />
+            <Route path="milestones" element={<AdminPlaceholder title="Milestones" />} />
+            <Route path="users" element={<AdminUsers />} />
+            <Route path="invoices" element={<AdminInvoices />} />
+            <Route path="blog" element={<AdminPlaceholder title="Blog Management" />} />
+            <Route path="portfolio" element={<AdminPlaceholder title="Portfolio Management" />} />
+            <Route path="careers" element={<AdminCareers />} />
+            <Route path="waitlist" element={<Waitlist />} />
+            <Route path="audit-logs" element={<AuditLogs />} />
+            <Route path="settings" element={<AdminPlaceholder title="Admin Settings" />} />
+          </Route>
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
