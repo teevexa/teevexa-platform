@@ -58,7 +58,7 @@ const Auth = () => {
       }
       toast({ title: "Check your email", description: "We sent you a confirmation link." });
     } else {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email: form.email.trim(),
         password: form.password,
       });
@@ -67,7 +67,16 @@ const Auth = () => {
         toast({ title: "Login failed", description: error.message, variant: "destructive" });
         return;
       }
-      navigate("/client-portal");
+      // Role-based redirect
+      if (data.user) {
+        const { data: roleData } = await supabase.from("user_roles").select("role").eq("user_id", data.user.id).single();
+        const role = roleData?.role;
+        if (role && role !== "client") {
+          navigate("/admin");
+        } else {
+          navigate("/client-portal");
+        }
+      }
     }
   };
 
@@ -114,9 +123,12 @@ const Auth = () => {
 
           <div className="mt-4 text-center text-sm text-muted-foreground">
             {mode === "login" ? (
-              <p>Don't have an account?{" "}
-                <button onClick={() => setMode("signup")} className="text-primary hover:underline">Sign up</button>
-              </p>
+              <div className="space-y-2">
+                <p>Don't have an account?{" "}
+                  <button onClick={() => setMode("signup")} className="text-primary hover:underline">Sign up</button>
+                </p>
+                <p><a href="/forgot-password" className="text-primary hover:underline">Forgot password?</a></p>
+              </div>
             ) : (
               <p>Already have an account?{" "}
                 <button onClick={() => setMode("login")} className="text-primary hover:underline">Sign in</button>
