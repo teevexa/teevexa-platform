@@ -82,8 +82,8 @@ const Contact = () => {
                 <h3 className="font-display font-semibold">Contact Info</h3>
                 <div className="space-y-3 text-sm text-muted-foreground">
                   <div className="flex items-center gap-3"><Mail size={16} className="text-primary" /> info@teevexa.com</div>
-                  <div className="flex items-center gap-3"><Phone size={16} className="text-primary" /> +234 800 TEE VEXA</div>
-                  <div className="flex items-start gap-3"><MapPin size={16} className="text-primary mt-0.5" /> Lagos, Nigeria</div>
+                  <div className="flex items-center gap-3"><Phone size={16} className="text-primary" /> +254 783 797 132</div>
+                  <div className="flex items-start gap-3"><MapPin size={16} className="text-primary mt-0.5" /> Nairobi, Kenya</div>
                 </div>
               </div>
               <div className="glass rounded-2xl p-6 space-y-4">

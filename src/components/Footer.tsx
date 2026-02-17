@@ -60,8 +60,8 @@ const Footer = () => {
             <h4 className="font-display font-semibold text-foreground">Contact</h4>
             <div className="flex flex-col gap-3 text-sm text-muted-foreground">
               <div className="flex items-center gap-2"><Mail size={14} className="text-primary" /> info@teevexa.com</div>
-              <div className="flex items-center gap-2"><Phone size={14} className="text-primary" /> +234 800 TEE VEXA</div>
-              <div className="flex items-start gap-2"><MapPin size={14} className="text-primary mt-0.5" /> Lagos, Nigeria</div>
+              <div className="flex items-center gap-2"><Phone size={14} className="text-primary" /> +254 783 797 132</div>
+              <div className="flex items-start gap-2"><MapPin size={14} className="text-primary mt-0.5" /> Nairobi, Kenya</div>
             </div>
           </div>
         </div>

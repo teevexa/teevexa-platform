@@ -10,6 +10,7 @@ const navLinks = [
   { label: "Industries", path: "/industries" },
   { label: "Portfolio", path: "/portfolio" },
   { label: "Insights", path: "/insights" },
+  { label: "Careers", path: "/careers" },
   { label: "Contact", path: "/contact" },
 ];
 
@@ -35,15 +36,13 @@ const Navbar = () => {
             <Link
               key={link.path}
               to={link.path}
-              className={`relative px-3 py-2 text-sm font-medium transition-colors hover:text-primary ${
-                isActive(link.path) ? "text-primary" : "text-muted-foreground"
-              } group`}
+              className={`relative px-3 py-2 text-sm font-medium transition-colors hover:text-primary ${isActive(link.path) ? "text-primary" : "text-muted-foreground"
+                } group`}
             >
               {link.label}
               <span
-                className={`absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 bg-primary transition-all duration-300 ${
-                  isActive(link.path) ? "w-3/4" : "w-0 group-hover:w-1/2"
-                }`}
+                className={`absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 bg-primary transition-all duration-300 ${isActive(link.path) ? "w-3/4" : "w-0 group-hover:w-1/2"
+                  }`}
               />
             </Link>
           ))}
@@ -77,9 +76,8 @@ const Navbar = () => {
                 key={link.path}
                 to={link.path}
                 onClick={() => setMobileOpen(false)}
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  isActive(link.path) ? "text-primary bg-primary/10" : "text-muted-foreground hover:text-foreground"
-                }`}
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive(link.path) ? "text-primary bg-primary/10" : "text-muted-foreground hover:text-foreground"
+                  }`}
               >
                 {link.label}
               </Link>

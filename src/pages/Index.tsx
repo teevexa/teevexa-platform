@@ -64,7 +64,7 @@ const Index = () => {
             <span className="gradient-text">Africa's Future</span>
           </h1>
           <p className="mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Custom Web & Mobile Solutions Today. Blockchain-Powered Traceability Tomorrow.
+            Custom Web & Mobile Solutions. Blockchain-Powered Traceability.
           </p>
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button size="lg" className="glow-primary text-base px-8" asChild>
