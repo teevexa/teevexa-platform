@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -19,15 +19,41 @@ const signupSchema = loginSchema.extend({
 
 const Auth = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { toast } = useToast();
-  const [mode, setMode] = useState<"login" | "signup">("login");
+  const defaultMode = searchParams.get("mode") === "signup" ? "signup" : "login";
+  const redirectTo = searchParams.get("redirect") || null;
+  const [mode, setMode] = useState<"login" | "signup">(defaultMode as "login" | "signup");
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ fullName: "", email: "", password: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  // Check if already logged in
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user && redirectTo) {
+        navigate(redirectTo);
+      }
+    });
+  }, [navigate, redirectTo]);
+
   const set = (key: string, value: string) => {
     setForm((f) => ({ ...f, [key]: value }));
     setErrors((e) => ({ ...e, [key]: "" }));
+  };
+
+  const handleRedirect = async (userId: string) => {
+    if (redirectTo) {
+      navigate(redirectTo);
+      return;
+    }
+    const { data: roleData } = await supabase.from("user_roles").select("role").eq("user_id", userId).single();
+    const role = roleData?.role;
+    if (role && role !== "client") {
+      navigate("/admin");
+    } else {
+      navigate("/client-portal");
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -43,7 +69,7 @@ const Auth = () => {
 
     setLoading(true);
     if (mode === "signup") {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email: form.email.trim(),
         password: form.password,
         options: {
@@ -67,15 +93,8 @@ const Auth = () => {
         toast({ title: "Login failed", description: error.message, variant: "destructive" });
         return;
       }
-      // Role-based redirect
       if (data.user) {
-        const { data: roleData } = await supabase.from("user_roles").select("role").eq("user_id", data.user.id).single();
-        const role = roleData?.role;
-        if (role && role !== "client") {
-          navigate("/admin");
-        } else {
-          navigate("/client-portal");
-        }
+        await handleRedirect(data.user.id);
       }
     }
   };
@@ -89,7 +108,7 @@ const Auth = () => {
               {mode === "login" ? "Welcome Back" : "Create Account"}
             </h1>
             <p className="text-sm text-muted-foreground">
-              {mode === "login" ? "Sign in to your client portal" : "Join the client portal"}
+              {mode === "login" ? "Sign in to your portal" : "Join the client portal"}
             </p>
           </div>
 
