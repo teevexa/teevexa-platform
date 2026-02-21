@@ -43,6 +43,7 @@ const AdminLayout = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [userRole, setUserRole] = useState<string>("");
 
   useEffect(() => {
     const checkAccess = async (userId: string) => {
@@ -52,6 +53,8 @@ const AdminLayout = () => {
         navigate("/client-portal");
         return;
       }
+      // Developers see limited nav
+      setUserRole(role);
     };
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -87,7 +90,13 @@ const AdminLayout = () => {
           <Link to="/" className="font-display font-bold text-xl gradient-text mb-6 mt-2 block">TEEVEXA ADMIN</Link>
 
           <nav className="flex-1 space-y-4">
-            {navSections.map((section) => (
+            {navSections
+              .filter((section) => {
+                if (userRole === "developer") return ["Overview", "Projects"].includes(section.label);
+                if (userRole === "project_manager") return !["System"].includes(section.label) || section.label === "System";
+                return true;
+              })
+              .map((section) => (
               <div key={section.label}>
                 <p className="text-[10px] uppercase tracking-wider text-muted-foreground px-3 mb-1">{section.label}</p>
                 <div className="space-y-0.5">

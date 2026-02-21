@@ -16,6 +16,8 @@ import ForgotPassword from "@/pages/ForgotPassword";
 import ResetPassword from "@/pages/ResetPassword";
 import Careers from "@/pages/Careers";
 import CareerDetail from "@/pages/CareerDetail";
+import Insights from "@/pages/Insights";
+import InsightDetail from "@/pages/InsightDetail";
 import PortalLayout from "@/components/portal/PortalLayout";
 import Dashboard from "@/pages/portal/Dashboard";
 import Projects from "@/pages/portal/Projects";
@@ -29,11 +31,14 @@ import AdminDashboard from "@/pages/admin/AdminDashboard";
 import Leads from "@/pages/admin/Leads";
 import Consultations from "@/pages/admin/Consultations";
 import AdminProjects from "@/pages/admin/AdminProjects";
+import AdminMilestones from "@/pages/admin/AdminMilestones";
 import AdminUsers from "@/pages/admin/AdminUsers";
 import AdminInvoices from "@/pages/admin/AdminInvoices";
+import AdminBlog from "@/pages/admin/AdminBlog";
 import AdminCareers from "@/pages/admin/AdminCareers";
 import Waitlist from "@/pages/admin/Waitlist";
 import AuditLogs from "@/pages/admin/AuditLogs";
+import AdminSettings from "@/pages/admin/AdminSettings";
 import AdminPlaceholder from "@/pages/admin/AdminPlaceholder";
 import PlaceholderPage from "@/pages/PlaceholderPage";
 import NotFound from "@/pages/NotFound";
@@ -60,8 +65,8 @@ const App = () => (
             <Route path="/industries/:slug" element={<PlaceholderPage label="Industry" title="Industry Details" />} />
             <Route path="/portfolio" element={<PlaceholderPage label="Portfolio" title="Our Work" />} />
             <Route path="/portfolio/:slug" element={<PlaceholderPage label="Case Study" title="Case Study" />} />
-            <Route path="/insights" element={<PlaceholderPage label="Insights" title="Blog & Insights" />} />
-            <Route path="/insights/:slug" element={<PlaceholderPage label="Article" title="Article" />} />
+            <Route path="/insights" element={<Insights />} />
+            <Route path="/insights/:slug" element={<InsightDetail />} />
             <Route path="/teevexa-trace" element={<PlaceholderPage label="Product" title="Teevexa Trace" description="Blockchain-powered traceability for supply chains." />} />
             <Route path="/start-project" element={<StartProject />} />
             <Route path="/book-consultation" element={<BookConsultation />} />
@@ -91,15 +96,15 @@ const App = () => (
             <Route path="leads" element={<Leads />} />
             <Route path="consultations" element={<Consultations />} />
             <Route path="projects" element={<AdminProjects />} />
-            <Route path="milestones" element={<AdminPlaceholder title="Milestones" />} />
+            <Route path="milestones" element={<AdminMilestones />} />
             <Route path="users" element={<AdminUsers />} />
             <Route path="invoices" element={<AdminInvoices />} />
-            <Route path="blog" element={<AdminPlaceholder title="Blog Management" />} />
+            <Route path="blog" element={<AdminBlog />} />
             <Route path="portfolio" element={<AdminPlaceholder title="Portfolio Management" />} />
             <Route path="careers" element={<AdminCareers />} />
             <Route path="waitlist" element={<Waitlist />} />
             <Route path="audit-logs" element={<AuditLogs />} />
-            <Route path="settings" element={<AdminPlaceholder title="Admin Settings" />} />
+            <Route path="settings" element={<AdminSettings />} />
           </Route>
 
           <Route path="*" element={<NotFound />} />
