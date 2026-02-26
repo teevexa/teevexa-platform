@@ -41,6 +41,8 @@ import AuditLogs from "@/pages/admin/AuditLogs";
 import AdminSettings from "@/pages/admin/AdminSettings";
 import AdminPlaceholder from "@/pages/admin/AdminPlaceholder";
 import PlaceholderPage from "@/pages/PlaceholderPage";
+import PrivacyPolicy from "@/pages/PrivacyPolicy";
+import TermsOfService from "@/pages/TermsOfService";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -70,8 +72,8 @@ const App = () => (
             <Route path="/teevexa-trace" element={<PlaceholderPage label="Product" title="Teevexa Trace" description="Blockchain-powered traceability for supply chains." />} />
             <Route path="/start-project" element={<StartProject />} />
             <Route path="/book-consultation" element={<BookConsultation />} />
-            <Route path="/legal/privacy-policy" element={<PlaceholderPage label="Legal" title="Privacy Policy" />} />
-            <Route path="/legal/terms-of-service" element={<PlaceholderPage label="Legal" title="Terms of Service" />} />
+            <Route path="/legal/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/legal/terms-of-service" element={<TermsOfService />} />
           </Route>
 
           {/* Auth */}
