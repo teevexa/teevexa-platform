@@ -37,12 +37,32 @@ const projectTypes = [
   { value: "custom", label: "Custom / Other", icon: Sparkles, desc: "Blockchain, AI, IoT, etc." },
 ];
 
-const featuresByType: Record<string, string[]> = {
-  website: ["Responsive Design", "CMS Integration", "SEO Optimization", "Blog", "Contact Forms", "Analytics Dashboard", "Multi-language", "Animations & Motion"],
-  mobile: ["Push Notifications", "Offline Mode", "Camera / Media", "GPS / Maps", "Payment Integration", "Social Login", "Chat / Messaging", "Biometric Auth"],
-  ecommerce: ["Product Catalog", "Shopping Cart", "Payment Gateway", "Inventory Management", "Order Tracking", "Customer Reviews", "Discount / Coupons", "Multi-currency"],
-  enterprise: ["User Role Management", "Audit Logging", "API Integrations", "Reporting & BI", "Workflow Automation", "Data Migration", "SSO / LDAP", "Compliance Tools"],
-  custom: ["Blockchain / Smart Contracts", "AI / Machine Learning", "IoT Integration", "Real-time Data", "Custom API", "Data Visualization", "Automation", "Other"],
+const featuresByType: Record<string, { category: string; items: string[] }[]> = {
+  website: [
+    { category: "Core", items: ["Responsive Design", "CMS Integration", "Blog System", "Contact Forms", "User Login System", "Admin Dashboard"] },
+    { category: "Marketing & SEO", items: ["SEO Optimization", "Google Analytics", "Social Media Integration", "Newsletter Signup", "Landing Pages"] },
+    { category: "Advanced", items: ["Multi-language / i18n", "Animations & Motion", "Payment Integration", "Live Chat Widget", "Custom API Integration", "Progressive Web App (PWA)"] },
+  ],
+  mobile: [
+    { category: "Core", items: ["Push Notifications", "User Authentication", "Social Login", "In-App Messaging", "Profile Management"] },
+    { category: "Device Features", items: ["Camera / Media Access", "GPS / Location Services", "Biometric Auth (Face/Fingerprint)", "Offline Mode", "Contacts Access", "File Sharing"] },
+    { category: "Monetization & Engagement", items: ["Payment Integration", "In-App Purchases", "Subscription Model", "Loyalty / Rewards", "Referral System", "Analytics & Crash Reporting"] },
+  ],
+  ecommerce: [
+    { category: "Store Essentials", items: ["Product Catalog", "Shopping Cart", "Wishlist", "Product Search & Filters", "Customer Reviews & Ratings", "Product Variants (Size, Color)"] },
+    { category: "Payments & Shipping", items: ["Payment Gateways (Stripe, Paystack, Flutterwave)", "Multi-currency Support", "Shipping Logic & Tracking", "Tax Calculation", "Invoice Generation"] },
+    { category: "Business Tools", items: ["Inventory Management", "Coupon & Discount System", "Subscription / Recurring Orders", "Vendor / Marketplace", "Abandoned Cart Recovery", "Admin Dashboard & Analytics"] },
+  ],
+  enterprise: [
+    { category: "Security & Access", items: ["User Role Management (RBAC)", "Single Sign-On (SSO/LDAP)", "Two-Factor Authentication", "Audit Logging", "Data Encryption", "Compliance Tools (GDPR, HIPAA)"] },
+    { category: "Operations", items: ["Workflow Automation", "Document Management", "Internal Communication", "Task & Project Management", "Resource Scheduling"] },
+    { category: "Data & Integration", items: ["API Integrations (REST/GraphQL)", "Reporting & Business Intelligence", "Data Migration Tools", "ERP / CRM Integration", "Custom Data Pipelines", "Real-time Dashboards"] },
+  ],
+  custom: [
+    { category: "Emerging Tech", items: ["Blockchain / Smart Contracts", "AI / Machine Learning", "IoT Device Integration", "AR / VR Experiences", "Computer Vision"] },
+    { category: "Infrastructure", items: ["Real-time Data Processing", "Custom API Development", "Data Visualization", "Microservices Architecture", "Cloud Infrastructure (AWS, GCP)"] },
+    { category: "Automation", items: ["Workflow Automation", "Chatbot / Virtual Assistant", "Scraping & Data Collection", "CI/CD Pipeline Setup", "Other (describe below)"] },
+  ],
 };
 
 const budgets = ["Under $5,000", "$5,000 – $15,000", "$15,000 – $50,000", "$50,000 – $100,000", "$100,000+", "Not sure yet"];
@@ -241,18 +261,23 @@ const StartProject = () => {
             )}
 
             {step === 2 && (
-              <div className="space-y-4">
+              <div className="space-y-6">
                 <h3 className="font-display font-semibold text-lg mb-2">Select the features you need</h3>
-                <p className="text-sm text-muted-foreground mb-4">For your {projectTypes.find((p) => p.value === form.projectType)?.label} project</p>
+                <p className="text-sm text-muted-foreground">For your {projectTypes.find((p) => p.value === form.projectType)?.label} project</p>
                 {errors.features && <p className="text-sm text-destructive">{errors.features}</p>}
-                <div className="grid sm:grid-cols-2 gap-3">
-                  {(featuresByType[form.projectType] || []).map((feat) => (
-                    <label key={feat} className={`flex items-center gap-3 glass rounded-xl p-3 cursor-pointer transition-all hover:border-primary/50 ${form.features.includes(feat) ? "border-primary" : ""}`}>
-                      <Checkbox checked={form.features.includes(feat)} onCheckedChange={() => toggleFeature(feat)} />
-                      <span className="text-sm">{feat}</span>
-                    </label>
-                  ))}
-                </div>
+                {(featuresByType[form.projectType] || []).map((group) => (
+                  <div key={group.category}>
+                    <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">{group.category}</h4>
+                    <div className="grid sm:grid-cols-2 gap-2">
+                      {group.items.map((feat) => (
+                        <label key={feat} className={`flex items-center gap-3 glass rounded-xl p-3 cursor-pointer transition-all hover:border-primary/50 ${form.features.includes(feat) ? "border-primary" : ""}`}>
+                          <Checkbox checked={form.features.includes(feat)} onCheckedChange={() => toggleFeature(feat)} />
+                          <span className="text-sm">{feat}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
 
