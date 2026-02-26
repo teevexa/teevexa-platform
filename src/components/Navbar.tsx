@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, X, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 const navLinks = [
   { label: "Home", path: "/" },
@@ -17,6 +19,8 @@ const navLinks = [
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
+  const { user, isAdmin } = useAuth();
+  const portalPath = isAdmin ? "/admin" : "/client-portal";
 
   const isActive = (path: string) => {
     if (path === "/") return location.pathname === "/";
@@ -55,6 +59,11 @@ const Navbar = () => {
           <Button size="sm" className="glow-primary" asChild>
             <Link to="/start-project">Start a Project</Link>
           </Button>
+          {user && (
+            <Button variant="outline" size="sm" asChild>
+              <Link to={portalPath}><LayoutDashboard size={14} className="mr-1" />{isAdmin ? "Admin" : "My Portal"}</Link>
+            </Button>
+          )}
         </div>
 
         {/* Mobile toggle */}
@@ -89,6 +98,11 @@ const Navbar = () => {
               <Button size="sm" className="glow-primary" asChild>
                 <Link to="/start-project" onClick={() => setMobileOpen(false)}>Start a Project</Link>
               </Button>
+              {user && (
+                <Button variant="outline" size="sm" asChild>
+                  <Link to={portalPath} onClick={() => setMobileOpen(false)}><LayoutDashboard size={14} className="mr-1" />{isAdmin ? "Admin" : "My Portal"}</Link>
+                </Button>
+              )}
             </div>
           </div>
         </div>
