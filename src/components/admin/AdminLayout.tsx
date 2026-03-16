@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
 import { useNavigate, Outlet, Link, useLocation } from "react-router-dom";
+import { useAuth, AppRole } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import type { User } from "@supabase/supabase-js";
+import { useState } from "react";
 import {
   LayoutDashboard, Users, FolderKanban, Milestone, Receipt, MessageSquare,
   FileText, Briefcase, Image, Clock, ScrollText, Settings, LogOut, Menu, X,
@@ -12,72 +12,66 @@ import {
 const navSections = [
   { label: "Overview", items: [
     { path: "/admin", label: "Dashboard", icon: LayoutDashboard },
-  ]},
+  ], roles: ["super_admin", "admin", "project_manager", "developer"] as AppRole[] },
   { label: "Business", items: [
     { path: "/admin/leads", label: "Leads", icon: Target },
     { path: "/admin/consultations", label: "Consultations", icon: CalendarDays },
-  ]},
+  ], roles: ["super_admin", "admin", "project_manager"] as AppRole[] },
   { label: "Projects", items: [
     { path: "/admin/projects", label: "Projects", icon: FolderKanban },
     { path: "/admin/milestones", label: "Milestones", icon: Milestone },
-  ]},
+  ], roles: ["super_admin", "admin", "project_manager", "developer"] as AppRole[] },
   { label: "People", items: [
     { path: "/admin/users", label: "Users", icon: Users },
     { path: "/admin/invoices", label: "Invoices", icon: Receipt },
-  ]},
+  ], roles: ["super_admin", "admin", "project_manager"] as AppRole[] },
   { label: "Content", items: [
     { path: "/admin/blog", label: "Blog", icon: FileText },
     { path: "/admin/portfolio", label: "Portfolio", icon: Image },
     { path: "/admin/careers", label: "Careers", icon: Briefcase },
     { path: "/admin/waitlist", label: "Waitlist", icon: Clock },
-  ]},
+  ], roles: ["super_admin", "admin"] as AppRole[] },
   { label: "System", items: [
     { path: "/admin/audit-logs", label: "Audit Logs", icon: ScrollText },
     { path: "/admin/settings", label: "Settings", icon: Settings },
-  ]},
+  ], roles: ["super_admin", "admin"] as AppRole[] },
 ];
 
 const AdminLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { user, role, loading } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [userRole, setUserRole] = useState<string>("");
 
-  useEffect(() => {
-    const checkAccess = async (userId: string) => {
-      const { data } = await supabase.from("user_roles").select("role").eq("user_id", userId).single();
-      const role = data?.role;
-      if (!role || role === "client") {
-        navigate("/client-portal");
-        return;
-      }
-      // Developers see limited nav
-      setUserRole(role);
-    };
+  // Redirect logic after loading
+  if (!loading && !user) {
+    navigate("/auth");
+    return null;
+  }
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-      if (!session?.user) { navigate("/auth"); return; }
-      checkAccess(session.user.id);
-      setLoading(false);
-    });
+  if (!loading && role === "client") {
+    navigate("/client-portal");
+    return null;
+  }
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      if (!session?.user) { navigate("/auth"); return; }
-      checkAccess(session.user.id);
-      setLoading(false);
-    });
+  const logout = async () => {
+    await supabase.auth.signOut();
+    navigate("/");
+  };
 
-    return () => subscription.unsubscribe();
-  }, [navigate]);
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="animate-pulse-glow text-primary text-lg">Loading...</div>
+      </div>
+    );
+  }
 
-  const logout = async () => { await supabase.auth.signOut(); navigate("/"); };
+  if (!user || !role) return null;
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center bg-background"><div className="animate-pulse-glow text-primary text-lg">Loading...</div></div>;
-  if (!user) return null;
+  const filteredSections = navSections.filter((section) =>
+    section.roles.includes(role)
+  );
 
   return (
     <div className="min-h-screen flex bg-background">
@@ -90,13 +84,7 @@ const AdminLayout = () => {
           <Link to="/" className="font-display font-bold text-xl gradient-text mb-6 mt-2 block">TEEVEXA ADMIN</Link>
 
           <nav className="flex-1 space-y-4">
-            {navSections
-              .filter((section) => {
-                if (userRole === "developer") return ["Overview", "Projects"].includes(section.label);
-                if (userRole === "project_manager") return !["System"].includes(section.label) || section.label === "System";
-                return true;
-              })
-              .map((section) => (
+            {filteredSections.map((section) => (
               <div key={section.label}>
                 <p className="text-[10px] uppercase tracking-wider text-muted-foreground px-3 mb-1">{section.label}</p>
                 <div className="space-y-0.5">
@@ -117,6 +105,7 @@ const AdminLayout = () => {
 
           <div className="border-t border-sidebar-border pt-4 space-y-2">
             <p className="text-xs text-muted-foreground truncate px-3">{user.email}</p>
+            <p className="text-[10px] text-muted-foreground/60 px-3 capitalize">{role.replace("_", " ")}</p>
             <Button variant="ghost" size="sm" onClick={logout} className="w-full justify-start gap-2">
               <LogOut size={16} /> Sign Out
             </Button>

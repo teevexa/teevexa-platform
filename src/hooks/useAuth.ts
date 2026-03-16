@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { User } from "@supabase/supabase-js";
 
@@ -16,36 +16,53 @@ export const useAuth = (): AuthState => {
   const [role, setRole] = useState<AppRole | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchRole = async (userId: string) => {
-      const { data } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", userId)
-        .single();
-      setRole((data?.role as AppRole) || "client");
-    };
+  const fetchRole = useCallback(async (userId: string) => {
+    const { data } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userId)
+      .single();
+    setRole((data?.role as AppRole) || "client");
+  }, []);
 
+  useEffect(() => {
+    let mounted = true;
+
+    // Set up auth listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        fetchRole(session.user.id);
+      if (!mounted) return;
+      const currentUser = session?.user ?? null;
+      setUser(currentUser);
+      if (currentUser) {
+        // Use setTimeout to avoid Supabase deadlock
+        setTimeout(() => {
+          if (mounted) fetchRole(currentUser.id);
+        }, 0);
       } else {
         setRole(null);
       }
       setLoading(false);
     });
 
+    // THEN check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        fetchRole(session.user.id);
+      if (!mounted) return;
+      const currentUser = session?.user ?? null;
+      setUser(currentUser);
+      if (currentUser) {
+        fetchRole(currentUser.id).then(() => {
+          if (mounted) setLoading(false);
+        });
+      } else {
+        setLoading(false);
       }
-      setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
-  }, []);
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
+  }, [fetchRole]);
 
   const isAdmin = role === "super_admin" || role === "admin" || role === "project_manager" || role === "developer";
 
