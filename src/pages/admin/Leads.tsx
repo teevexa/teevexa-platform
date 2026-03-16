@@ -11,7 +11,7 @@ interface Lead {
   id: string; full_name: string; email: string; phone: string | null;
   company: string | null; project_type: string; budget: string | null;
   timeline: string | null; urgency: string | null; additional_details: string | null;
-  created_at: string; country: string | null;
+  created_at: string; country: string | null; features: string[] | null;
 }
 
 const Leads = () => {
@@ -57,7 +57,7 @@ const Leads = () => {
       )}
 
       <Dialog open={!!selected} onOpenChange={() => setSelected(null)}>
-        <DialogContent className="glass max-w-lg">
+        <DialogContent className="glass max-w-lg max-h-[80vh] overflow-auto">
           <DialogHeader><DialogTitle>Lead Details</DialogTitle></DialogHeader>
           {selected && (
             <div className="space-y-3 text-sm">
@@ -66,11 +66,24 @@ const Leads = () => {
               <div><span className="text-muted-foreground">Phone:</span> {selected.phone || "—"}</div>
               <div><span className="text-muted-foreground">Company:</span> {selected.company || "—"}</div>
               <div><span className="text-muted-foreground">Country:</span> {selected.country || "—"}</div>
-              <div><span className="text-muted-foreground">Type:</span> {selected.project_type}</div>
+              <div><span className="text-muted-foreground">Type:</span> <Badge variant="outline">{selected.project_type}</Badge></div>
               <div><span className="text-muted-foreground">Budget:</span> {selected.budget || "—"}</div>
               <div><span className="text-muted-foreground">Timeline:</span> {selected.timeline || "—"}</div>
               <div><span className="text-muted-foreground">Urgency:</span> {selected.urgency || "—"}</div>
+              {selected.features && selected.features.length > 0 && (
+                <div>
+                  <span className="text-muted-foreground block mb-2">Requested Features:</span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {selected.features.map((f) => (
+                      <Badge key={f} variant="secondary" className="text-xs">{f}</Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
               <div><span className="text-muted-foreground">Details:</span> {selected.additional_details || "—"}</div>
+              <div className="text-xs text-muted-foreground pt-2 border-t border-border">
+                Submitted: {new Date(selected.created_at).toLocaleString()}
+              </div>
             </div>
           )}
         </DialogContent>
