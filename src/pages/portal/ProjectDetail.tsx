@@ -109,8 +109,10 @@ const ProjectDetail = () => {
   };
 
   const approveMilestone = async (msId: string) => {
+    const milestone = milestones.find((m) => m.id === msId);
     await supabase.from("project_milestones").update({ status: "approved", completed_at: new Date().toISOString() }).eq("id", msId);
     setMilestones((prev) => prev.map((m) => m.id === msId ? { ...m, status: "approved", completed_at: new Date().toISOString() } : m));
+    await logAudit({ action: "approve", entity_type: "milestone", entity_id: msId, details: { title: milestone?.title, project_id: id } });
     toast({ title: "Milestone approved" });
   };
 
