@@ -91,9 +91,10 @@ const AdminBlog = () => {
     setShowEditor(false);
     load();
 
-  const deletePost = async (id: string) => {
-    if (!confirm("Delete this post?")) return;
-    await supabase.from("blog_posts").delete().eq("id", id);
+  const deletePost = async (post: BlogPost) => {
+    if (!confirm(`Delete "${post.title}"?`)) return;
+    await supabase.from("blog_posts").delete().eq("id", post.id);
+    await logAudit({ action: "delete", entity_type: "blog_post", entity_id: post.id, details: { title: post.title } });
     toast({ title: "Post deleted" });
     load();
   };
