@@ -103,7 +103,7 @@ const App = () => (
             <Route path="users" element={<AdminUsers />} />
             <Route path="invoices" element={<AdminInvoices />} />
             <Route path="blog" element={<AdminBlog />} />
-            <Route path="portfolio" element={<AdminPlaceholder title="Portfolio Management" />} />
+            <Route path="portfolio" element={<AdminPortfolio />} />
             <Route path="careers" element={<AdminCareers />} />
             <Route path="waitlist" element={<Waitlist />} />
             <Route path="audit-logs" element={<AuditLogs />} />

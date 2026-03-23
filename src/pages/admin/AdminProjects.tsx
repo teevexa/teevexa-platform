@@ -43,11 +43,12 @@ const AdminProjects = () => {
 
   const createProject = async () => {
     if (!form.title.trim() || !form.user_id) { toast({ title: "Title and client are required", variant: "destructive" }); return; }
-    const { error } = await supabase.from("client_projects").insert({
+    const { data, error } = await supabase.from("client_projects").insert({
       title: form.title.trim(), description: form.description.trim() || null,
       status: form.status, user_id: form.user_id,
-    });
+    }).select("id").single();
     if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
+    await logAudit({ action: "create", entity_type: "project", entity_id: data?.id, details: { title: form.title.trim(), client_id: form.user_id, status: form.status } });
     toast({ title: "Project created" });
     setShowCreate(false);
     setForm({ title: "", description: "", status: "planning", user_id: "" });
