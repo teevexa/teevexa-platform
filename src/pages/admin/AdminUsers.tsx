@@ -43,7 +43,7 @@ const AdminUsers = () => {
 
     const { error } = await supabase
       .from("user_roles")
-      .update({ role: newRole })
+      .update({ role: newRole as "admin" | "client" | "developer" | "project_manager" | "super_admin" })
       .eq("user_id", userId);
 
     if (error) {
