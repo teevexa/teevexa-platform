@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Send, Upload, Download, CheckCircle, XCircle, Clock, FileText } from "lucide-react";
+import { logAudit } from "@/lib/audit";
 
 interface Project {
   id: string; title: string; description: string | null; status: string;
@@ -108,16 +109,20 @@ const ProjectDetail = () => {
   };
 
   const approveMilestone = async (msId: string) => {
+    const milestone = milestones.find((m) => m.id === msId);
     await supabase.from("project_milestones").update({ status: "approved", completed_at: new Date().toISOString() }).eq("id", msId);
     setMilestones((prev) => prev.map((m) => m.id === msId ? { ...m, status: "approved", completed_at: new Date().toISOString() } : m));
+    await logAudit({ action: "approve", entity_type: "milestone", entity_id: msId, details: { title: milestone?.title, project_id: id } });
     toast({ title: "Milestone approved" });
   };
 
   const rejectMilestone = async (msId: string) => {
     if (!rejectComment.trim()) { toast({ title: "Please provide a reason", variant: "destructive" }); return; }
+    const milestone = milestones.find((m) => m.id === msId);
     await supabase.from("project_milestones").update({ status: "pending" }).eq("id", msId);
     if (id) await supabase.from("messages").insert({ project_id: id, sender_id: userId, content: `Milestone rejected: ${rejectComment}` });
     setMilestones((prev) => prev.map((m) => m.id === msId ? { ...m, status: "pending" } : m));
+    await logAudit({ action: "reject", entity_type: "milestone", entity_id: msId, details: { title: milestone?.title, reason: rejectComment, project_id: id } });
     setRejectId(null); setRejectComment("");
     toast({ title: "Milestone rejected" });
   };

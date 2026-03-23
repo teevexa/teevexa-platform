@@ -89,6 +89,66 @@ export type Database = {
         }
         Relationships: []
       }
+      case_studies: {
+        Row: {
+          challenge: string | null
+          client_name: string | null
+          cover_image_url: string | null
+          created_at: string
+          created_by: string | null
+          description: string
+          gallery_urls: string[] | null
+          id: string
+          industry: string | null
+          published_at: string | null
+          results: string | null
+          slug: string
+          solution: string | null
+          status: string
+          technologies: string[] | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          challenge?: string | null
+          client_name?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          description: string
+          gallery_urls?: string[] | null
+          id?: string
+          industry?: string | null
+          published_at?: string | null
+          results?: string | null
+          slug: string
+          solution?: string | null
+          status?: string
+          technologies?: string[] | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          challenge?: string | null
+          client_name?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          gallery_urls?: string[] | null
+          id?: string
+          industry?: string | null
+          published_at?: string | null
+          results?: string | null
+          slug?: string
+          solution?: string | null
+          status?: string
+          technologies?: string[] | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       client_projects: {
         Row: {
           assigned_pm: string | null
@@ -388,6 +448,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      notifications: {
+        Row: {
+          created_at: string
+          id: string
+          link: string | null
+          message: string
+          read: boolean
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          link?: string | null
+          message: string
+          read?: boolean
+          title: string
+          type?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          link?: string | null
+          message?: string
+          read?: boolean
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       profiles: {
         Row: {

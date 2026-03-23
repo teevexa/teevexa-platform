@@ -40,6 +40,7 @@ import Waitlist from "@/pages/admin/Waitlist";
 import AuditLogs from "@/pages/admin/AuditLogs";
 import AdminSettings from "@/pages/admin/AdminSettings";
 import AdminPlaceholder from "@/pages/admin/AdminPlaceholder";
+import AdminPortfolio from "@/pages/admin/AdminPortfolio";
 import PlaceholderPage from "@/pages/PlaceholderPage";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import TermsOfService from "@/pages/TermsOfService";
@@ -102,7 +103,7 @@ const App = () => (
             <Route path="users" element={<AdminUsers />} />
             <Route path="invoices" element={<AdminInvoices />} />
             <Route path="blog" element={<AdminBlog />} />
-            <Route path="portfolio" element={<AdminPlaceholder title="Portfolio Management" />} />
+            <Route path="portfolio" element={<AdminPortfolio />} />
             <Route path="careers" element={<AdminCareers />} />
             <Route path="waitlist" element={<Waitlist />} />
             <Route path="audit-logs" element={<AuditLogs />} />
