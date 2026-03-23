@@ -118,9 +118,11 @@ const ProjectDetail = () => {
 
   const rejectMilestone = async (msId: string) => {
     if (!rejectComment.trim()) { toast({ title: "Please provide a reason", variant: "destructive" }); return; }
+    const milestone = milestones.find((m) => m.id === msId);
     await supabase.from("project_milestones").update({ status: "pending" }).eq("id", msId);
     if (id) await supabase.from("messages").insert({ project_id: id, sender_id: userId, content: `Milestone rejected: ${rejectComment}` });
     setMilestones((prev) => prev.map((m) => m.id === msId ? { ...m, status: "pending" } : m));
+    await logAudit({ action: "reject", entity_type: "milestone", entity_id: msId, details: { title: milestone?.title, reason: rejectComment, project_id: id } });
     setRejectId(null); setRejectComment("");
     toast({ title: "Milestone rejected" });
   };
