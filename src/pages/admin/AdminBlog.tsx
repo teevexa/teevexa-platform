@@ -74,16 +74,22 @@ const AdminBlog = () => {
       author_id: user?.id || null,
     };
 
-    const { error } = editing
-      ? await supabase.from("blog_posts").update(payload).eq("id", editing)
-      : await supabase.from("blog_posts").insert(payload);
+    let resultId = editing;
+    if (editing) {
+      const { error } = await supabase.from("blog_posts").update(payload).eq("id", editing);
+      if (error) { setSaving(false); toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
+    } else {
+      const { data, error } = await supabase.from("blog_posts").insert(payload).select("id").single();
+      if (error) { setSaving(false); toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
+      resultId = data?.id || null;
+    }
+
+    await logAudit({ action: editing ? "update" : "create", entity_type: "blog_post", entity_id: resultId || undefined, details: { title: payload.title, status: payload.status } });
 
     setSaving(false);
-    if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
     toast({ title: editing ? "Post updated" : "Post created" });
     setShowEditor(false);
     load();
-  };
 
   const deletePost = async (id: string) => {
     if (!confirm("Delete this post?")) return;
