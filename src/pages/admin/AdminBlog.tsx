@@ -90,6 +90,7 @@ const AdminBlog = () => {
     toast({ title: editing ? "Post updated" : "Post created" });
     setShowEditor(false);
     load();
+  };
 
   const deletePost = async (post: BlogPost) => {
     if (!confirm(`Delete "${post.title}"?`)) return;
