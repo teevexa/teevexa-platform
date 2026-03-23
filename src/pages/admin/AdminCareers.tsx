@@ -53,10 +53,11 @@ const AdminCareers = () => {
     }
     const slug = form.slug || form.title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
     const { data: { user } } = await supabase.auth.getUser();
-    const { error } = await supabase.from("jobs").insert({
+    const { data, error } = await supabase.from("jobs").insert({
       ...form, slug, created_by: user?.id || null,
-    });
+    }).select("id").single();
     if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
+    await logAudit({ action: "create", entity_type: "job", entity_id: data?.id, details: { title: form.title, department: form.department } });
     toast({ title: "Job created" });
     setShowCreate(false);
     setForm({ title: "", slug: "", department: "", location: "", employment_type: "full-time", description: "", responsibilities: "", requirements: "", benefits: "" });

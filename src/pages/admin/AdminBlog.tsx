@@ -140,7 +140,7 @@ const AdminBlog = () => {
                   <TableCell>
                     <div className="flex gap-1">
                       <Button size="icon" variant="ghost" onClick={() => openEdit(p)}><Pencil size={14} /></Button>
-                      <Button size="icon" variant="ghost" onClick={() => deletePost(p.id)} className="text-destructive"><Trash2 size={14} /></Button>
+                      <Button size="icon" variant="ghost" onClick={() => deletePost(p)} className="text-destructive"><Trash2 size={14} /></Button>
                     </div>
                   </TableCell>
                 </TableRow>

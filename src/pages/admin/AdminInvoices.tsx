@@ -39,11 +39,12 @@ const AdminInvoices = () => {
 
   const create = async () => {
     if (!form.invoice_number || !form.amount || !form.user_id) { toast({ title: "Required fields missing", variant: "destructive" }); return; }
-    const { error } = await supabase.from("invoices").insert({
+    const { data, error } = await supabase.from("invoices").insert({
       invoice_number: form.invoice_number, amount: Number(form.amount),
       user_id: form.user_id, due_date: form.due_date || null,
-    });
+    }).select("id").single();
     if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
+    await logAudit({ action: "create", entity_type: "invoice", entity_id: data?.id, details: { invoice_number: form.invoice_number, amount: Number(form.amount), client_id: form.user_id } });
     toast({ title: "Invoice created" });
     setShowCreate(false); setForm({ invoice_number: "", amount: "", user_id: "", due_date: "" });
     load();
