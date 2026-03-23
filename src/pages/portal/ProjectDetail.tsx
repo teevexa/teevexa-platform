@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, Send, Upload, Download, CheckCircle, XCircle, Clock, FileText } from "lucide-react";
+import { logAudit } from "@/lib/audit";
 
 interface Project {
   id: string; title: string; description: string | null; status: string;
