@@ -1,4 +1,5 @@
 import { useNavigate, Outlet, Link, useLocation } from "react-router-dom";
+import logo from "@/assets/teevexa-logo.jpeg";
 import { useAuth, AppRole } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -20,6 +21,7 @@ const navSections = [
   { label: "Projects", items: [
     { path: "/admin/projects", label: "Projects", icon: FolderKanban },
     { path: "/admin/milestones", label: "Milestones", icon: Milestone },
+    { path: "/admin/messages", label: "Messages", icon: MessageSquare },
   ], roles: ["super_admin", "admin", "project_manager", "developer"] as AppRole[] },
   { label: "People", items: [
     { path: "/admin/users", label: "Users", icon: Users },
@@ -81,7 +83,10 @@ const AdminLayout = () => {
 
       <aside className={`fixed lg:static inset-y-0 left-0 z-40 w-64 bg-sidebar-background border-r border-sidebar-border transition-transform lg:translate-x-0 overflow-auto ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
         <div className="flex flex-col h-full p-4">
-          <Link to="/" className="font-display font-bold text-xl gradient-text mb-6 mt-2 block">TEEVEXA ADMIN</Link>
+          <Link to="/" className="flex items-center gap-2 mb-6 mt-2">
+            <img src={logo} alt="Teevexa" className="h-8 w-8 rounded-md object-cover" />
+            <span className="font-display font-bold text-lg gradient-text">TEEVEXA ADMIN</span>
+          </Link>
 
           <nav className="flex-1 space-y-4">
             {filteredSections.map((section) => (

@@ -41,6 +41,7 @@ import AuditLogs from "@/pages/admin/AuditLogs";
 import AdminSettings from "@/pages/admin/AdminSettings";
 import AdminPlaceholder from "@/pages/admin/AdminPlaceholder";
 import AdminPortfolio from "@/pages/admin/AdminPortfolio";
+import AdminMessages from "@/pages/admin/AdminMessages";
 import PlaceholderPage from "@/pages/PlaceholderPage";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import TermsOfService from "@/pages/TermsOfService";
@@ -100,6 +101,7 @@ const App = () => (
             <Route path="consultations" element={<Consultations />} />
             <Route path="projects" element={<AdminProjects />} />
             <Route path="milestones" element={<AdminMilestones />} />
+            <Route path="messages" element={<AdminMessages />} />
             <Route path="users" element={<AdminUsers />} />
             <Route path="invoices" element={<AdminInvoices />} />
             <Route path="blog" element={<AdminBlog />} />
