@@ -1,4 +1,5 @@
 import { useNavigate, Outlet, Link, useLocation } from "react-router-dom";
+import logo from "@/assets/teevexa-logo.jpeg";
 import { useAuth, AppRole } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
