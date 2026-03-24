@@ -20,6 +20,7 @@ const navSections = [
   { label: "Projects", items: [
     { path: "/admin/projects", label: "Projects", icon: FolderKanban },
     { path: "/admin/milestones", label: "Milestones", icon: Milestone },
+    { path: "/admin/messages", label: "Messages", icon: MessageSquare },
   ], roles: ["super_admin", "admin", "project_manager", "developer"] as AppRole[] },
   { label: "People", items: [
     { path: "/admin/users", label: "Users", icon: Users },
