@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Mail, MapPin, Phone, Linkedin, Twitter, Github } from "lucide-react";
+import logo from "@/assets/teevexa-logo.jpeg";
 
 const Footer = () => {
   return (
