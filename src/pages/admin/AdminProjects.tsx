@@ -24,6 +24,7 @@ const statusOptions = ["planning", "in-progress", "review", "completed"];
 
 const AdminProjects = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
