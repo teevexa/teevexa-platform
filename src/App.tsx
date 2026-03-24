@@ -31,6 +31,8 @@ import AdminDashboard from "@/pages/admin/AdminDashboard";
 import Leads from "@/pages/admin/Leads";
 import Consultations from "@/pages/admin/Consultations";
 import AdminProjects from "@/pages/admin/AdminProjects";
+import AdminProjectDetail from "@/pages/admin/AdminProjectDetail";
+import AdminTasks from "@/pages/admin/AdminTasks";
 import AdminMilestones from "@/pages/admin/AdminMilestones";
 import AdminUsers from "@/pages/admin/AdminUsers";
 import AdminInvoices from "@/pages/admin/AdminInvoices";
