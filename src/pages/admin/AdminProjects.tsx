@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -23,6 +24,7 @@ const statusOptions = ["planning", "in-progress", "review", "completed"];
 
 const AdminProjects = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
@@ -77,7 +79,7 @@ const AdminProjects = () => {
             </TableRow></TableHeader>
             <TableBody>
               {projects.map((p) => (
-                <TableRow key={p.id}>
+                <TableRow key={p.id} className="cursor-pointer" onClick={() => navigate(`/admin/projects/${p.id}`)}>
                   <TableCell className="font-medium">{p.title}</TableCell>
                   <TableCell><Badge className={statusColor[p.status] || ""}>{p.status}</Badge></TableCell>
                   <TableCell><div className="flex items-center gap-2"><Progress value={p.progress} className="h-2 w-20" /><span className="text-xs">{p.progress}%</span></div></TableCell>
