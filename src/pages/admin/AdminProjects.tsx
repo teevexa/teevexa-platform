@@ -79,7 +79,7 @@ const AdminProjects = () => {
             </TableRow></TableHeader>
             <TableBody>
               {projects.map((p) => (
-                <TableRow key={p.id}>
+                <TableRow key={p.id} className="cursor-pointer" onClick={() => navigate(`/admin/projects/${p.id}`)}>
                   <TableCell className="font-medium">{p.title}</TableCell>
                   <TableCell><Badge className={statusColor[p.status] || ""}>{p.status}</Badge></TableCell>
                   <TableCell><div className="flex items-center gap-2"><Progress value={p.progress} className="h-2 w-20" /><span className="text-xs">{p.progress}%</span></div></TableCell>
