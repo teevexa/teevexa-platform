@@ -9,7 +9,10 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Brand */}
           <div className="space-y-4">
-            <span className="text-xl font-display font-bold gradient-text">TEEVEXA</span>
+            <div className="flex items-center gap-2">
+              <img src={logo} alt="Teevexa" className="h-9 w-9 rounded-md object-cover" />
+              <span className="text-xl font-display font-bold gradient-text">TEEVEXA</span>
+            </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
               Tech Evolution for Exceptional Applications. Building digital infrastructure for Africa's future.
             </p>
