@@ -4,6 +4,7 @@ import { useAuth, AppRole } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import NotificationCenter from "@/components/NotificationCenter";
 import {
   LayoutDashboard, Users, FolderKanban, Milestone, Receipt, MessageSquare,
   FileText, Briefcase, Image, Clock, ScrollText, Settings, LogOut, Menu, X,
