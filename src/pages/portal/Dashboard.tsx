@@ -6,10 +6,25 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { FolderKanban, Receipt, MessageSquare, CalendarDays, Download, CheckCircle, Clock } from "lucide-react";
+import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from "recharts";
 
-interface ProjectSummary { id: string; title: string; status: string; progress: number; }
+interface ProjectSummary { id: string; title: string; status: string; progress: number; budget: string | null; }
 interface MilestoneSummary { id: string; title: string; status: string; due_date: string | null; project_id: string; }
 interface InvoiceSummary { id: string; invoice_number: string; amount: number; currency: string; status: string; pdf_url: string | null; }
+
+const STATUS_COLORS: Record<string, string> = {
+  planning: "hsl(var(--muted-foreground))",
+  "in-progress": "hsl(var(--primary))",
+  review: "hsl(var(--accent))",
+  completed: "#22c55e",
+};
+
+const INVOICE_COLORS: Record<string, string> = {
+  paid: "#22c55e",
+  pending: "#eab308",
+  overdue: "#ef4444",
+  sent: "hsl(var(--primary))",
+};
 
 const Dashboard = () => {
   const [profile, setProfile] = useState<{ display_name: string | null } | null>(null);
@@ -25,9 +40,9 @@ const Dashboard = () => {
 
       const [profileRes, projectsRes, milestonesRes, invoicesRes, msgCount] = await Promise.all([
         supabase.from("profiles").select("display_name").eq("user_id", user.id).single(),
-        supabase.from("client_projects").select("id, title, status, progress").eq("user_id", user.id).order("created_at", { ascending: false }).limit(5),
+        supabase.from("client_projects").select("id, title, status, progress, budget").eq("user_id", user.id).order("created_at", { ascending: false }).limit(10),
         supabase.from("project_milestones").select("id, title, status, due_date, project_id").in("status", ["review", "pending", "in-progress"]).order("due_date").limit(5),
-        supabase.from("invoices").select("id, invoice_number, amount, currency, status, pdf_url").eq("user_id", user.id).order("created_at", { ascending: false }).limit(5),
+        supabase.from("invoices").select("id, invoice_number, amount, currency, status, pdf_url").eq("user_id", user.id).order("created_at", { ascending: false }).limit(20),
         supabase.from("messages").select("id", { count: "exact", head: true }),
       ]);
 
@@ -47,8 +62,10 @@ const Dashboard = () => {
   }, []);
 
   const statusColor: Record<string, string> = {
-    planning: "bg-muted text-muted-foreground", "in-progress": "bg-primary/20 text-primary",
-    review: "bg-accent/20 text-accent", completed: "bg-green-500/20 text-green-400",
+    planning: "bg-muted text-muted-foreground",
+    "in-progress": "bg-primary/20 text-primary",
+    review: "bg-accent/20 text-accent",
+    completed: "bg-green-500/20 text-green-400",
   };
 
   const widgets = [
@@ -57,6 +74,26 @@ const Dashboard = () => {
     { label: "Messages", value: stats.messages, icon: MessageSquare, color: "text-primary", href: "/client-portal/messages" },
     { label: "Outstanding (NGN)", value: stats.unpaidAmount.toLocaleString(), icon: CalendarDays, color: "text-accent", href: "/client-portal/invoices" },
   ];
+
+  // Chart data
+  const projectStatusData = Object.entries(
+    projects.reduce<Record<string, number>>((acc, p) => {
+      acc[p.status] = (acc[p.status] || 0) + 1;
+      return acc;
+    }, {})
+  ).map(([name, value]) => ({ name, value }));
+
+  const projectProgressData = projects.slice(0, 6).map((p) => ({
+    name: p.title.length > 15 ? p.title.slice(0, 15) + "…" : p.title,
+    progress: p.progress,
+  }));
+
+  const invoiceStatusData = Object.entries(
+    invoices.reduce<Record<string, number>>((acc, i) => {
+      acc[i.status] = (acc[i.status] || 0) + Number(i.amount);
+      return acc;
+    }, {})
+  ).map(([name, value]) => ({ name, value }));
 
   return (
     <div className="space-y-8 animate-fade-in">
@@ -67,6 +104,7 @@ const Dashboard = () => {
         <p className="text-muted-foreground text-sm mt-1">Here's your project overview</p>
       </div>
 
+      {/* Stat Widgets */}
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {widgets.map((w) => (
           <Link key={w.label} to={w.href}>
@@ -81,8 +119,74 @@ const Dashboard = () => {
         ))}
       </div>
 
+      {/* Charts Row */}
+      <div className="grid lg:grid-cols-3 gap-6">
+        {/* Project Status Pie */}
+        <Card className="glass">
+          <CardHeader><CardTitle className="text-lg">Project Status</CardTitle></CardHeader>
+          <CardContent>
+            {projectStatusData.length === 0 ? (
+              <p className="text-sm text-muted-foreground text-center py-8">No projects yet</p>
+            ) : (
+              <ResponsiveContainer width="100%" height={200}>
+                <PieChart>
+                  <Pie data={projectStatusData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} paddingAngle={4} dataKey="value">
+                    {projectStatusData.map((entry) => (
+                      <Cell key={entry.name} fill={STATUS_COLORS[entry.name] || "hsl(var(--muted))"} />
+                    ))}
+                  </Pie>
+                  <Tooltip contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
+                  <Legend formatter={(val) => <span className="text-xs capitalize">{val}</span>} />
+                </PieChart>
+              </ResponsiveContainer>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Project Progress Bar */}
+        <Card className="glass">
+          <CardHeader><CardTitle className="text-lg">Progress Overview</CardTitle></CardHeader>
+          <CardContent>
+            {projectProgressData.length === 0 ? (
+              <p className="text-sm text-muted-foreground text-center py-8">No projects yet</p>
+            ) : (
+              <ResponsiveContainer width="100%" height={200}>
+                <BarChart data={projectProgressData} layout="vertical" margin={{ left: 0, right: 16 }}>
+                  <XAxis type="number" domain={[0, 100]} tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
+                  <YAxis type="category" dataKey="name" width={100} tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
+                  <Tooltip contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} formatter={(val: number) => [`${val}%`, "Progress"]} />
+                  <Bar dataKey="progress" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Invoice Breakdown */}
+        <Card className="glass">
+          <CardHeader><CardTitle className="text-lg">Invoice Breakdown</CardTitle></CardHeader>
+          <CardContent>
+            {invoiceStatusData.length === 0 ? (
+              <p className="text-sm text-muted-foreground text-center py-8">No invoices yet</p>
+            ) : (
+              <ResponsiveContainer width="100%" height={200}>
+                <PieChart>
+                  <Pie data={invoiceStatusData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} paddingAngle={4} dataKey="value">
+                    {invoiceStatusData.map((entry) => (
+                      <Cell key={entry.name} fill={INVOICE_COLORS[entry.name] || "hsl(var(--muted))"} />
+                    ))}
+                  </Pie>
+                  <Tooltip contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} formatter={(val: number) => [`₦${val.toLocaleString()}`, "Amount"]} />
+                  <Legend formatter={(val) => <span className="text-xs capitalize">{val}</span>} />
+                </PieChart>
+              </ResponsiveContainer>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Active Projects & Milestones */}
       <div className="grid lg:grid-cols-2 gap-6">
-        {/* Active Projects */}
         <Card className="glass">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="text-lg">Active Projects</CardTitle>
@@ -91,7 +195,7 @@ const Dashboard = () => {
           <CardContent className="space-y-3">
             {projects.length === 0 ? (
               <p className="text-sm text-muted-foreground">No active projects yet.</p>
-            ) : projects.map((p) => (
+            ) : projects.slice(0, 5).map((p) => (
               <Link key={p.id} to={`/client-portal/projects/${p.id}`} className="block">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-sm font-medium">{p.title}</span>
@@ -106,7 +210,6 @@ const Dashboard = () => {
           </CardContent>
         </Card>
 
-        {/* Milestones Awaiting */}
         <Card className="glass">
           <CardHeader><CardTitle className="text-lg">Milestones Awaiting Action</CardTitle></CardHeader>
           <CardContent className="space-y-3">
