@@ -123,7 +123,10 @@ const AdminLayout = () => {
       {sidebarOpen && <div className="fixed inset-0 bg-black/50 z-30 lg:hidden" onClick={() => setSidebarOpen(false)} />}
 
       <main className="flex-1 overflow-auto">
-        <div className="p-6 lg:p-8 max-w-7xl mx-auto"><Outlet /></div>
+        <div className="flex justify-end px-6 pt-4 lg:px-8">
+          <NotificationCenter />
+        </div>
+        <div className="p-6 lg:p-8 pt-2 max-w-7xl mx-auto"><Outlet /></div>
       </main>
     </div>
   );
