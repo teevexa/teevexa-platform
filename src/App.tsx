@@ -47,6 +47,10 @@ import AdminMessages from "@/pages/admin/AdminMessages";
 import AdminKanban from "@/pages/admin/AdminKanban";
 import ActivityFeed from "@/pages/portal/ActivityFeed";
 import ProjectTimeline from "@/pages/portal/ProjectTimeline";
+import Deliverables from "@/pages/portal/Deliverables";
+import SupportTickets from "@/pages/portal/SupportTickets";
+import AdminDeliverables from "@/pages/admin/AdminDeliverables";
+import AdminSupportTickets from "@/pages/admin/AdminSupportTickets";
 import PlaceholderPage from "@/pages/PlaceholderPage";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import TermsOfService from "@/pages/TermsOfService";
@@ -95,6 +99,8 @@ const App = () => (
             <Route path="projects/:id" element={<ProjectDetail />} />
             <Route path="timeline" element={<ProjectTimeline />} />
             <Route path="activity" element={<ActivityFeed />} />
+            <Route path="deliverables" element={<Deliverables />} />
+            <Route path="support" element={<SupportTickets />} />
             <Route path="files" element={<Files />} />
             <Route path="messages" element={<Messages />} />
             <Route path="invoices" element={<Invoices />} />
@@ -111,7 +117,9 @@ const App = () => (
             <Route path="tasks" element={<AdminTasks />} />
             <Route path="kanban" element={<AdminKanban />} />
             <Route path="milestones" element={<AdminMilestones />} />
+            <Route path="deliverables" element={<AdminDeliverables />} />
             <Route path="messages" element={<AdminMessages />} />
+            <Route path="support-tickets" element={<AdminSupportTickets />} />
             <Route path="users" element={<AdminUsers />} />
             <Route path="invoices" element={<AdminInvoices />} />
             <Route path="blog" element={<AdminBlog />} />
