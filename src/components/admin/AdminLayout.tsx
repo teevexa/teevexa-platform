@@ -24,7 +24,9 @@ const navSections = [
     { path: "/admin/tasks", label: "Tasks", icon: ListTodo },
     { path: "/admin/kanban", label: "Kanban Board", icon: Columns3 },
     { path: "/admin/milestones", label: "Milestones", icon: Milestone },
+    { path: "/admin/deliverables", label: "Deliverables", icon: FileCheck },
     { path: "/admin/messages", label: "Messages", icon: MessageSquare },
+    { path: "/admin/support-tickets", label: "Support Tickets", icon: LifeBuoy },
   ], roles: ["super_admin", "admin", "project_manager", "developer"] as AppRole[] },
   { label: "People", items: [
     { path: "/admin/users", label: "Users", icon: Users },
