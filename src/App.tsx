@@ -99,6 +99,8 @@ const App = () => (
             <Route path="projects/:id" element={<ProjectDetail />} />
             <Route path="timeline" element={<ProjectTimeline />} />
             <Route path="activity" element={<ActivityFeed />} />
+            <Route path="deliverables" element={<Deliverables />} />
+            <Route path="support" element={<SupportTickets />} />
             <Route path="files" element={<Files />} />
             <Route path="messages" element={<Messages />} />
             <Route path="invoices" element={<Invoices />} />
