@@ -2,13 +2,15 @@ import { useState } from "react";
 import { useNavigate, Outlet, Link, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { LayoutDashboard, FolderKanban, FolderOpen, MessageSquare, Receipt, Settings, LogOut, Menu, X } from "lucide-react";
+import { LayoutDashboard, FolderKanban, FolderOpen, MessageSquare, Receipt, Settings, LogOut, Menu, X, Activity, CalendarDays } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import NotificationCenter from "@/components/NotificationCenter";
 
 const navItems = [
   { path: "/client-portal", label: "Dashboard", icon: LayoutDashboard },
   { path: "/client-portal/projects", label: "My Projects", icon: FolderKanban },
+  { path: "/client-portal/timeline", label: "Timeline", icon: CalendarDays },
+  { path: "/client-portal/activity", label: "Activity", icon: Activity },
   { path: "/client-portal/files", label: "Files", icon: FolderOpen },
   { path: "/client-portal/messages", label: "Messages", icon: MessageSquare },
   { path: "/client-portal/invoices", label: "Invoices", icon: Receipt },

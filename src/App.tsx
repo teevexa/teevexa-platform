@@ -44,6 +44,9 @@ import AdminSettings from "@/pages/admin/AdminSettings";
 import AdminPlaceholder from "@/pages/admin/AdminPlaceholder";
 import AdminPortfolio from "@/pages/admin/AdminPortfolio";
 import AdminMessages from "@/pages/admin/AdminMessages";
+import AdminKanban from "@/pages/admin/AdminKanban";
+import ActivityFeed from "@/pages/portal/ActivityFeed";
+import ProjectTimeline from "@/pages/portal/ProjectTimeline";
 import PlaceholderPage from "@/pages/PlaceholderPage";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import TermsOfService from "@/pages/TermsOfService";
@@ -90,6 +93,8 @@ const App = () => (
             <Route index element={<Dashboard />} />
             <Route path="projects" element={<Projects />} />
             <Route path="projects/:id" element={<ProjectDetail />} />
+            <Route path="timeline" element={<ProjectTimeline />} />
+            <Route path="activity" element={<ActivityFeed />} />
             <Route path="files" element={<Files />} />
             <Route path="messages" element={<Messages />} />
             <Route path="invoices" element={<Invoices />} />
@@ -104,6 +109,7 @@ const App = () => (
             <Route path="projects" element={<AdminProjects />} />
             <Route path="projects/:id" element={<AdminProjectDetail />} />
             <Route path="tasks" element={<AdminTasks />} />
+            <Route path="kanban" element={<AdminKanban />} />
             <Route path="milestones" element={<AdminMilestones />} />
             <Route path="messages" element={<AdminMessages />} />
             <Route path="users" element={<AdminUsers />} />
