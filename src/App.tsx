@@ -109,6 +109,7 @@ const App = () => (
             <Route path="projects" element={<AdminProjects />} />
             <Route path="projects/:id" element={<AdminProjectDetail />} />
             <Route path="tasks" element={<AdminTasks />} />
+            <Route path="kanban" element={<AdminKanban />} />
             <Route path="milestones" element={<AdminMilestones />} />
             <Route path="messages" element={<AdminMessages />} />
             <Route path="users" element={<AdminUsers />} />

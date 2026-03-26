@@ -9,6 +9,8 @@ import NotificationCenter from "@/components/NotificationCenter";
 const navItems = [
   { path: "/client-portal", label: "Dashboard", icon: LayoutDashboard },
   { path: "/client-portal/projects", label: "My Projects", icon: FolderKanban },
+  { path: "/client-portal/timeline", label: "Timeline", icon: CalendarDays },
+  { path: "/client-portal/activity", label: "Activity", icon: Activity },
   { path: "/client-portal/files", label: "Files", icon: FolderOpen },
   { path: "/client-portal/messages", label: "Messages", icon: MessageSquare },
   { path: "/client-portal/invoices", label: "Invoices", icon: Receipt },

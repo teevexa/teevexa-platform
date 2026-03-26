@@ -8,7 +8,7 @@ import NotificationCenter from "@/components/NotificationCenter";
 import {
   LayoutDashboard, Users, FolderKanban, Milestone, Receipt, MessageSquare,
   FileText, Briefcase, Image, Clock, ScrollText, Settings, LogOut, Menu, X,
-  Target, CalendarDays, ListTodo
+  Target, CalendarDays, ListTodo, Columns3
 } from "lucide-react";
 
 const navSections = [
