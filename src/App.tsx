@@ -117,7 +117,9 @@ const App = () => (
             <Route path="tasks" element={<AdminTasks />} />
             <Route path="kanban" element={<AdminKanban />} />
             <Route path="milestones" element={<AdminMilestones />} />
+            <Route path="deliverables" element={<AdminDeliverables />} />
             <Route path="messages" element={<AdminMessages />} />
+            <Route path="support-tickets" element={<AdminSupportTickets />} />
             <Route path="users" element={<AdminUsers />} />
             <Route path="invoices" element={<AdminInvoices />} />
             <Route path="blog" element={<AdminBlog />} />
