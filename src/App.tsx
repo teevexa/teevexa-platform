@@ -51,6 +51,9 @@ import Deliverables from "@/pages/portal/Deliverables";
 import SupportTickets from "@/pages/portal/SupportTickets";
 import AdminDeliverables from "@/pages/admin/AdminDeliverables";
 import AdminSupportTickets from "@/pages/admin/AdminSupportTickets";
+import AdminTimeTracking from "@/pages/admin/AdminTimeTracking";
+import AdminRoleActivity from "@/pages/admin/AdminRoleActivity";
+import AdminReports from "@/pages/admin/AdminReports";
 import PlaceholderPage from "@/pages/PlaceholderPage";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import TermsOfService from "@/pages/TermsOfService";
@@ -120,6 +123,9 @@ const App = () => (
             <Route path="deliverables" element={<AdminDeliverables />} />
             <Route path="messages" element={<AdminMessages />} />
             <Route path="support-tickets" element={<AdminSupportTickets />} />
+            <Route path="time-tracking" element={<AdminTimeTracking />} />
+            <Route path="role-activity" element={<AdminRoleActivity />} />
+            <Route path="reports" element={<AdminReports />} />
             <Route path="users" element={<AdminUsers />} />
             <Route path="invoices" element={<AdminInvoices />} />
             <Route path="blog" element={<AdminBlog />} />

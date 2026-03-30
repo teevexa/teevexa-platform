@@ -25,11 +25,13 @@ const navSections = [
     { path: "/admin/kanban", label: "Kanban Board", icon: Columns3 },
     { path: "/admin/milestones", label: "Milestones", icon: Milestone },
     { path: "/admin/deliverables", label: "Deliverables", icon: FileCheck },
+    { path: "/admin/time-tracking", label: "Time Tracking", icon: Clock },
     { path: "/admin/messages", label: "Messages", icon: MessageSquare },
     { path: "/admin/support-tickets", label: "Support Tickets", icon: LifeBuoy },
   ], roles: ["super_admin", "admin", "project_manager", "developer"] as AppRole[] },
   { label: "People", items: [
     { path: "/admin/users", label: "Users", icon: Users },
+    { path: "/admin/role-activity", label: "Team Activity", icon: Users },
     { path: "/admin/invoices", label: "Invoices", icon: Receipt },
   ], roles: ["super_admin", "admin", "project_manager"] as AppRole[] },
   { label: "Content", items: [
@@ -39,6 +41,7 @@ const navSections = [
     { path: "/admin/waitlist", label: "Waitlist", icon: Clock },
   ], roles: ["super_admin", "admin"] as AppRole[] },
   { label: "System", items: [
+    { path: "/admin/reports", label: "Reports", icon: FileText },
     { path: "/admin/audit-logs", label: "Audit Logs", icon: ScrollText },
     { path: "/admin/settings", label: "Settings", icon: Settings },
   ], roles: ["super_admin", "admin"] as AppRole[] },
