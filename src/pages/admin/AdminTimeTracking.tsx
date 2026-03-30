@@ -85,7 +85,7 @@ const AdminTimeTracking = () => {
     const { error } = await supabase.from("time_entries").delete().eq("id", id);
     if (!error) {
       toast({ title: "Entry deleted" });
-      await logAudit("deleted", "time_entry", id);
+      await logAudit({ action: "deleted", entity_type: "time_entry", entity_id: id });
       fetchData();
     }
   };
