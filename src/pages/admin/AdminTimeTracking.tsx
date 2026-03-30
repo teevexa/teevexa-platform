@@ -73,7 +73,7 @@ const AdminTimeTracking = () => {
       toast({ title: "Error", description: error.message, variant: "destructive" });
     } else {
       toast({ title: "Time logged successfully" });
-      await logAudit("created", "time_entry", formProjectId, { hours: formHours, date: formDate });
+      await logAudit({ action: "created", entity_type: "time_entry", entity_id: formProjectId, details: { hours: formHours, date: formDate } });
       setDialogOpen(false);
       setFormProjectId(""); setFormTaskId(""); setFormHours(""); setFormDescription("");
       setFormDate(format(new Date(), "yyyy-MM-dd"));
