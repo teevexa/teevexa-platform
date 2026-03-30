@@ -123,6 +123,9 @@ const App = () => (
             <Route path="deliverables" element={<AdminDeliverables />} />
             <Route path="messages" element={<AdminMessages />} />
             <Route path="support-tickets" element={<AdminSupportTickets />} />
+            <Route path="time-tracking" element={<AdminTimeTracking />} />
+            <Route path="role-activity" element={<AdminRoleActivity />} />
+            <Route path="reports" element={<AdminReports />} />
             <Route path="users" element={<AdminUsers />} />
             <Route path="invoices" element={<AdminInvoices />} />
             <Route path="blog" element={<AdminBlog />} />
