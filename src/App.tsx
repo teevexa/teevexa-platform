@@ -58,6 +58,9 @@ import PlaceholderPage from "@/pages/PlaceholderPage";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import TermsOfService from "@/pages/TermsOfService";
 import NotFound from "@/pages/NotFound";
+import TeevexaTrace from "@/pages/TeevexaTrace";
+import Portfolio from "@/pages/Portfolio";
+import ScrollToTop from "@/components/ScrollToTop";
 
 const queryClient = new QueryClient();
 
@@ -67,6 +70,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <ScrollToTop />
         <Routes>
           {/* Public pages */}
           <Route element={<Layout />}>
@@ -79,11 +83,11 @@ const App = () => (
             <Route path="/careers/:slug" element={<CareerDetail />} />
             <Route path="/industries" element={<PlaceholderPage label="Industries" title="Industries We Serve" />} />
             <Route path="/industries/:slug" element={<PlaceholderPage label="Industry" title="Industry Details" />} />
-            <Route path="/portfolio" element={<PlaceholderPage label="Portfolio" title="Our Work" />} />
+            <Route path="/portfolio" element={<Portfolio />} />
             <Route path="/portfolio/:slug" element={<PlaceholderPage label="Case Study" title="Case Study" />} />
             <Route path="/insights" element={<Insights />} />
             <Route path="/insights/:slug" element={<InsightDetail />} />
-            <Route path="/teevexa-trace" element={<PlaceholderPage label="Product" title="Teevexa Trace" description="Blockchain-powered traceability for supply chains." />} />
+            <Route path="/teevexa-trace" element={<TeevexaTrace />} />
             <Route path="/start-project" element={<StartProject />} />
             <Route path="/book-consultation" element={<BookConsultation />} />
             <Route path="/legal/privacy-policy" element={<PrivacyPolicy />} />
