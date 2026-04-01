@@ -48,6 +48,18 @@ interface CaseStudyPreview {
 }
 
 const Index = () => {
+  const [portfolio, setPortfolio] = useState<CaseStudyPreview[]>([]);
+
+  useEffect(() => {
+    supabase
+      .from("case_studies")
+      .select("id, title, slug, industry, description, cover_image_url")
+      .eq("status", "published")
+      .order("published_at", { ascending: false })
+      .limit(8)
+      .then(({ data }) => setPortfolio((data as CaseStudyPreview[]) || []));
+  }, []);
+
   return (
     <>
       {/* ── Hero ── */}
