@@ -172,29 +172,39 @@ const Index = () => {
         </div>
       </section>
 
-      {/* ── Portfolio Preview ── */}
-      <section className="py-24 px-4">
-        <div className="container mx-auto">
-          <SectionHeading label="Portfolio" title="Featured Work" description="A glimpse of the digital solutions we've delivered." />
-          <div className="mt-12 grid md:grid-cols-3 gap-6">
-            {portfolio.map((p) => (
-              <div key={p.title} className="glass rounded-2xl overflow-hidden group cursor-pointer hover:border-primary/40 transition-all duration-300">
-                <div className="h-48 gradient-primary relative flex items-center justify-center">
-                  <BarChart3 className="text-primary/30" size={64} />
-                  <div className="absolute inset-0 bg-background/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <Button variant="outline" size="sm">View Case Study</Button>
+      {portfolio.length > 0 && (
+        <section className="py-24 px-4">
+          <div className="container mx-auto">
+            <SectionHeading label="Portfolio" title="Featured Work" description="A glimpse of the digital solutions we've delivered." />
+            <div className="mt-12 grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {portfolio.map((p) => (
+                <Link key={p.id} to={`/portfolio/${p.slug}`} className="glass rounded-2xl overflow-hidden group cursor-pointer hover:border-primary/40 transition-all duration-300 hover:-translate-y-1">
+                  <div className="h-40 gradient-primary relative flex items-center justify-center">
+                    {p.cover_image_url ? (
+                      <img src={p.cover_image_url} alt={p.title} className="w-full h-full object-cover" />
+                    ) : (
+                      <BarChart3 className="text-primary/30" size={48} />
+                    )}
+                    <div className="absolute inset-0 bg-background/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <Button variant="outline" size="sm">View Case Study</Button>
+                    </div>
                   </div>
-                </div>
-                <div className="p-5">
-                  <span className="text-xs text-primary font-medium">{p.industry}</span>
-                  <h3 className="font-display font-semibold mt-1">{p.title}</h3>
-                  <p className="text-sm text-muted-foreground mt-1">{p.desc}</p>
-                </div>
-              </div>
-            ))}
+                  <div className="p-4">
+                    {p.industry && <span className="text-xs text-primary font-medium">{p.industry}</span>}
+                    <h3 className="font-display font-semibold mt-1 text-sm">{p.title}</h3>
+                    <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{p.description}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+            <div className="mt-8 text-center">
+              <Button variant="outline" asChild>
+                <Link to="/portfolio">View All Projects <ArrowRight className="ml-2" size={16} /></Link>
+              </Button>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* ── Teevexa Trace Teaser ── */}
       <section className="py-24 px-4 bg-card/30 network-bg">
