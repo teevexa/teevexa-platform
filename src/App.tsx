@@ -87,7 +87,7 @@ const App = () => (
             <Route path="/portfolio/:slug" element={<PlaceholderPage label="Case Study" title="Case Study" />} />
             <Route path="/insights" element={<Insights />} />
             <Route path="/insights/:slug" element={<InsightDetail />} />
-            <Route path="/teevexa-trace" element={<PlaceholderPage label="Product" title="Teevexa Trace" description="Blockchain-powered traceability for supply chains." />} />
+            <Route path="/teevexa-trace" element={<TeevexaTrace />} />
             <Route path="/start-project" element={<StartProject />} />
             <Route path="/book-consultation" element={<BookConsultation />} />
             <Route path="/legal/privacy-policy" element={<PrivacyPolicy />} />
