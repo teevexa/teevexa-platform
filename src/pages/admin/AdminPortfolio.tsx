@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import { logAudit } from "@/lib/audit";
-import { Plus, Pencil, Trash2, Briefcase, Eye } from "lucide-react";
+import { Plus, Pencil, Trash2, Briefcase, Eye, Upload, X, Image } from "lucide-react";
 
 interface CaseStudy {
   id: string;
@@ -36,6 +36,9 @@ const emptyForm = {
   cover_image_url: "", status: "draft",
 };
 
+const generateSlug = (title: string) =>
+  title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+
 const AdminPortfolio = () => {
   const { toast } = useToast();
   const [items, setItems] = useState<CaseStudy[]>([]);
@@ -44,6 +47,9 @@ const AdminPortfolio = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState(emptyForm);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const load = async () => {
     const { data } = await supabase
@@ -56,12 +62,10 @@ const AdminPortfolio = () => {
 
   useEffect(() => { load(); }, []);
 
-  const generateSlug = (title: string) =>
-    title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-
   const openCreate = () => {
     setEditingId(null);
     setForm(emptyForm);
+    setImagePreview(null);
     setShowDialog(true);
   };
 
@@ -80,7 +84,59 @@ const AdminPortfolio = () => {
       cover_image_url: item.cover_image_url || "",
       status: item.status,
     });
+    setImagePreview(item.cover_image_url || null);
     setShowDialog(true);
+  };
+
+  const handleTitleChange = (title: string) => {
+    setForm((f) => ({
+      ...f,
+      title,
+      slug: generateSlug(title),
+    }));
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast({ title: "Please select an image file", variant: "destructive" });
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast({ title: "Image must be under 5MB", variant: "destructive" });
+      return;
+    }
+
+    setUploading(true);
+    const ext = file.name.split(".").pop();
+    const filePath = `${crypto.randomUUID()}.${ext}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from("portfolio-images")
+      .upload(filePath, file);
+
+    if (uploadError) {
+      toast({ title: "Upload failed", description: uploadError.message, variant: "destructive" });
+      setUploading(false);
+      return;
+    }
+
+    const { data: urlData } = supabase.storage
+      .from("portfolio-images")
+      .getPublicUrl(filePath);
+
+    setForm((f) => ({ ...f, cover_image_url: urlData.publicUrl }));
+    setImagePreview(urlData.publicUrl);
+    setUploading(false);
+    toast({ title: "Image uploaded" });
+  };
+
+  const removeImage = () => {
+    setForm((f) => ({ ...f, cover_image_url: "" }));
+    setImagePreview(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const save = async () => {
@@ -158,6 +214,7 @@ const AdminPortfolio = () => {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead>Cover</TableHead>
                 <TableHead>Title</TableHead>
                 <TableHead>Client</TableHead>
                 <TableHead>Industry</TableHead>
@@ -169,6 +226,15 @@ const AdminPortfolio = () => {
             <TableBody>
               {items.map((item) => (
                 <TableRow key={item.id}>
+                  <TableCell>
+                    {item.cover_image_url ? (
+                      <img src={item.cover_image_url} alt={item.title} className="w-12 h-12 rounded object-cover" />
+                    ) : (
+                      <div className="w-12 h-12 rounded bg-muted flex items-center justify-center">
+                        <Image size={16} className="text-muted-foreground" />
+                      </div>
+                    )}
+                  </TableCell>
                   <TableCell className="font-medium">{item.title}</TableCell>
                   <TableCell>{item.client_name || "—"}</TableCell>
                   <TableCell>{item.industry || "—"}</TableCell>
@@ -203,13 +269,52 @@ const AdminPortfolio = () => {
             <div className="grid sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Title *</Label>
-                <Input value={form.title} onChange={(e) => set("title", e.target.value)} />
+                <Input value={form.title} onChange={(e) => handleTitleChange(e.target.value)} />
               </div>
               <div className="space-y-2">
                 <Label>Slug</Label>
-                <Input value={form.slug} onChange={(e) => set("slug", e.target.value)} placeholder="auto-generated" />
+                <Input value={form.slug} onChange={(e) => set("slug", e.target.value)} placeholder="auto-generated from title" className="text-muted-foreground" />
               </div>
             </div>
+
+            {/* Cover Image Upload */}
+            <div className="space-y-2">
+              <Label>Cover Image</Label>
+              {imagePreview ? (
+                <div className="relative rounded-lg overflow-hidden border border-border">
+                  <img src={imagePreview} alt="Cover preview" className="w-full h-48 object-cover" />
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="icon"
+                    className="absolute top-2 right-2 h-8 w-8"
+                    onClick={removeImage}
+                  >
+                    <X size={14} />
+                  </Button>
+                </div>
+              ) : (
+                <div
+                  className="border-2 border-dashed border-border rounded-lg p-8 text-center cursor-pointer hover:border-primary/50 transition-colors"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <Upload className="mx-auto text-muted-foreground mb-2" size={32} />
+                  <p className="text-sm text-muted-foreground">
+                    {uploading ? "Uploading..." : "Click to upload cover image"}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">PNG, JPG, WEBP up to 5MB</p>
+                </div>
+              )}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleImageUpload}
+                disabled={uploading}
+              />
+            </div>
+
             <div className="grid sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Client Name</Label>
@@ -236,15 +341,9 @@ const AdminPortfolio = () => {
               <Label>Results</Label>
               <Textarea value={form.results} onChange={(e) => set("results", e.target.value)} rows={3} />
             </div>
-            <div className="grid sm:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>Technologies (comma-separated)</Label>
-                <Input value={form.technologies} onChange={(e) => set("technologies", e.target.value)} placeholder="React, Node.js, Solidity" />
-              </div>
-              <div className="space-y-2">
-                <Label>Cover Image URL</Label>
-                <Input value={form.cover_image_url} onChange={(e) => set("cover_image_url", e.target.value)} />
-              </div>
+            <div className="space-y-2">
+              <Label>Technologies (comma-separated)</Label>
+              <Input value={form.technologies} onChange={(e) => set("technologies", e.target.value)} placeholder="React, Node.js, Solidity" />
             </div>
             <div className="space-y-2">
               <Label>Status</Label>
@@ -256,7 +355,7 @@ const AdminPortfolio = () => {
                 </SelectContent>
               </Select>
             </div>
-            <Button className="w-full glow-primary" onClick={save} disabled={saving}>
+            <Button className="w-full glow-primary" onClick={save} disabled={saving || uploading}>
               {saving ? "Saving..." : editingId ? "Update Case Study" : "Create Case Study"}
             </Button>
           </div>
