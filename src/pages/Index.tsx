@@ -42,11 +42,10 @@ const whyChoose = [
   { icon: Shield, title: "Secure Infrastructure", desc: "Enterprise-grade security." },
 ];
 
-const portfolio = [
-  { title: "AgriTrace Platform", industry: "Agriculture", desc: "End-to-end farm-to-market traceability system." },
-  { title: "TradeConnect Portal", industry: "Export & Trade", desc: "Digital documentation and compliance platform." },
-  { title: "LogiTrack Suite", industry: "Logistics", desc: "Real-time fleet and inventory management." },
-];
+interface CaseStudyPreview {
+  id: string; title: string; slug: string; industry: string | null;
+  description: string; cover_image_url: string | null;
+}
 
 const Index = () => {
   return (
