@@ -60,6 +60,7 @@ import TermsOfService from "@/pages/TermsOfService";
 import NotFound from "@/pages/NotFound";
 import TeevexaTrace from "@/pages/TeevexaTrace";
 import Portfolio from "@/pages/Portfolio";
+import CaseStudyDetail from "@/pages/CaseStudyDetail";
 import ScrollToTop from "@/components/ScrollToTop";
 
 const queryClient = new QueryClient();
