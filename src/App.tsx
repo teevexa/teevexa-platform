@@ -60,6 +60,7 @@ import TermsOfService from "@/pages/TermsOfService";
 import NotFound from "@/pages/NotFound";
 import TeevexaTrace from "@/pages/TeevexaTrace";
 import Portfolio from "@/pages/Portfolio";
+import CaseStudyDetail from "@/pages/CaseStudyDetail";
 import ScrollToTop from "@/components/ScrollToTop";
 
 const queryClient = new QueryClient();
@@ -84,7 +85,7 @@ const App = () => (
             <Route path="/industries" element={<PlaceholderPage label="Industries" title="Industries We Serve" />} />
             <Route path="/industries/:slug" element={<PlaceholderPage label="Industry" title="Industry Details" />} />
             <Route path="/portfolio" element={<Portfolio />} />
-            <Route path="/portfolio/:slug" element={<PlaceholderPage label="Case Study" title="Case Study" />} />
+            <Route path="/portfolio/:slug" element={<CaseStudyDetail />} />
             <Route path="/insights" element={<Insights />} />
             <Route path="/insights/:slug" element={<InsightDetail />} />
             <Route path="/teevexa-trace" element={<TeevexaTrace />} />
