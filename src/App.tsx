@@ -61,6 +61,8 @@ import NotFound from "@/pages/NotFound";
 import TeevexaTrace from "@/pages/TeevexaTrace";
 import Portfolio from "@/pages/Portfolio";
 import CaseStudyDetail from "@/pages/CaseStudyDetail";
+import Industries from "@/pages/Industries";
+import IndustryDetail from "@/pages/IndustryDetail";
 import ScrollToTop from "@/components/ScrollToTop";
 
 const queryClient = new QueryClient();
