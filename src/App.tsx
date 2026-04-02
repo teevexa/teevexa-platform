@@ -38,6 +38,7 @@ import AdminUsers from "@/pages/admin/AdminUsers";
 import AdminInvoices from "@/pages/admin/AdminInvoices";
 import AdminBlog from "@/pages/admin/AdminBlog";
 import AdminCareers from "@/pages/admin/AdminCareers";
+import AdminIndustries from "@/pages/admin/AdminIndustries";
 import Waitlist from "@/pages/admin/Waitlist";
 import AuditLogs from "@/pages/admin/AuditLogs";
 import AdminSettings from "@/pages/admin/AdminSettings";
@@ -61,6 +62,8 @@ import NotFound from "@/pages/NotFound";
 import TeevexaTrace from "@/pages/TeevexaTrace";
 import Portfolio from "@/pages/Portfolio";
 import CaseStudyDetail from "@/pages/CaseStudyDetail";
+import Industries from "@/pages/Industries";
+import IndustryDetail from "@/pages/IndustryDetail";
 import ScrollToTop from "@/components/ScrollToTop";
 
 const queryClient = new QueryClient();
@@ -82,8 +85,8 @@ const App = () => (
             <Route path="/contact" element={<Contact />} />
             <Route path="/careers" element={<Careers />} />
             <Route path="/careers/:slug" element={<CareerDetail />} />
-            <Route path="/industries" element={<PlaceholderPage label="Industries" title="Industries We Serve" />} />
-            <Route path="/industries/:slug" element={<PlaceholderPage label="Industry" title="Industry Details" />} />
+            <Route path="/industries" element={<Industries />} />
+            <Route path="/industries/:slug" element={<IndustryDetail />} />
             <Route path="/portfolio" element={<Portfolio />} />
             <Route path="/portfolio/:slug" element={<CaseStudyDetail />} />
             <Route path="/insights" element={<Insights />} />
@@ -136,6 +139,7 @@ const App = () => (
             <Route path="blog" element={<AdminBlog />} />
             <Route path="portfolio" element={<AdminPortfolio />} />
             <Route path="careers" element={<AdminCareers />} />
+            <Route path="industries" element={<AdminIndustries />} />
             <Route path="waitlist" element={<Waitlist />} />
             <Route path="audit-logs" element={<AuditLogs />} />
             <Route path="settings" element={<AdminSettings />} />

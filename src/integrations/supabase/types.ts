@@ -319,6 +319,48 @@ export type Database = {
           },
         ]
       }
+      industries: {
+        Row: {
+          cover_image_url: string | null
+          created_at: string
+          description: string
+          icon: string | null
+          id: string
+          services: string[] | null
+          slug: string
+          sort_order: number
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string
+          icon?: string | null
+          id?: string
+          services?: string[] | null
+          slug: string
+          sort_order?: number
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string
+          icon?: string | null
+          id?: string
+          services?: string[] | null
+          slug?: string
+          sort_order?: number
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       invoices: {
         Row: {
           amount: number

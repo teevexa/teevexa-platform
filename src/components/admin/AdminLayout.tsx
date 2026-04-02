@@ -37,6 +37,7 @@ const navSections = [
   { label: "Content", items: [
     { path: "/admin/blog", label: "Blog", icon: FileText },
     { path: "/admin/portfolio", label: "Portfolio", icon: Image },
+    { path: "/admin/industries", label: "Industries", icon: Briefcase },
     { path: "/admin/careers", label: "Careers", icon: Briefcase },
     { path: "/admin/waitlist", label: "Waitlist", icon: Clock },
   ], roles: ["super_admin", "admin"] as AppRole[] },
