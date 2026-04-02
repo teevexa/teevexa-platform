@@ -90,12 +90,12 @@ const AdminIndustries = () => {
     if (editId) {
       const { error } = await supabase.from("industries").update(payload).eq("id", editId);
       if (error) { toast({ title: "Error updating industry", description: error.message, variant: "destructive" }); return; }
-      logAudit("update", "industry", editId, user?.id);
+      logAudit({ action: "update", entity_type: "industry", entity_id: editId });
       toast({ title: "Industry updated" });
     } else {
       const { error } = await supabase.from("industries").insert(payload);
       if (error) { toast({ title: "Error creating industry", description: error.message, variant: "destructive" }); return; }
-      logAudit("create", "industry", slug, user?.id);
+      logAudit({ action: "create", entity_type: "industry", entity_id: slug });
       toast({ title: "Industry created" });
     }
     setOpen(false); resetForm(); fetchAll();
@@ -104,7 +104,7 @@ const AdminIndustries = () => {
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this industry?")) return;
     await supabase.from("industries").delete().eq("id", id);
-    logAudit("delete", "industry", id, user?.id);
+    logAudit({ action: "delete", entity_type: "industry", entity_id: id });
     toast({ title: "Industry deleted" });
     fetchAll();
   };
