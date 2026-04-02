@@ -38,6 +38,7 @@ import AdminUsers from "@/pages/admin/AdminUsers";
 import AdminInvoices from "@/pages/admin/AdminInvoices";
 import AdminBlog from "@/pages/admin/AdminBlog";
 import AdminCareers from "@/pages/admin/AdminCareers";
+import AdminIndustries from "@/pages/admin/AdminIndustries";
 import Waitlist from "@/pages/admin/Waitlist";
 import AuditLogs from "@/pages/admin/AuditLogs";
 import AdminSettings from "@/pages/admin/AdminSettings";
