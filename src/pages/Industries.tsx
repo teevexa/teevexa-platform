@@ -73,7 +73,7 @@ const Industries = () => {
                     </div>
                   </div>
                   <div className="p-5">
-                    {item.icon && <span className="text-2xl mb-2 block">{item.icon}</span>}
+                    {item.icon && <IndustryIcon name={item.icon} size={28} className="text-primary mb-2" />}
                     <h3 className="font-display font-semibold text-lg">{item.title}</h3>
                     <p className="text-sm text-muted-foreground mt-1 line-clamp-3">{item.description}</p>
                     {item.services && item.services.length > 0 && (

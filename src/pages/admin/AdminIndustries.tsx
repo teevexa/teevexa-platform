@@ -207,7 +207,7 @@ const AdminIndustries = () => {
             <TableBody>
               {items.map((item) => (
                 <TableRow key={item.id}>
-                  <TableCell className="text-xl">{item.icon || "—"}</TableCell>
+                  <TableCell><IndustryIcon name={item.icon} size={22} className="text-primary" /></TableCell>
                   <TableCell className="font-medium">{item.title}</TableCell>
                   <TableCell>
                     <div className="flex flex-wrap gap-1">
