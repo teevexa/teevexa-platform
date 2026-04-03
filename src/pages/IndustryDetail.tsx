@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import IndustryIcon from "@/components/IndustryIcon";
 import { ArrowLeft, ArrowRight, Building2 } from "lucide-react";
 
 interface Industry {
