@@ -66,7 +66,7 @@ const Industries = () => {
                     {item.cover_image_url ? (
                       <img src={item.cover_image_url} alt={item.title} className="w-full h-full object-cover" />
                     ) : (
-                      <Building2 className="text-primary/30" size={64} />
+                      <IndustryIcon name={item.icon} size={64} className="text-primary/30" />
                     )}
                     <div className="absolute inset-0 bg-background/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                       <Button variant="outline" size="sm">Explore <ArrowRight className="ml-1" size={14} /></Button>
