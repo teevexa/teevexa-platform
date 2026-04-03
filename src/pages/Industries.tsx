@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import SectionHeading from "@/components/SectionHeading";
+import IndustryIcon from "@/components/IndustryIcon";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Building2 } from "lucide-react";
@@ -65,14 +66,14 @@ const Industries = () => {
                     {item.cover_image_url ? (
                       <img src={item.cover_image_url} alt={item.title} className="w-full h-full object-cover" />
                     ) : (
-                      <Building2 className="text-primary/30" size={64} />
+                      <IndustryIcon name={item.icon} size={64} className="text-primary/30" />
                     )}
                     <div className="absolute inset-0 bg-background/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                       <Button variant="outline" size="sm">Explore <ArrowRight className="ml-1" size={14} /></Button>
                     </div>
                   </div>
                   <div className="p-5">
-                    {item.icon && <span className="text-2xl mb-2 block">{item.icon}</span>}
+                    {item.icon && <IndustryIcon name={item.icon} size={28} className="text-primary mb-2" />}
                     <h3 className="font-display font-semibold text-lg">{item.title}</h3>
                     <p className="text-sm text-muted-foreground mt-1 line-clamp-3">{item.description}</p>
                     {item.services && item.services.length > 0 && (

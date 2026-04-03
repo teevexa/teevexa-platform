@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import IndustryIcon from "@/components/IndustryIcon";
 import { ArrowLeft, ArrowRight, Building2 } from "lucide-react";
 
 interface Industry {
@@ -63,7 +64,7 @@ const IndustryDetail = () => {
             <ArrowLeft size={14} /> Back to Industries
           </Link>
           <div className="flex items-center gap-3 mb-4">
-            {industry.icon && <span className="text-4xl">{industry.icon}</span>}
+            {industry.icon && <IndustryIcon name={industry.icon} size={40} className="text-primary" />}
             <h1 className="text-4xl md:text-5xl font-display font-bold">{industry.title}</h1>
           </div>
         </div>

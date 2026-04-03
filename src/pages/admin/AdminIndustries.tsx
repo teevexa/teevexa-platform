@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { logAudit } from "@/lib/audit";
+import IndustryIcon, { industryIconOptions } from "@/components/IndustryIcon";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -132,8 +133,22 @@ const AdminIndustries = () => {
                 <Input value={slug} onChange={(e) => setSlug(e.target.value)} placeholder="healthcare" />
               </div>
               <div>
-                <label className="text-sm font-medium">Icon (emoji)</label>
-                <Input value={icon} onChange={(e) => setIcon(e.target.value)} placeholder="🏥" />
+                <label className="text-sm font-medium">Icon</label>
+                <Select value={icon} onValueChange={setIcon}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select an icon" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-60">
+                    {industryIconOptions.map((opt) => (
+                      <SelectItem key={opt.value} value={opt.value}>
+                        <span className="flex items-center gap-2">
+                          <IndustryIcon name={opt.value} size={16} />
+                          {opt.label}
+                        </span>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div>
                 <label className="text-sm font-medium">Cover Image URL</label>
@@ -192,7 +207,7 @@ const AdminIndustries = () => {
             <TableBody>
               {items.map((item) => (
                 <TableRow key={item.id}>
-                  <TableCell className="text-xl">{item.icon || "—"}</TableCell>
+                  <TableCell><IndustryIcon name={item.icon} size={22} className="text-primary" /></TableCell>
                   <TableCell className="font-medium">{item.title}</TableCell>
                   <TableCell>
                     <div className="flex flex-wrap gap-1">
