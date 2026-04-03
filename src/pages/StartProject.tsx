@@ -187,6 +187,10 @@ const StartProject = () => {
     if (error) { toast({ title: "Submission failed", description: "Please try again.", variant: "destructive" }); return; }
     setDone(true);
     toast({ title: "Inquiry submitted!", description: "We'll be in touch within 24 hours." });
+    // Notify admins
+    supabase.functions.invoke("notify-admin", {
+      body: { type: "new_lead", data: { full_name: form.fullName, project_type: form.projectType } },
+    });
   };
 
   if (checkingAuth) return <div className="min-h-screen flex items-center justify-center"><p className="text-muted-foreground">Loading...</p></div>;

@@ -30,6 +30,10 @@ const Contact = () => {
     }
     setSubmitted(true);
     toast({ title: "Message sent!", description: "We'll get back to you within 24 hours." });
+    // Notify admins
+    supabase.functions.invoke("notify-admin", {
+      body: { type: "new_contact", data: { full_name: formData.get("name"), subject: formData.get("subject") } },
+    });
   };
 
   return (

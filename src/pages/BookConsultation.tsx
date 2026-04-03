@@ -98,6 +98,10 @@ const BookConsultation = () => {
     }
     setPhase("done");
     toast({ title: "Consultation booked!", description: "You'll receive a confirmation email shortly." });
+    // Notify admins
+    supabase.functions.invoke("notify-admin", {
+      body: { type: "new_consultation", data: { full_name: contact.fullName, meeting_type: meetingType, selected_date: format(selectedDate, "yyyy-MM-dd") } },
+    });
   };
 
   if (phase === "done") {
