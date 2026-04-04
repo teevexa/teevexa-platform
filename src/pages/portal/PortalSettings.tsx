@@ -13,7 +13,6 @@ const PortalSettings = () => {
   const [profile, setProfile] = useState({ display_name: "", company: "", phone: "" });
   const [passwordForm, setPasswordForm] = useState({ current: "", newPass: "", confirm: "" });
   const [changingPassword, setChangingPassword] = useState(false);
-  const [notifications, setNotifications] = useState({ email: true, milestones: true, invoices: true });
 
   useEffect(() => {
     const load = async () => {
