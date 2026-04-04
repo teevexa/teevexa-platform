@@ -4,8 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
+import NotificationPreferences from "@/components/NotificationPreferences";
 
 const PortalSettings = () => {
   const { toast } = useToast();
@@ -13,7 +13,6 @@ const PortalSettings = () => {
   const [profile, setProfile] = useState({ display_name: "", company: "", phone: "" });
   const [passwordForm, setPasswordForm] = useState({ current: "", newPass: "", confirm: "" });
   const [changingPassword, setChangingPassword] = useState(false);
-  const [notifications, setNotifications] = useState({ email: true, milestones: true, invoices: true });
 
   useEffect(() => {
     const load = async () => {
@@ -106,24 +105,7 @@ const PortalSettings = () => {
         </CardContent>
       </Card>
 
-      {/* Notifications */}
-      <Card className="glass">
-        <CardHeader><CardTitle>Notification Preferences</CardTitle></CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div><p className="text-sm font-medium">Email Notifications</p><p className="text-xs text-muted-foreground">Receive updates via email</p></div>
-            <Switch checked={notifications.email} onCheckedChange={(v) => setNotifications((n) => ({ ...n, email: v }))} />
-          </div>
-          <div className="flex items-center justify-between">
-            <div><p className="text-sm font-medium">Milestone Updates</p><p className="text-xs text-muted-foreground">Get notified when milestones change</p></div>
-            <Switch checked={notifications.milestones} onCheckedChange={(v) => setNotifications((n) => ({ ...n, milestones: v }))} />
-          </div>
-          <div className="flex items-center justify-between">
-            <div><p className="text-sm font-medium">Invoice Alerts</p><p className="text-xs text-muted-foreground">Reminders for upcoming and overdue invoices</p></div>
-            <Switch checked={notifications.invoices} onCheckedChange={(v) => setNotifications((n) => ({ ...n, invoices: v }))} />
-          </div>
-        </CardContent>
-      </Card>
+      <NotificationPreferences />
     </div>
   );
 };
