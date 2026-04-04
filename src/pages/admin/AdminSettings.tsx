@@ -71,6 +71,8 @@ const AdminSettings = () => {
           <Button variant="outline" onClick={changePassword}>Change Password</Button>
         </CardContent>
       </Card>
+
+      <NotificationPreferences />
     </div>
   );
 };
