@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Settings, User, Lock } from "lucide-react";
+import NotificationPreferences from "@/components/NotificationPreferences";
 
 const AdminSettings = () => {
   const { toast } = useToast();
