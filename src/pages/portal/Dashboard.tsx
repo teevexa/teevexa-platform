@@ -38,12 +38,22 @@ const Dashboard = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      const [profileRes, projectsRes, milestonesRes, invoicesRes, msgCount] = await Promise.all([
+      const [profileRes, projectsRes, invoicesRes] = await Promise.all([
         supabase.from("profiles").select("display_name").eq("user_id", user.id).single(),
         supabase.from("client_projects").select("id, title, status, progress, budget").eq("user_id", user.id).order("created_at", { ascending: false }).limit(10),
-        supabase.from("project_milestones").select("id, title, status, due_date, project_id").in("status", ["review", "pending", "in-progress"]).order("due_date").limit(5),
         supabase.from("invoices").select("id, invoice_number, amount, currency, status, pdf_url").eq("user_id", user.id).order("created_at", { ascending: false }).limit(20),
-        supabase.from("messages").select("id", { count: "exact", head: true }),
+      ]);
+
+      const userProjectIds = (projectsRes.data || []).map((p) => p.id);
+
+      const [milestonesRes, msgCount] = await Promise.all([
+        supabase.from("project_milestones").select("id, title, status, due_date, project_id")
+          .in("status", ["review", "pending", "in-progress"])
+          .in("project_id", userProjectIds.length > 0 ? userProjectIds : ["__none__"])
+          .order("due_date").limit(5),
+        userProjectIds.length > 0
+          ? supabase.from("messages").select("id", { count: "exact", head: true }).in("project_id", userProjectIds)
+          : Promise.resolve({ count: 0 }),
       ]);
 
       setProfile(profileRes.data);

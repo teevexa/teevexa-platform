@@ -11,7 +11,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { logAudit } from "@/lib/audit";
-import { Plus, FileText, Pencil, Trash2 } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Plus, FileText, Pencil, Trash2, Bold, Italic, Heading2, Link2, Code2, List } from "lucide-react";
 
 interface BlogPost {
   id: string; title: string; slug: string; excerpt: string | null;
@@ -20,6 +21,26 @@ interface BlogPost {
 }
 
 const emptyForm = { title: "", slug: "", excerpt: "", content: "", cover_image_url: "", status: "draft", tags: "" };
+
+const renderMarkdown = (md: string): string => {
+  if (!md.trim()) return "<p class='text-muted-foreground italic'>Nothing to preview yet...</p>";
+  return md
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/^#### (.+)$/gm, "<h4 class='text-base font-semibold mt-4 mb-1'>$1</h4>")
+    .replace(/^### (.+)$/gm, "<h3 class='text-lg font-semibold mt-5 mb-2'>$1</h3>")
+    .replace(/^## (.+)$/gm, "<h2 class='text-xl font-bold mt-6 mb-2'>$1</h2>")
+    .replace(/^# (.+)$/gm, "<h1 class='text-2xl font-bold mt-6 mb-3'>$1</h1>")
+    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\*(.+?)\*/g, "<em>$1</em>")
+    .replace(/`(.+?)`/g, "<code class='bg-muted px-1 rounded text-xs font-mono'>$1</code>")
+    .replace(/\[(.+?)\]\((.+?)\)/g, "<a href='$2' class='text-primary underline' target='_blank'>$1</a>")
+    .replace(/^---$/gm, "<hr class='border-border my-4' />")
+    .replace(/^- (.+)$/gm, "<li class='ml-4 list-disc'>$1</li>")
+    .replace(/^(\d+)\. (.+)$/gm, "<li class='ml-4 list-decimal'>$2</li>")
+    .split("\n\n")
+    .map((block) => block.startsWith("<") ? block : `<p class='mb-3 leading-relaxed'>${block.replace(/\n/g, "<br/>")}</p>`)
+    .join("");
+};
 
 const AdminBlog = () => {
   const { toast } = useToast();
@@ -173,7 +194,44 @@ const AdminBlog = () => {
             </div>
             <div className="space-y-2">
               <Label>Content *</Label>
-              <Textarea rows={10} value={form.content} onChange={(e) => setForm((f) => ({ ...f, content: e.target.value }))} placeholder="Write your article content here..." />
+              <Tabs defaultValue="write">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex gap-1">
+                    {[
+                      { icon: Bold, insert: "**bold**", title: "Bold" },
+                      { icon: Italic, insert: "*italic*", title: "Italic" },
+                      { icon: Heading2, insert: "\n## Heading\n", title: "Heading" },
+                      { icon: List, insert: "\n- Item\n", title: "List" },
+                      { icon: Link2, insert: "[link text](url)", title: "Link" },
+                      { icon: Code2, insert: "`code`", title: "Inline Code" },
+                    ].map(({ icon: Icon, insert, title }) => (
+                      <Button key={title} type="button" variant="ghost" size="icon" className="h-7 w-7" title={title}
+                        onClick={() => setForm((f) => ({ ...f, content: f.content + insert }))}>
+                        <Icon size={13} />
+                      </Button>
+                    ))}
+                  </div>
+                  <TabsList className="h-7">
+                    <TabsTrigger value="write" className="text-xs px-3 py-0.5">Write</TabsTrigger>
+                    <TabsTrigger value="preview" className="text-xs px-3 py-0.5">Preview</TabsTrigger>
+                  </TabsList>
+                </div>
+                <TabsContent value="write" className="mt-0">
+                  <Textarea
+                    rows={14}
+                    value={form.content}
+                    onChange={(e) => setForm((f) => ({ ...f, content: e.target.value }))}
+                    placeholder={"# Article Title\n\nWrite your article in **Markdown**.\n\n## Section Heading\n\nParagraph text here..."}
+                    className="font-mono text-sm resize-y"
+                  />
+                </TabsContent>
+                <TabsContent value="preview" className="mt-0">
+                  <div
+                    className="min-h-[280px] rounded-md border border-input bg-muted/30 p-4 text-sm prose prose-invert max-w-none overflow-auto"
+                    dangerouslySetInnerHTML={{ __html: renderMarkdown(form.content) }}
+                  />
+                </TabsContent>
+              </Tabs>
             </div>
             <div className="grid sm:grid-cols-2 gap-4">
               <div className="space-y-2">

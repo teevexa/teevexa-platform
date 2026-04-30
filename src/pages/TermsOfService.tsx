@@ -1,212 +1,283 @@
-import SectionHeading from "@/components/SectionHeading";
+import { LegalLayout, LegalSection, LegalSubSection, LegalList, LegalContactBox, Em } from "@/components/legal/LegalLayout";
 
-const TermsOfService = () => {
-  const lastUpdated = "February 26, 2026";
+const LAST_UPDATED = "February 26, 2026";
 
-  return (
-    <div className="min-h-screen pt-24 pb-20">
-      <div className="container mx-auto px-4 lg:px-8 max-w-4xl">
-        <SectionHeading label="Legal" title="Terms of Service" description={`Last updated: ${lastUpdated}`} />
+const SECTIONS = [
+  { id: "agreement", label: "1. Agreement to Terms" },
+  { id: "definitions", label: "2. Definitions" },
+  { id: "services", label: "3. Services" },
+  { id: "accounts", label: "4. Client Accounts" },
+  { id: "engagements", label: "5. Project Engagements" },
+  { id: "fees", label: "6. Fees & Payment" },
+  { id: "intellectual-property", label: "7. Intellectual Property" },
+  { id: "confidentiality", label: "8. Confidentiality" },
+  { id: "warranties", label: "9. Warranties & Disclaimers" },
+  { id: "liability", label: "10. Limitation of Liability" },
+  { id: "indemnification", label: "11. Indemnification" },
+  { id: "termination", label: "12. Termination" },
+  { id: "acceptable-use", label: "13. Acceptable Use" },
+  { id: "governing-law", label: "14. Governing Law & Disputes" },
+  { id: "force-majeure", label: "15. Force Majeure" },
+  { id: "general", label: "16. General Provisions" },
+  { id: "contact", label: "17. Contact Information" },
+];
 
-        <div className="mt-12 prose prose-invert prose-sm max-w-none space-y-8 text-muted-foreground leading-relaxed">
-          <section className="space-y-3">
-            <h2 className="text-xl font-display font-semibold text-foreground">1. Agreement to Terms</h2>
-            <p>
-              These Terms of Service ("Terms") constitute a legally binding agreement between you ("Client," "you," or "your") and TEEVEXA ("Company," "we," "our," or "us"), governing your access to and use of our website at <span className="text-primary">teevexa.com</span>, client portal, and all related services (collectively, the "Services").
-            </p>
-            <p>
-              By accessing or using our Services, you confirm that you have read, understood, and agree to be bound by these Terms. If you are entering into these Terms on behalf of an organization, you represent that you have authority to bind that organization.
-            </p>
-          </section>
+const TermsOfService = () => (
+  <LegalLayout
+    title="Terms of Service"
+    subtitle="Please read these terms carefully before accessing or using any of our services."
+    lastUpdated={LAST_UPDATED}
+    sections={SECTIONS}
+  >
+    <LegalSection id="agreement" number="1" title="Agreement to Terms">
+      <p>
+        These Terms of Service (<Em>"Terms"</Em>) constitute a legally binding agreement between you (<Em>"Client,"</Em> <Em>"you,"</Em> or <Em>"your"</Em>) and <Em>TEEVEXA</Em> (<Em>"Company," "we," "our,"</Em> or <Em>"us"</Em>), governing your access to and use of our website at <span className="text-primary font-medium">teevexa.com</span>, client portal, and all related services (collectively, the <Em>"Services"</Em>).
+      </p>
+      <p>
+        By accessing or using our Services, you confirm that you have read, understood, and agree to be bound by these Terms. If you are entering into these Terms on behalf of an organization, you represent that you have the authority to bind that organization.
+      </p>
+      <p>
+        If you do not agree to these Terms, you must immediately discontinue use of our Services.
+      </p>
+    </LegalSection>
 
-          <section className="space-y-3">
-            <h2 className="text-xl font-display font-semibold text-foreground">2. Definitions</h2>
-            <ul className="list-disc pl-6 space-y-1">
-              <li><strong className="text-foreground/80">"Deliverables"</strong> means all work product, code, designs, documentation, and materials produced by TEEVEXA under a Statement of Work.</li>
-              <li><strong className="text-foreground/80">"Statement of Work" (SOW)</strong> means a written document specifying the scope, timeline, milestones, and fees for a particular project engagement.</li>
-              <li><strong className="text-foreground/80">"Confidential Information"</strong> means any non-public information disclosed by either party, including business strategies, technical data, financial information, and trade secrets.</li>
-              <li><strong className="text-foreground/80">"Client Portal"</strong> means the secure online platform provided for project tracking, file sharing, messaging, and invoice management.</li>
-            </ul>
-          </section>
+    <LegalSection id="definitions" number="2" title="Definitions">
+      <LegalList items={[
+        <><Em>"Deliverables"</Em> means all work product, code, designs, documentation, and materials produced by TEEVEXA under a Statement of Work.</>,
+        <><Em>"Statement of Work" (SOW)</Em> means a written document specifying the scope, timeline, milestones, and fees for a particular project engagement.</>,
+        <><Em>"Confidential Information"</Em> means any non-public information disclosed by either party, including business strategies, technical data, financial information, and trade secrets.</>,
+        <><Em>"Client Portal"</Em> means the secure online platform provided for project tracking, file sharing, messaging, and invoice management.</>,
+        <><Em>"Pre-Existing IP"</Em> means any intellectual property owned or developed by either party before the commencement of a project engagement.</>,
+        <><Em>"Third-Party Components"</Em> means open-source software, licensed libraries, or tools incorporated into Deliverables that are subject to their own license terms.</>,
+      ]} />
+    </LegalSection>
 
-          <section className="space-y-3">
-            <h2 className="text-xl font-display font-semibold text-foreground">3. Services</h2>
-            <p>
-              TEEVEXA provides software development, design, consulting, and related technology services as described on our website and in individual Statements of Work. Each engagement is governed by a separate SOW that details the specific scope, deliverables, timeline, and fees.
-            </p>
-            <p>
-              We reserve the right to modify, suspend, or discontinue any aspect of our Services at any time with reasonable notice.
-            </p>
-          </section>
+    <LegalSection id="services" number="3" title="Services">
+      <p>
+        TEEVEXA provides software development, design, consulting, and related technology services as described on our website and in individual Statements of Work. Each engagement is governed by a separate SOW that details the specific scope, deliverables, timeline, and fees.
+      </p>
+      <p>
+        We reserve the right to modify, suspend, or discontinue any aspect of our Services at any time with reasonable notice. We will not be liable to you or any third party for any such modification, suspension, or discontinuation.
+      </p>
+    </LegalSection>
 
-          <section className="space-y-3">
-            <h2 className="text-xl font-display font-semibold text-foreground">4. Client Accounts</h2>
-            <p>To access certain features, you must create an account. You agree to:</p>
-            <ul className="list-disc pl-6 space-y-1">
-              <li>Provide accurate, current, and complete registration information.</li>
-              <li>Maintain the security and confidentiality of your login credentials.</li>
-              <li>Promptly notify us of any unauthorized access or security breach.</li>
-              <li>Accept responsibility for all activities under your account.</li>
-            </ul>
-            <p>
-              We reserve the right to suspend or terminate accounts that violate these Terms or remain inactive for an extended period.
-            </p>
-          </section>
+    <LegalSection id="accounts" number="4" title="Client Accounts">
+      <p>To access certain features of our Services, including the Client Portal, you must create an account. By creating an account, you agree to:</p>
+      <LegalList items={[
+        "Provide accurate, current, and complete registration information.",
+        "Maintain the security and confidentiality of your login credentials.",
+        "Promptly notify us of any unauthorized access or suspected security breach.",
+        "Accept full responsibility for all activities that occur under your account.",
+        "Not share your credentials with unauthorized third parties.",
+      ]} />
+      <p>
+        We reserve the right to suspend or terminate accounts that violate these Terms, engage in fraudulent activity, or remain inactive for an extended period without notice.
+      </p>
+    </LegalSection>
 
-          <section className="space-y-3">
-            <h2 className="text-xl font-display font-semibold text-foreground">5. Project Engagements</h2>
-            <h3 className="text-lg font-semibold text-foreground/90">5.1 Statements of Work</h3>
-            <p>
-              All project engagements are governed by a mutually agreed SOW. In the event of conflict between these Terms and an SOW, the SOW shall prevail for that specific engagement.
-            </p>
-            <h3 className="text-lg font-semibold text-foreground/90">5.2 Client Obligations</h3>
-            <ul className="list-disc pl-6 space-y-1">
-              <li>Provide timely feedback, approvals, and access to necessary resources.</li>
-              <li>Designate an authorized point of contact for project decisions.</li>
-              <li>Ensure all materials provided do not infringe third-party rights.</li>
-            </ul>
-            <h3 className="text-lg font-semibold text-foreground/90">5.3 Change Requests</h3>
-            <p>
-              Changes to project scope must be submitted in writing and are subject to review. Approved changes may result in adjusted timelines and fees, documented in an amended SOW.
-            </p>
-          </section>
+    <LegalSection id="engagements" number="5" title="Project Engagements">
+      <LegalSubSection title="5.1 Statements of Work">
+        <p>
+          All project engagements are governed by a mutually agreed SOW. In the event of a conflict between these Terms and an SOW, the SOW shall prevail for that specific engagement only.
+        </p>
+      </LegalSubSection>
+      <LegalSubSection title="5.2 Client Obligations">
+        <p>To ensure successful project delivery, you agree to:</p>
+        <LegalList items={[
+          "Provide timely feedback, approvals, and access to necessary resources within agreed timeframes.",
+          "Designate an authorized point of contact with decision-making authority.",
+          "Ensure all materials, content, and assets provided do not infringe third-party intellectual property or privacy rights.",
+          "Obtain all necessary licenses, consents, and permissions for materials you provide.",
+        ]} />
+      </LegalSubSection>
+      <LegalSubSection title="5.3 Change Requests">
+        <p>
+          Changes to project scope must be submitted in writing and are subject to review. Approved changes will be documented in a written change order or amended SOW and may result in adjusted timelines and additional fees. Verbal change requests will not be honored.
+        </p>
+      </LegalSubSection>
+    </LegalSection>
 
-          <section className="space-y-3">
-            <h2 className="text-xl font-display font-semibold text-foreground">6. Fees & Payment</h2>
-            <ul className="list-disc pl-6 space-y-1">
-              <li>Fees are specified in each SOW and are quoted in the agreed currency.</li>
-              <li>Invoices are due within 14 days of issuance unless otherwise specified.</li>
-              <li>Late payments may incur interest at 1.5% per month or the maximum rate permitted by law, whichever is lower.</li>
-              <li>All fees are exclusive of applicable taxes, which are the Client's responsibility.</li>
-              <li>We reserve the right to suspend work on overdue accounts until payment is received.</li>
-            </ul>
-          </section>
+    <LegalSection id="fees" number="6" title="Fees & Payment">
+      <LegalList items={[
+        "Fees are specified in each SOW and are quoted in the agreed currency.",
+        "Invoices are due within 14 calendar days of issuance unless otherwise specified in the SOW.",
+        <>Late payments may incur interest at <Em>1.5% per month</Em> (or the maximum rate permitted by applicable law, whichever is lower) from the due date until payment is received.</>,
+        "All fees are exclusive of applicable taxes, levies, and duties, which are the Client's sole responsibility.",
+        "We reserve the right to suspend work or withhold Deliverables on accounts with overdue invoices until payment is received in full.",
+        "Disputed invoices must be raised in writing within 7 days of receipt; undisputed portions remain due on the original date.",
+      ]} />
+    </LegalSection>
 
-          <section className="space-y-3">
-            <h2 className="text-xl font-display font-semibold text-foreground">7. Intellectual Property</h2>
-            <h3 className="text-lg font-semibold text-foreground/90">7.1 Client IP</h3>
-            <p>
-              You retain all rights to materials, content, and data you provide to us. You grant TEEVEXA a limited, non-exclusive license to use such materials solely for performing the Services.
-            </p>
-            <h3 className="text-lg font-semibold text-foreground/90">7.2 Deliverables</h3>
-            <p>
-              Upon full payment, all custom Deliverables created specifically for you are assigned to you, excluding Pre-Existing IP and Third-Party Components.
-            </p>
-            <h3 className="text-lg font-semibold text-foreground/90">7.3 Pre-Existing IP</h3>
-            <p>
-              TEEVEXA retains ownership of all pre-existing tools, frameworks, libraries, and methodologies. Where incorporated into Deliverables, you receive a perpetual, non-exclusive, royalty-free license to use them within the delivered project.
-            </p>
-            <h3 className="text-lg font-semibold text-foreground/90">7.4 Portfolio Rights</h3>
-            <p>
-              Unless agreed otherwise in the SOW, TEEVEXA may reference the project in our portfolio, case studies, and marketing materials, subject to confidentiality obligations.
-            </p>
-          </section>
+    <LegalSection id="intellectual-property" number="7" title="Intellectual Property">
+      <LegalSubSection title="7.1 Client-Owned Materials">
+        <p>
+          You retain all rights, title, and interest in and to materials, content, data, and pre-existing intellectual property you provide to us. You grant TEEVEXA a limited, non-exclusive, royalty-free license to use such materials solely for the purpose of performing the Services under the applicable SOW.
+        </p>
+      </LegalSubSection>
+      <LegalSubSection title="7.2 Custom Deliverables">
+        <p>
+          Upon receipt of full payment, TEEVEXA assigns to you all right, title, and interest in and to custom Deliverables created specifically for you under an SOW, excluding Pre-Existing IP and Third-Party Components.
+        </p>
+      </LegalSubSection>
+      <LegalSubSection title="7.3 Pre-Existing & Platform IP">
+        <p>
+          TEEVEXA retains sole ownership of all pre-existing tools, frameworks, methodologies, know-how, and reusable components developed before or independently of any engagement. Where such elements are incorporated into Deliverables, you receive a perpetual, non-exclusive, non-transferable, royalty-free license to use them within the delivered project only.
+        </p>
+      </LegalSubSection>
+      <LegalSubSection title="7.4 Portfolio Rights">
+        <p>
+          Unless expressly agreed otherwise in the SOW, TEEVEXA may reference the existence and general nature of the project in our portfolio, case studies, pitch materials, and marketing, subject to confidentiality obligations. We will not disclose proprietary business information without your consent.
+        </p>
+      </LegalSubSection>
+    </LegalSection>
 
-          <section className="space-y-3">
-            <h2 className="text-xl font-display font-semibold text-foreground">8. Confidentiality</h2>
-            <p>
-              Both parties agree to hold Confidential Information in strict confidence and not disclose it to third parties except as necessary to perform obligations under these Terms. This obligation survives termination for a period of 3 years.
-            </p>
-            <p>Exceptions include information that is: publicly available; independently developed; rightfully received from a third party; or required to be disclosed by law.</p>
-          </section>
+    <LegalSection id="confidentiality" number="8" title="Confidentiality">
+      <p>
+        Each party agrees to hold the other party's Confidential Information in strict confidence and not to disclose it to any third party without prior written consent, except to employees or contractors who need to know it to fulfill obligations under these Terms and who are bound by equivalent confidentiality obligations.
+      </p>
+      <p>
+        This obligation survives the termination or expiry of these Terms for a period of <Em>3 years</Em>.
+      </p>
+      <p>Exceptions apply to information that is:</p>
+      <LegalList items={[
+        "Publicly available through no fault of the receiving party.",
+        "Independently developed by the receiving party without reference to Confidential Information.",
+        "Rightfully received from a third party without restriction.",
+        "Required to be disclosed by applicable law, regulation, or court order (provided prompt notice is given where legally permitted).",
+      ]} />
+    </LegalSection>
 
-          <section className="space-y-3">
-            <h2 className="text-xl font-display font-semibold text-foreground">9. Warranties & Disclaimers</h2>
-            <h3 className="text-lg font-semibold text-foreground/90">9.1 Our Warranties</h3>
-            <p>We warrant that:</p>
-            <ul className="list-disc pl-6 space-y-1">
-              <li>Services will be performed in a professional and workmanlike manner.</li>
-              <li>Deliverables will materially conform to the specifications in the SOW for 30 days after acceptance ("Warranty Period").</li>
-              <li>We will not knowingly introduce malicious code into Deliverables.</li>
-            </ul>
-            <h3 className="text-lg font-semibold text-foreground/90">9.2 Disclaimers</h3>
-            <p>
-              EXCEPT AS EXPRESSLY PROVIDED HEREIN, SERVICES AND DELIVERABLES ARE PROVIDED "AS IS." WE DISCLAIM ALL OTHER WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
-            </p>
-          </section>
+    <LegalSection id="warranties" number="9" title="Warranties & Disclaimers">
+      <LegalSubSection title="9.1 Our Warranties">
+        <p>TEEVEXA warrants that:</p>
+        <LegalList items={[
+          "Services will be performed in a professional and workmanlike manner consistent with industry standards.",
+          <>Custom Deliverables will materially conform to the specifications in the applicable SOW for <Em>30 days</Em> following acceptance (<Em>"Warranty Period"</Em>). During this period, we will remedy non-conformances at no additional charge.</>,
+          "We will not knowingly introduce malicious code, backdoors, or unauthorized tracking into Deliverables.",
+          "We have the right to grant the licenses and assignments described in Section 7.",
+        ]} />
+      </LegalSubSection>
+      <LegalSubSection title="9.2 Disclaimers">
+        <p className="uppercase text-xs font-semibold tracking-wide text-foreground/60 mb-1">Important</p>
+        <p>
+          Except as expressly set forth in Section 9.1, the Services and Deliverables are provided <Em>"AS IS"</Em> and <Em>"AS AVAILABLE."</Em> To the fullest extent permitted by applicable law, TEEVEXA disclaims all other warranties, express or implied, including without limitation warranties of merchantability, fitness for a particular purpose, title, and non-infringement.
+        </p>
+        <p>
+          We do not warrant that the Services will be uninterrupted, error-free, or that defects will be corrected.
+        </p>
+      </LegalSubSection>
+    </LegalSection>
 
-          <section className="space-y-3">
-            <h2 className="text-xl font-display font-semibold text-foreground">10. Limitation of Liability</h2>
-            <p>
-              TO THE MAXIMUM EXTENT PERMITTED BY LAW, TEEVEXA'S TOTAL AGGREGATE LIABILITY ARISING OUT OF OR RELATED TO THESE TERMS SHALL NOT EXCEED THE TOTAL FEES PAID BY YOU IN THE 12 MONTHS PRECEDING THE CLAIM.
-            </p>
-            <p>
-              IN NO EVENT SHALL EITHER PARTY BE LIABLE FOR INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING LOSS OF PROFITS, DATA, OR BUSINESS OPPORTUNITIES, REGARDLESS OF THE THEORY OF LIABILITY.
-            </p>
-          </section>
+    <LegalSection id="liability" number="10" title="Limitation of Liability">
+      <p className="uppercase text-xs font-semibold tracking-wide text-foreground/60 mb-1">Cap on Liability</p>
+      <p>
+        To the maximum extent permitted by applicable law, TEEVEXA's total aggregate liability to you arising out of or related to these Terms or any SOW — whether in contract, tort, or otherwise — shall not exceed the <Em>total fees actually paid by you in the 12 months immediately preceding the event giving rise to the claim.</Em>
+      </p>
+      <p className="uppercase text-xs font-semibold tracking-wide text-foreground/60 mb-1 mt-3">Exclusion of Consequential Damages</p>
+      <p>
+        In no event shall either party be liable to the other for any indirect, incidental, special, consequential, exemplary, or punitive damages, including but not limited to loss of profits, revenue, data, goodwill, or business opportunities, regardless of the theory of liability and whether or not advised of the possibility of such damages.
+      </p>
+      <p>
+        The limitations in this section reflect a reasonable allocation of risk and form an essential basis of the agreement between the parties.
+      </p>
+    </LegalSection>
 
-          <section className="space-y-3">
-            <h2 className="text-xl font-display font-semibold text-foreground">11. Indemnification</h2>
-            <p>
-              You agree to indemnify and hold harmless TEEVEXA from any claims, damages, or expenses arising from: (a) your breach of these Terms; (b) your use of the Services; (c) materials you provide that infringe third-party rights; or (d) your violation of applicable laws.
-            </p>
-          </section>
+    <LegalSection id="indemnification" number="11" title="Indemnification">
+      <p>
+        You agree to indemnify, defend, and hold harmless TEEVEXA, its directors, officers, employees, contractors, and agents from and against any and all claims, damages, losses, liabilities, costs, and expenses (including reasonable legal fees) arising out of or relating to:
+      </p>
+      <LegalList items={[
+        "Your breach of any provision of these Terms or any applicable SOW.",
+        "Your unauthorized use of the Services or Client Portal.",
+        "Materials you provide that infringe or misappropriate third-party intellectual property, privacy, or other rights.",
+        "Your violation of any applicable law or regulation.",
+      ]} />
+    </LegalSection>
 
-          <section className="space-y-3">
-            <h2 className="text-xl font-display font-semibold text-foreground">12. Termination</h2>
-            <h3 className="text-lg font-semibold text-foreground/90">12.1 Termination for Convenience</h3>
-            <p>Either party may terminate an SOW with 30 days' written notice. Client shall pay for all work completed up to the effective termination date.</p>
-            <h3 className="text-lg font-semibold text-foreground/90">12.2 Termination for Cause</h3>
-            <p>Either party may terminate immediately if the other party materially breaches these Terms and fails to cure within 15 days of written notice.</p>
-            <h3 className="text-lg font-semibold text-foreground/90">12.3 Effects of Termination</h3>
-            <p>Upon termination: all outstanding fees become due; each party returns or destroys Confidential Information; and Sections 7, 8, 10, 11, and 14 survive.</p>
-          </section>
+    <LegalSection id="termination" number="12" title="Termination">
+      <LegalSubSection title="12.1 Termination for Convenience">
+        <p>
+          Either party may terminate an SOW for any reason upon <Em>30 days' written notice</Em>. Upon termination, the Client shall pay for all work completed and expenses reasonably incurred up to the effective termination date. Work in progress at termination may be delivered in its then-current state.
+        </p>
+      </LegalSubSection>
+      <LegalSubSection title="12.2 Termination for Cause">
+        <p>
+          Either party may terminate an SOW immediately upon written notice if the other party commits a material breach and fails to cure such breach within <Em>15 days</Em> of receiving written notice describing the breach in reasonable detail.
+        </p>
+      </LegalSubSection>
+      <LegalSubSection title="12.3 Effects of Termination">
+        <p>Upon expiry or termination of any SOW:</p>
+        <LegalList items={[
+          "All outstanding fees and expenses become immediately due and payable.",
+          "Each party shall promptly return or certifiably destroy the other party's Confidential Information.",
+          "Sections 7 (IP), 8 (Confidentiality), 10 (Liability), 11 (Indemnification), and 14 (Governing Law) survive.",
+        ]} />
+      </LegalSubSection>
+    </LegalSection>
 
-          <section className="space-y-3">
-            <h2 className="text-xl font-display font-semibold text-foreground">13. Acceptable Use</h2>
-            <p>When using our Services and Client Portal, you agree not to:</p>
-            <ul className="list-disc pl-6 space-y-1">
-              <li>Violate any applicable laws or regulations.</li>
-              <li>Infringe on intellectual property or privacy rights of others.</li>
-              <li>Transmit malicious code, viruses, or harmful content.</li>
-              <li>Attempt to gain unauthorized access to our systems or other users' accounts.</li>
-              <li>Use the Services for any unlawful, fraudulent, or harmful purpose.</li>
-              <li>Reverse-engineer, decompile, or disassemble any part of the Services.</li>
-            </ul>
-          </section>
+    <LegalSection id="acceptable-use" number="13" title="Acceptable Use">
+      <p>When using our Services and Client Portal, you agree not to:</p>
+      <LegalList items={[
+        "Violate any applicable local, national, or international laws or regulations.",
+        "Infringe on the intellectual property, privacy, or other legal rights of any person.",
+        "Transmit or introduce malicious code, viruses, ransomware, spyware, or other harmful software.",
+        "Attempt to gain unauthorized access to our systems, networks, or other users' accounts.",
+        "Use the Services for any unlawful, fraudulent, deceptive, or harmful purpose.",
+        "Reverse-engineer, decompile, disassemble, or attempt to derive source code from any component of the Services.",
+        "Scrape, harvest, or collect data from our Services without express written permission.",
+        "Resell, sublicense, or commercially exploit the Services without our written consent.",
+      ]} />
+    </LegalSection>
 
-          <section className="space-y-3">
-            <h2 className="text-xl font-display font-semibold text-foreground">14. Governing Law & Dispute Resolution</h2>
-            <h3 className="text-lg font-semibold text-foreground/90">14.1 Governing Law</h3>
-            <p>These Terms are governed by and construed in accordance with the laws of the Republic of Kenya, without regard to conflict of law principles.</p>
-            <h3 className="text-lg font-semibold text-foreground/90">14.2 Dispute Resolution</h3>
-            <p>
-              The parties shall first attempt to resolve disputes through good-faith negotiation for 30 days. If unresolved, disputes shall be submitted to binding arbitration administered under the Nairobi Centre for International Arbitration (NCIA) Rules. The seat of arbitration shall be Nairobi, Kenya, and the language shall be English.
-            </p>
-          </section>
+    <LegalSection id="governing-law" number="14" title="Governing Law & Dispute Resolution">
+      <LegalSubSection title="14.1 Governing Law">
+        <p>
+          These Terms are governed by and construed in accordance with the laws of the <Em>Republic of Kenya</Em>, without regard to its conflict of law principles.
+        </p>
+      </LegalSubSection>
+      <LegalSubSection title="14.2 Dispute Resolution">
+        <p>
+          The parties shall first attempt in good faith to resolve any dispute through direct negotiation for <Em>30 days</Em> after one party notifies the other in writing. If unresolved, disputes shall be submitted to binding arbitration administered under the <Em>Nairobi Centre for International Arbitration (NCIA) Rules</Em>. The seat of arbitration shall be Nairobi, Kenya, conducted in the English language. The arbitral award shall be final and binding.
+        </p>
+      </LegalSubSection>
+      <LegalSubSection title="14.3 Injunctive Relief">
+        <p>
+          Nothing in this section prevents either party from seeking urgent injunctive or other equitable relief in a court of competent jurisdiction to prevent irreparable harm.
+        </p>
+      </LegalSubSection>
+    </LegalSection>
 
-          <section className="space-y-3">
-            <h2 className="text-xl font-display font-semibold text-foreground">15. Force Majeure</h2>
-            <p>
-              Neither party shall be liable for failure to perform obligations due to events beyond reasonable control, including natural disasters, pandemics, government actions, wars, cyberattacks, or infrastructure failures, provided the affected party gives prompt notice and uses reasonable efforts to mitigate the impact.
-            </p>
-          </section>
+    <LegalSection id="force-majeure" number="15" title="Force Majeure">
+      <p>
+        Neither party shall be liable for any delay or failure to perform their obligations under these Terms to the extent such delay or failure is caused by events beyond their reasonable control, including but not limited to natural disasters, pandemics, epidemics, acts of government or regulatory authorities, wars, civil unrest, cyberattacks, telecommunications failures, or critical infrastructure outages (<Em>"Force Majeure Events"</Em>).
+      </p>
+      <p>
+        The affected party must provide prompt written notice of the Force Majeure Event and use commercially reasonable efforts to mitigate its impact and resume performance. If the Force Majeure Event continues for more than <Em>60 days</Em>, either party may terminate the affected SOW without liability.
+      </p>
+    </LegalSection>
 
-          <section className="space-y-3">
-            <h2 className="text-xl font-display font-semibold text-foreground">16. General Provisions</h2>
-            <ul className="list-disc pl-6 space-y-1">
-              <li><strong className="text-foreground/80">Entire Agreement:</strong> These Terms, together with applicable SOWs, constitute the entire agreement between the parties.</li>
-              <li><strong className="text-foreground/80">Severability:</strong> If any provision is held invalid, the remaining provisions remain in full force.</li>
-              <li><strong className="text-foreground/80">Waiver:</strong> Failure to enforce any right does not constitute a waiver of that right.</li>
-              <li><strong className="text-foreground/80">Assignment:</strong> You may not assign these Terms without our prior written consent.</li>
-              <li><strong className="text-foreground/80">Notices:</strong> All legal notices must be in writing and sent to the addresses specified in Section 17.</li>
-              <li><strong className="text-foreground/80">Amendments:</strong> We may update these Terms with reasonable notice. Continued use constitutes acceptance.</li>
-            </ul>
-          </section>
+    <LegalSection id="general" number="16" title="General Provisions">
+      <LegalList items={[
+        <><Em>Entire Agreement:</Em> These Terms, together with all applicable SOWs, constitute the complete and exclusive agreement between the parties regarding its subject matter and supersede all prior agreements, representations, and understandings.</>,
+        <><Em>Severability:</Em> If any provision of these Terms is held invalid, illegal, or unenforceable, the remaining provisions shall continue in full force and effect.</>,
+        <><Em>Waiver:</Em> Failure to enforce any right or provision under these Terms shall not constitute a waiver of that right or provision.</>,
+        <><Em>Assignment:</Em> You may not assign or transfer any rights or obligations under these Terms without our prior written consent. TEEVEXA may assign these Terms in connection with a merger, acquisition, or sale of substantially all assets.</>,
+        <><Em>Notices:</Em> All legal notices must be delivered in writing by email or registered mail to the addresses specified in Section 17 and shall be deemed received on the next business day.</>,
+        <><Em>Amendments:</Em> We may update these Terms from time to time. Material changes will be communicated with at least 14 days' notice. Continued use of our Services after the effective date constitutes acceptance of the updated Terms.</>,
+        <><Em>No Partnership:</Em> Nothing in these Terms creates a partnership, joint venture, agency, employment, or franchise relationship between the parties.</>,
+      ]} />
+    </LegalSection>
 
-          <section className="space-y-3">
-            <h2 className="text-xl font-display font-semibold text-foreground">17. Contact Information</h2>
-            <div className="glass rounded-lg p-6 space-y-2 text-sm">
-              <p className="text-foreground font-semibold">TEEVEXA — Legal Department</p>
-              <p>Email: <span className="text-primary">legal@teevexa.com</span></p>
-              <p>Phone: +254 783 797 132</p>
-              <p>Address: Nairobi, Kenya</p>
-            </div>
-          </section>
-        </div>
-      </div>
-    </div>
-  );
-};
+    <LegalSection id="contact" number="17" title="Contact Information">
+      <p>For legal inquiries, notices, or questions about these Terms, please contact us at:</p>
+      <LegalContactBox>
+        <p className="font-semibold text-foreground">TEEVEXA — Legal Department</p>
+        <p>Email: <span className="text-primary font-medium">legal@teevexa.com</span></p>
+        <p>Phone: <span className="text-foreground/70">+254 783 797 132</span></p>
+        <p>Address: <span className="text-foreground/70">Nairobi, Kenya</span></p>
+      </LegalContactBox>
+    </LegalSection>
+  </LegalLayout>
+);
 
 export default TermsOfService;

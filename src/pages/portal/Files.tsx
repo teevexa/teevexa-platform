@@ -19,12 +19,28 @@ const Files = () => {
 
   useEffect(() => {
     const load = async () => {
-      const [pRes, fRes] = await Promise.all([
-        supabase.from("client_projects").select("id, title"),
-        supabase.from("project_files").select("*").order("created_at", { ascending: false }),
-      ]);
-      setProjects(pRes.data || []);
-      setFiles(fRes.data || []);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { setLoading(false); return; }
+
+      const { data: projectData } = await supabase
+        .from("client_projects")
+        .select("id, title")
+        .eq("user_id", user.id);
+      setProjects(projectData || []);
+
+      const projectIds = (projectData || []).map((p) => p.id);
+      if (projectIds.length === 0) {
+        setFiles([]);
+        setLoading(false);
+        return;
+      }
+
+      const { data: fileData } = await supabase
+        .from("project_files")
+        .select("*")
+        .in("project_id", projectIds)
+        .order("created_at", { ascending: false });
+      setFiles(fileData || []);
       setLoading(false);
     };
     load();

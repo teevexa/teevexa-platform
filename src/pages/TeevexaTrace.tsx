@@ -9,7 +9,8 @@ import { useToast } from "@/hooks/use-toast";
 import SectionHeading from "@/components/SectionHeading";
 import {
   QrCode, MapPin, BarChart3, Shield, Leaf, Eye, Lock,
-  ArrowRight, CheckCircle2, Layers, Globe, Smartphone, Zap
+  ArrowRight, CheckCircle2, Layers, Globe, Smartphone, Zap,
+  CheckCheck, X, Bitcoin, Database, Workflow, TrendingUp
 } from "lucide-react";
 
 const features = [
@@ -183,6 +184,147 @@ const TeevexaTrace = () => {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Why Blockchain */}
+      <section className="py-24 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <SectionHeading
+            label="The Technology"
+            title="Why Blockchain?"
+            description="Not every problem needs a blockchain — but supply chain trust is exactly the problem it was built to solve."
+          />
+          <div className="mt-12 grid md:grid-cols-3 gap-6">
+            {[
+              { icon: Database, title: "Immutable Ledger", desc: "Once a record is written, it cannot be altered or deleted — by anyone, including us. Every handoff, test result, and certification is permanent." },
+              { icon: Workflow, title: "Decentralised Verification", desc: "No single party controls the truth. Farmers, exporters, regulators, and consumers all read from the same tamper-proof source." },
+              { icon: TrendingUp, title: "Polygon Network", desc: "We run on Polygon (an Ethereum L2), chosen for its low transaction cost, speed, and proven enterprise adoption in supply chain and ESG reporting." },
+            ].map((item) => (
+              <div key={item.title} className="glass rounded-2xl p-6 group hover:border-primary/40 transition-all duration-300">
+                <item.icon className="text-primary mb-4" size={28} />
+                <h3 className="font-display font-semibold mb-2">{item.title}</h3>
+                <p className="text-sm text-muted-foreground">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Competitive Differentiation */}
+      <section className="py-24 px-4 bg-card/30">
+        <div className="container mx-auto max-w-5xl">
+          <SectionHeading
+            label="Why Teevexa Trace"
+            title="Built for Africa, Ready for the World"
+            description="Most traceability platforms are designed for Western markets and bolt on Africa as an afterthought. We started in Africa."
+          />
+          <div className="mt-12 overflow-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="text-left py-3 pr-6 font-semibold text-foreground">Feature</th>
+                  <th className="py-3 px-4 text-center font-semibold text-primary">Teevexa Trace</th>
+                  <th className="py-3 px-4 text-center text-muted-foreground font-medium">Generic Platforms</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border/50">
+                {[
+                  ["Offline-first mobile for field agents", true, false],
+                  ["African payment & compliance integration", true, false],
+                  ["EUDR & African export certification support", true, "partial"],
+                  ["Multi-language UI (Swahili, French, Arabic, English)", true, false],
+                  ["QR scan with no app required (web-based)", true, "partial"],
+                  ["Farmer-level onboarding with feature phones", true, false],
+                  ["Blockchain-backed immutable audit trail", true, true],
+                  ["Real-time IoT sensor integration", true, true],
+                  ["White-label enterprise deployment", true, true],
+                ].map(([feature, us, them]) => (
+                  <tr key={String(feature)} className="hover:bg-muted/30 transition-colors">
+                    <td className="py-3 pr-6 text-muted-foreground">{feature}</td>
+                    <td className="py-3 px-4 text-center">
+                      <CheckCheck size={16} className="mx-auto text-green-400" />
+                    </td>
+                    <td className="py-3 px-4 text-center">
+                      {them === true
+                        ? <CheckCheck size={16} className="mx-auto text-green-400/50" />
+                        : them === "partial"
+                        ? <span className="text-yellow-500 text-xs font-medium">Partial</span>
+                        : <X size={16} className="mx-auto text-destructive/60" />
+                      }
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing */}
+      <section className="py-24 px-4">
+        <div className="container mx-auto max-w-5xl">
+          <SectionHeading
+            label="Pricing"
+            title="Transparent, Scalable Pricing"
+            description="Indicative tiers — final pricing confirmed at launch. No hidden fees."
+          />
+          <div className="mt-12 grid md:grid-cols-3 gap-6">
+            {[
+              {
+                name: "Starter",
+                price: "Free",
+                period: "during beta",
+                color: "border-border",
+                badge: null,
+                features: ["Up to 500 product scans/month", "1 supply chain template", "QR code generation", "Basic compliance dashboard", "Email support"],
+              },
+              {
+                name: "Growth",
+                price: "$149",
+                period: "/ month",
+                color: "border-primary",
+                badge: "Most Popular",
+                features: ["Up to 50,000 scans/month", "Unlimited supply chain templates", "IoT sensor integration", "EUDR & export report generation", "Offline mobile field app", "Priority support"],
+              },
+              {
+                name: "Enterprise",
+                price: "Custom",
+                period: "contact us",
+                color: "border-accent",
+                badge: "For large organisations",
+                features: ["Unlimited scans", "White-label deployment", "Custom blockchain network", "On-premise option", "Dedicated customer success manager", "SLA guarantee"],
+              },
+            ].map((tier) => (
+              <div key={tier.name} className={`glass rounded-2xl p-6 border-2 ${tier.color} flex flex-col`}>
+                {tier.badge && (
+                  <span className="inline-block text-xs font-semibold uppercase tracking-wider text-primary mb-3">{tier.badge}</span>
+                )}
+                <h3 className="font-display font-bold text-xl">{tier.name}</h3>
+                <div className="mt-2 mb-6">
+                  <span className="text-3xl font-display font-bold">{tier.price}</span>
+                  <span className="text-sm text-muted-foreground ml-1">{tier.period}</span>
+                </div>
+                <ul className="space-y-2 flex-1">
+                  {tier.features.map((f) => (
+                    <li key={f} className="flex items-start gap-2 text-sm text-muted-foreground">
+                      <CheckCheck size={14} className="text-primary mt-0.5 shrink-0" /> {f}
+                    </li>
+                  ))}
+                </ul>
+                <Button
+                  className={`mt-6 w-full ${tier.color === "border-primary" ? "glow-primary" : ""}`}
+                  variant={tier.color === "border-primary" ? "default" : "outline"}
+                  onClick={() => setShowForm(true)}
+                >
+                  Join Waitlist
+                </Button>
+              </div>
+            ))}
+          </div>
+          <p className="text-center text-xs text-muted-foreground mt-6">
+            Prices shown in USD. African local currency billing (NGN, KES, GHS, ZAR) available at launch.
+          </p>
         </div>
       </section>
 

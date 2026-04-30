@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { logAudit } from "@/lib/audit";
-import { GripVertical, Filter, Columns3 } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { GripVertical, Filter, Columns3, Hand } from "lucide-react";
 
 interface Task {
   id: string; title: string; description: string | null; status: string;
@@ -39,6 +40,8 @@ const AdminKanban = () => {
   const [loading, setLoading] = useState(true);
   const [filterProject, setFilterProject] = useState("all");
   const [draggedTask, setDraggedTask] = useState<string | null>(null);
+  const [selectedTask, setSelectedTask] = useState<string | null>(null);
+  const isMobile = useIsMobile();
 
   const load = useCallback(async () => {
     const [tRes, pRes, uRes] = await Promise.all([
@@ -65,28 +68,33 @@ const AdminKanban = () => {
   const handleDragStart = (taskId: string) => setDraggedTask(taskId);
   const handleDragEnd = () => setDraggedTask(null);
 
+  const handleMobileTap = (taskId: string) => {
+    setSelectedTask((prev) => prev === taskId ? null : taskId);
+  };
+
   const handleDrop = async (newStatus: string) => {
-    if (!draggedTask) return;
-    const task = tasks.find((t) => t.id === draggedTask);
-    if (!task || task.status === newStatus) { setDraggedTask(null); return; }
+    const activeTask = isMobile ? selectedTask : draggedTask;
+    if (!activeTask) return;
+    const task = tasks.find((t) => t.id === activeTask);
+    if (!task || task.status === newStatus) { setDraggedTask(null); setSelectedTask(null); return; }
 
     const oldStatus = task.status;
-    // Optimistic update
-    setTasks((prev) => prev.map((t) => t.id === draggedTask ? { ...t, status: newStatus } : t));
+    setTasks((prev) => prev.map((t) => t.id === activeTask ? { ...t, status: newStatus } : t));
 
     const payload: Record<string, unknown> = { status: newStatus };
     if (newStatus === "done") payload.completed_at = new Date().toISOString();
     else payload.completed_at = null;
 
-    const { error } = await supabase.from("project_tasks").update(payload).eq("id", draggedTask);
+    const { error } = await supabase.from("project_tasks").update(payload).eq("id", activeTask!);
     if (error) {
-      setTasks((prev) => prev.map((t) => t.id === draggedTask ? { ...t, status: oldStatus } : t));
+      setTasks((prev) => prev.map((t) => t.id === activeTask ? { ...t, status: oldStatus } : t));
       toast({ title: "Error moving task", description: error.message, variant: "destructive" });
     } else {
-      await logAudit({ action: "update", entity_type: "task", entity_id: draggedTask, details: { title: task.title, from: oldStatus, to: newStatus } });
+      await logAudit({ action: "update", entity_type: "task", entity_id: activeTask!, details: { title: task.title, from: oldStatus, to: newStatus } });
       toast({ title: `Task moved to ${newStatus}` });
     }
     setDraggedTask(null);
+    setSelectedTask(null);
   };
 
   const isOverdue = (d: string | null, status: string) =>
@@ -112,15 +120,25 @@ const AdminKanban = () => {
         </div>
       </div>
 
+      {isMobile && selectedTask && (
+        <p className="text-sm text-primary text-center animate-pulse py-1">
+          Tap a column below to move the selected task
+        </p>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
         {columns.map((col) => {
           const colTasks = filtered.filter((t) => t.status === col.id);
+          const isDropTarget = isMobile && selectedTask && tasks.find((t) => t.id === selectedTask)?.status !== col.id;
           return (
             <div
               key={col.id}
-              className="min-h-[300px] rounded-xl border border-border bg-card/50 flex flex-col"
+              className={`min-h-[300px] rounded-xl border flex flex-col transition-all ${
+                isDropTarget ? "border-primary/60 bg-primary/5 shadow-lg shadow-primary/10" : "border-border bg-card/50"
+              }`}
               onDragOver={(e) => e.preventDefault()}
               onDrop={() => handleDrop(col.id)}
+              onClick={() => isMobile && selectedTask && handleDrop(col.id)}
             >
               <div className={`px-4 py-3 rounded-t-xl ${col.color} flex items-center justify-between`}>
                 <h3 className="font-semibold text-sm">{col.label}</h3>
@@ -128,19 +146,29 @@ const AdminKanban = () => {
               </div>
               <div className="flex-1 p-2 space-y-2 overflow-auto max-h-[60vh]">
                 {colTasks.length === 0 ? (
-                  <p className="text-xs text-muted-foreground text-center py-8">Drop tasks here</p>
+                  <p className="text-xs text-muted-foreground text-center py-8">
+                    {isMobile && selectedTask ? "Tap here to move" : "Drop tasks here"}
+                  </p>
                 ) : (
                   colTasks.map((task) => (
                     <Card
                       key={task.id}
-                      draggable
-                      onDragStart={() => handleDragStart(task.id)}
+                      draggable={!isMobile}
+                      onDragStart={() => !isMobile && handleDragStart(task.id)}
                       onDragEnd={handleDragEnd}
-                      className={`cursor-grab active:cursor-grabbing border-l-4 ${priorityBorder[task.priority] || "border-l-border"} transition-all hover:shadow-md ${draggedTask === task.id ? "opacity-50 scale-95" : ""}`}
+                      onClick={(e) => { e.stopPropagation(); isMobile && handleMobileTap(task.id); }}
+                      className={`border-l-4 ${priorityBorder[task.priority] || "border-l-border"} transition-all hover:shadow-md ${
+                        isMobile ? "cursor-pointer" : "cursor-grab active:cursor-grabbing"
+                      } ${
+                        (isMobile ? selectedTask === task.id : draggedTask === task.id) ? "opacity-50 scale-95 ring-2 ring-primary" : ""
+                      }`}
                     >
                       <CardContent className="p-3 space-y-2">
                         <div className="flex items-start gap-1">
-                          <GripVertical size={14} className="text-muted-foreground mt-0.5 flex-shrink-0" />
+                          {isMobile
+                            ? <Hand size={14} className="text-muted-foreground mt-0.5 flex-shrink-0" />
+                            : <GripVertical size={14} className="text-muted-foreground mt-0.5 flex-shrink-0" />
+                          }
                           <div className="min-w-0">
                             <p className="font-medium text-sm leading-tight">{task.title}</p>
                             {task.description && (

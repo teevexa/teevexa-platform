@@ -32,8 +32,11 @@ const navSections = [
   { label: "People", items: [
     { path: "/admin/users", label: "Users", icon: Users },
     { path: "/admin/role-activity", label: "Team Activity", icon: Users },
-    { path: "/admin/invoices", label: "Invoices", icon: Receipt },
   ], roles: ["super_admin", "admin", "project_manager"] as AppRole[] },
+  { label: "Finance", items: [
+    { path: "/admin/invoices", label: "Invoices", icon: Receipt },
+    { path: "/admin/reports", label: "Reports", icon: FileText },
+  ], roles: ["super_admin", "admin"] as AppRole[] },
   { label: "Content", items: [
     { path: "/admin/blog", label: "Blog", icon: FileText },
     { path: "/admin/portfolio", label: "Portfolio", icon: Image },
@@ -42,7 +45,6 @@ const navSections = [
     { path: "/admin/waitlist", label: "Waitlist", icon: Clock },
   ], roles: ["super_admin", "admin"] as AppRole[] },
   { label: "System", items: [
-    { path: "/admin/reports", label: "Reports", icon: FileText },
     { path: "/admin/audit-logs", label: "Audit Logs", icon: ScrollText },
     { path: "/admin/settings", label: "Settings", icon: Settings },
   ], roles: ["super_admin", "admin"] as AppRole[] },

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Mail, MapPin, Phone, Linkedin, Twitter, Github } from "lucide-react";
+import { Mail, MapPin, Phone, Linkedin, Twitter, Instagram, Facebook } from "lucide-react";
 import logo from "@/assets/teevexa-logo.jpeg";
 
 const Footer = () => {
@@ -17,9 +17,10 @@ const Footer = () => {
               Tech Evolution for Exceptional Applications. Building digital infrastructure for Africa's future.
             </p>
             <div className="flex gap-3">
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors" aria-label="LinkedIn"><Linkedin size={18} /></a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors" aria-label="Twitter"><Twitter size={18} /></a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors" aria-label="GitHub"><Github size={18} /></a>
+              <a href="https://www.linkedin.com/company/teevexa" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label="LinkedIn"><Linkedin size={18} /></a>
+              <a href="https://www.instagram.com/teevexa" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label="Instagram"><Instagram size={18} /></a>
+              <a href="https://x.com/teevexa" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label="X (Twitter)"><Twitter size={18} /></a>
+              <a href="https://www.facebook.com/teevexa" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label="Facebook"><Facebook size={18} /></a>
             </div>
           </div>
 
@@ -75,6 +76,7 @@ const Footer = () => {
           <div className="flex gap-4">
             <Link to="/legal/privacy-policy" className="hover:text-primary transition-colors">Privacy Policy</Link>
             <Link to="/legal/terms-of-service" className="hover:text-primary transition-colors">Terms of Service</Link>
+            <Link to="/legal/cookies" className="hover:text-primary transition-colors">Cookie Policy</Link>
           </div>
         </div>
       </div>

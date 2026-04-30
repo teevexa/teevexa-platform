@@ -31,7 +31,7 @@ const Messages = () => {
       if (!user) return;
       setUserId(user.id);
 
-      const { data: projectData } = await supabase.from("client_projects").select("id, title");
+      const { data: projectData } = await supabase.from("client_projects").select("id, title").eq("user_id", user.id);
       setProjects(projectData || []);
       if (projectData && projectData.length > 0) {
         setSelectedProject(projectData[0].id);

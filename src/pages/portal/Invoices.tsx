@@ -28,7 +28,13 @@ const Invoices = () => {
 
   useEffect(() => {
     const load = async () => {
-      const { data } = await supabase.from("invoices").select("*").order("created_at", { ascending: false });
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { setLoading(false); return; }
+      const { data } = await supabase
+        .from("invoices")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
       setInvoices(data || []);
       setLoading(false);
     };

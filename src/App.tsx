@@ -58,6 +58,8 @@ import AdminReports from "@/pages/admin/AdminReports";
 import PlaceholderPage from "@/pages/PlaceholderPage";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import TermsOfService from "@/pages/TermsOfService";
+import CookiePolicy from "@/pages/CookiePolicy";
+import { CookieBanner } from "@/components/CookieBanner";
 import NotFound from "@/pages/NotFound";
 import TeevexaTrace from "@/pages/TeevexaTrace";
 import Portfolio from "@/pages/Portfolio";
@@ -75,6 +77,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <ScrollToTop />
+        <CookieBanner />
         <Routes>
           {/* Public pages */}
           <Route element={<Layout />}>
@@ -96,6 +99,7 @@ const App = () => (
             <Route path="/book-consultation" element={<BookConsultation />} />
             <Route path="/legal/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/legal/terms-of-service" element={<TermsOfService />} />
+            <Route path="/legal/cookies" element={<CookiePolicy />} />
           </Route>
 
           {/* Auth */}

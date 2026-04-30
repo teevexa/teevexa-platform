@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { logAudit } from "@/lib/audit";
-import { Plus, Receipt } from "lucide-react";
+import { Plus, Receipt, CheckCircle, Clock, AlertTriangle } from "lucide-react";
 
 interface Invoice {
   id: string; invoice_number: string; amount: number; currency: string;
@@ -23,7 +23,7 @@ const AdminInvoices = () => {
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
   const [clients, setClients] = useState<{ user_id: string; display_name: string | null }[]>([]);
-  const [form, setForm] = useState({ invoice_number: "", amount: "", user_id: "", due_date: "" });
+  const [form, setForm] = useState({ invoice_number: "", amount: "", currency: "NGN", user_id: "", due_date: "" });
 
   const load = async () => {
     const [iRes, cRes] = await Promise.all([
@@ -41,12 +41,20 @@ const AdminInvoices = () => {
     if (!form.invoice_number || !form.amount || !form.user_id) { toast({ title: "Required fields missing", variant: "destructive" }); return; }
     const { data, error } = await supabase.from("invoices").insert({
       invoice_number: form.invoice_number, amount: Number(form.amount),
-      user_id: form.user_id, due_date: form.due_date || null,
+      currency: form.currency, user_id: form.user_id, due_date: form.due_date || null,
     }).select("id").single();
     if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
-    await logAudit({ action: "create", entity_type: "invoice", entity_id: data?.id, details: { invoice_number: form.invoice_number, amount: Number(form.amount), client_id: form.user_id } });
+    await logAudit({ action: "create", entity_type: "invoice", entity_id: data?.id, details: { invoice_number: form.invoice_number, amount: Number(form.amount), currency: form.currency, client_id: form.user_id } });
     toast({ title: "Invoice created" });
-    setShowCreate(false); setForm({ invoice_number: "", amount: "", user_id: "", due_date: "" });
+    setShowCreate(false); setForm({ invoice_number: "", amount: "", currency: "NGN", user_id: "", due_date: "" });
+    load();
+  };
+
+  const updateStatus = async (invoiceId: string, newStatus: string, invoiceNumber: string) => {
+    const { error } = await supabase.from("invoices").update({ status: newStatus }).eq("id", invoiceId);
+    if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
+    await logAudit({ action: "update", entity_type: "invoice", entity_id: invoiceId, details: { invoice_number: invoiceNumber, new_status: newStatus } });
+    toast({ title: `Invoice marked as ${newStatus}` });
     load();
   };
 
@@ -65,7 +73,7 @@ const AdminInvoices = () => {
         <Card className="glass overflow-auto">
           <Table>
             <TableHeader><TableRow>
-              <TableHead>Invoice #</TableHead><TableHead>Amount</TableHead><TableHead>Status</TableHead><TableHead>Due</TableHead><TableHead>Created</TableHead>
+              <TableHead>Invoice #</TableHead><TableHead>Amount</TableHead><TableHead>Status</TableHead><TableHead>Due</TableHead><TableHead>Created</TableHead><TableHead>Actions</TableHead>
             </TableRow></TableHeader>
             <TableBody>
               {invoices.map((i) => (
@@ -75,6 +83,28 @@ const AdminInvoices = () => {
                   <TableCell><Badge className={statusStyle[i.status] || ""}>{i.status}</Badge></TableCell>
                   <TableCell>{i.due_date ? new Date(i.due_date).toLocaleDateString() : "—"}</TableCell>
                   <TableCell>{new Date(i.created_at).toLocaleDateString()}</TableCell>
+                  <TableCell>
+                    <div className="flex gap-1">
+                      {i.status !== "paid" && (
+                        <Button size="sm" variant="ghost" className="text-green-400 hover:text-green-300 hover:bg-green-500/10 text-xs gap-1"
+                          onClick={() => updateStatus(i.id, "paid", i.invoice_number)}>
+                          <CheckCircle size={12} /> Paid
+                        </Button>
+                      )}
+                      {i.status !== "overdue" && i.status !== "paid" && (
+                        <Button size="sm" variant="ghost" className="text-destructive hover:bg-destructive/10 text-xs gap-1"
+                          onClick={() => updateStatus(i.id, "overdue", i.invoice_number)}>
+                          <AlertTriangle size={12} /> Overdue
+                        </Button>
+                      )}
+                      {i.status !== "pending" && i.status !== "paid" && (
+                        <Button size="sm" variant="ghost" className="text-yellow-400 hover:bg-yellow-500/10 text-xs gap-1"
+                          onClick={() => updateStatus(i.id, "pending", i.invoice_number)}>
+                          <Clock size={12} /> Pending
+                        </Button>
+                      )}
+                    </div>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -87,7 +117,23 @@ const AdminInvoices = () => {
           <DialogHeader><DialogTitle>Create Invoice</DialogTitle></DialogHeader>
           <div className="space-y-4">
             <div><Label>Invoice Number</Label><Input value={form.invoice_number} onChange={(e) => setForm((f) => ({ ...f, invoice_number: e.target.value }))} /></div>
-            <div><Label>Amount (NGN)</Label><Input type="number" value={form.amount} onChange={(e) => setForm((f) => ({ ...f, amount: e.target.value }))} /></div>
+            <div className="grid sm:grid-cols-2 gap-3">
+              <div><Label>Currency</Label>
+                <Select value={form.currency} onValueChange={(v) => setForm((f) => ({ ...f, currency: v }))}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="NGN">NGN — Nigerian Naira</SelectItem>
+                    <SelectItem value="KES">KES — Kenyan Shilling</SelectItem>
+                    <SelectItem value="GHS">GHS — Ghanaian Cedi</SelectItem>
+                    <SelectItem value="ZAR">ZAR — South African Rand</SelectItem>
+                    <SelectItem value="USD">USD — US Dollar</SelectItem>
+                    <SelectItem value="EUR">EUR — Euro</SelectItem>
+                    <SelectItem value="GBP">GBP — British Pound</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div><Label>Amount</Label><Input type="number" value={form.amount} onChange={(e) => setForm((f) => ({ ...f, amount: e.target.value }))} /></div>
+            </div>
             <div><Label>Client</Label>
               <Select value={form.user_id} onValueChange={(v) => setForm((f) => ({ ...f, user_id: v }))}>
                 <SelectTrigger><SelectValue placeholder="Select client" /></SelectTrigger>

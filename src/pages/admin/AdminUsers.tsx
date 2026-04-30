@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { logAudit } from "@/lib/audit";
 import { Users } from "lucide-react";
@@ -22,6 +23,7 @@ const AdminUsers = () => {
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [roles, setRoles] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
+  const [pending, setPending] = useState<{ userId: string; newRole: string; oldRole: string; displayName: string | null } | null>(null);
 
   const load = async () => {
     const [pRes, rRes] = await Promise.all([
@@ -37,9 +39,16 @@ const AdminUsers = () => {
 
   useEffect(() => { load(); }, []);
 
-  const changeRole = async (userId: string, newRole: string, displayName: string | null) => {
+  const requestRoleChange = (userId: string, newRole: string, displayName: string | null) => {
     const oldRole = roles[userId] || "client";
     if (oldRole === newRole) return;
+    setPending({ userId, newRole, oldRole, displayName });
+  };
+
+  const confirmRoleChange = async () => {
+    if (!pending) return;
+    const { userId, newRole, oldRole, displayName } = pending;
+    setPending(null);
 
     const { error } = await supabase
       .from("user_roles")
@@ -90,7 +99,7 @@ const AdminUsers = () => {
                   <TableCell><Badge className={roleColor[roles[p.user_id]] || roleColor.client}>{roles[p.user_id] || "client"}</Badge></TableCell>
                   <TableCell>{new Date(p.created_at).toLocaleDateString()}</TableCell>
                   <TableCell>
-                    <Select value={roles[p.user_id] || "client"} onValueChange={(v) => changeRole(p.user_id, v, p.display_name)}>
+                    <Select value={roles[p.user_id] || "client"} onValueChange={(v) => requestRoleChange(p.user_id, v, p.display_name)}>
                       <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
                       <SelectContent>
                         {roleOptions.map((r) => (
@@ -105,6 +114,35 @@ const AdminUsers = () => {
           </Table>
         </Card>
       )}
+
+      <AlertDialog open={!!pending} onOpenChange={() => setPending(null)}>
+        <AlertDialogContent className="glass">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirm Role Change</AlertDialogTitle>
+            <AlertDialogDescription>
+              Change <strong>{pending?.displayName || "this user"}</strong>'s role from{" "}
+              <strong>{pending?.oldRole?.replace(/_/g, " ")}</strong> to{" "}
+              <strong className={pending?.newRole === "super_admin" ? "text-destructive" : ""}>
+                {pending?.newRole?.replace(/_/g, " ")}
+              </strong>?
+              {pending?.newRole === "super_admin" && (
+                <span className="block mt-2 text-destructive font-medium">
+                  Warning: super_admin has unrestricted access to all data and settings.
+                </span>
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmRoleChange}
+              className={pending?.newRole === "super_admin" ? "bg-destructive hover:bg-destructive/90" : ""}
+            >
+              Confirm
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

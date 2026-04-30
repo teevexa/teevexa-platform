@@ -50,13 +50,18 @@ const InsightDetail = () => {
         </div>
       </section>
 
-      <section className="py-16 px-4">
+      <section className="py-16 px-4 bg-white">
         <div className="container mx-auto max-w-3xl">
           {post.cover_image_url && (
             <img src={post.cover_image_url} alt={post.title} className="w-full rounded-2xl mb-8 object-cover max-h-[400px]" />
           )}
-          <div className="prose prose-invert max-w-none text-foreground leading-relaxed whitespace-pre-wrap">
+          <div className="prose prose-slate max-w-none leading-relaxed whitespace-pre-wrap text-slate-700 text-[15px]">
             {post.content}
+          </div>
+          <div className="mt-12 pt-8 border-t border-slate-200 flex items-center justify-between">
+            <Button variant="outline" size="sm" asChild className="border-slate-300 text-slate-700 hover:bg-slate-50">
+              <Link to="/insights"><ArrowLeft size={14} className="mr-1" /> Back to Insights</Link>
+            </Button>
           </div>
         </div>
       </section>

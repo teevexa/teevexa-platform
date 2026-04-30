@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Mail, MapPin, Phone, Linkedin, Twitter, Github, CheckCircle } from "lucide-react";
+import { Mail, MapPin, Phone, Linkedin, Twitter, Instagram, Facebook, CheckCircle, Clock, ExternalLink } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -93,13 +93,32 @@ const Contact = () => {
               <div className="glass rounded-2xl p-6 space-y-4">
                 <h3 className="font-display font-semibold">Follow Us</h3>
                 <div className="flex gap-3">
-                  <a href="#" className="text-muted-foreground hover:text-primary transition-colors" aria-label="LinkedIn"><Linkedin size={20} /></a>
-                  <a href="#" className="text-muted-foreground hover:text-primary transition-colors" aria-label="Twitter"><Twitter size={20} /></a>
-                  <a href="#" className="text-muted-foreground hover:text-primary transition-colors" aria-label="GitHub"><Github size={20} /></a>
+                  <a href="https://www.linkedin.com/company/teevexa" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label="LinkedIn"><Linkedin size={20} /></a>
+                  <a href="https://www.instagram.com/teevexa" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label="Instagram"><Instagram size={20} /></a>
+                  <a href="https://x.com/teevexa" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label="X (Twitter)"><Twitter size={20} /></a>
+                  <a href="https://www.facebook.com/teevexa" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label="Facebook"><Facebook size={20} /></a>
                 </div>
               </div>
-              <div className="glass rounded-2xl p-6 h-48 flex items-center justify-center text-muted-foreground text-sm">
-                <MapPin className="mr-2" size={16} /> Map placeholder
+              <div className="glass rounded-2xl p-6 space-y-4">
+                <h3 className="font-display font-semibold flex items-center gap-2">
+                  <MapPin size={16} className="text-primary" /> Our Location
+                </h3>
+                <div className="space-y-2 text-sm text-muted-foreground">
+                  <p className="font-medium text-foreground">Teevexa Technologies</p>
+                  <p>Nairobi, Kenya</p>
+                  <div className="flex items-center gap-2 text-xs">
+                    <Clock size={12} className="text-primary" />
+                    <span>Mon – Fri, 8:00 AM – 6:00 PM EAT</span>
+                  </div>
+                </div>
+                <a
+                  href="https://maps.google.com/?q=Nairobi,Kenya"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline"
+                >
+                  <ExternalLink size={12} /> Open in Google Maps
+                </a>
               </div>
             </div>
           </div>
