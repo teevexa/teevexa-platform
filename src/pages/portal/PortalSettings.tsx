@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { useBlocker } from "react-router-dom";
 import NotificationPreferences from "@/components/NotificationPreferences";
 
 function passwordStrength(pw: string): { label: string; color: string; width: string } {
@@ -61,11 +60,13 @@ const PortalSettings = () => {
     );
   }, [profile, savedProfile]);
 
-  // Warn before navigating away with unsaved changes
-  useBlocker(() => {
-    if (!isDirty) return false;
-    return !window.confirm("You have unsaved profile changes. Leave without saving?");
-  });
+  // Warn before tab close / refresh with unsaved changes
+  useEffect(() => {
+    if (!isDirty) return;
+    const handler = (e: BeforeUnloadEvent) => { e.preventDefault(); };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [isDirty]);
 
   const saveProfile = async () => {
     if (!user) return;
