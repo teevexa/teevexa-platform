@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -12,17 +13,15 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { logAudit } from "@/lib/audit";
-import { Plus, ListTodo, Pencil, Trash2, Filter } from "lucide-react";
+import { Plus, ListTodo, Pencil, Trash2, Filter, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Task {
   id: string; title: string; description: string | null; status: string;
   priority: string; assigned_to: string | null; created_by: string | null;
-  project_id: string; due_date: string | null; completed_at: string | null;
-  created_at: string;
+  project_id: string; due_date: string | null; completed_at: string | null; created_at: string;
 }
-interface ProjectOption { id: string; title: string; }
-interface UserOption { user_id: string; display_name: string | null; }
 
+const PAGE_SIZE = 25;
 const statusOptions = ["todo", "in-progress", "in-review", "done"];
 const priorityOptions = ["low", "medium", "high", "urgent"];
 
@@ -41,38 +40,52 @@ const priorityColor: Record<string, string> = {
 
 const AdminTasks = () => {
   const { toast } = useToast();
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [projects, setProjects] = useState<ProjectOption[]>([]);
-  const [teamMembers, setTeamMembers] = useState<UserOption[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
   const [showEditor, setShowEditor] = useState(false);
   const [editing, setEditing] = useState<string | null>(null);
-  const [filterProject, setFilterProject] = useState<string>("all");
-  const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [filterProject, setFilterProject] = useState("all");
+  const [filterStatus, setFilterStatus] = useState("all");
+  const [page, setPage] = useState(0);
   const [form, setForm] = useState({
     title: "", description: "", project_id: "", status: "todo",
     priority: "medium", assigned_to: "", due_date: "",
   });
 
-  const load = async () => {
-    const [tRes, pRes, uRes] = await Promise.all([
-      supabase.from("project_tasks").select("*").order("created_at", { ascending: false }),
-      supabase.from("client_projects").select("id, title"),
-      supabase.from("profiles").select("user_id, display_name"),
-    ]);
-    setTasks(tRes.data as Task[] || []);
-    setProjects(pRes.data || []);
-    setTeamMembers(uRes.data || []);
-    setLoading(false);
-  };
+  const { data, isLoading } = useQuery({
+    queryKey: ["admin-tasks"],
+    queryFn: async () => {
+      const [tRes, pRes, uRes] = await Promise.all([
+        supabase.from("project_tasks").select("*").order("created_at", { ascending: false }),
+        supabase.from("client_projects").select("id, title"),
+        supabase.from("profiles").select("user_id, display_name"),
+      ]);
+      return { tasks: (tRes.data as Task[]) || [], projects: pRes.data || [], members: uRes.data || [] };
+    },
+    staleTime: 30_000,
+  });
 
-  useEffect(() => { load(); }, []);
+  const tasks = data?.tasks ?? [];
+  const projects = data?.projects ?? [];
+  const members = data?.members ?? [];
 
-  const userName = (id: string | null) => {
-    if (!id) return "Unassigned";
-    return teamMembers.find((u) => u.user_id === id)?.display_name || id.slice(0, 8);
-  };
+  const refresh = () => { queryClient.invalidateQueries({ queryKey: ["admin-tasks"] }); setPage(0); };
+
+  const userName = (id: string | null) => id ? (members.find((u) => u.user_id === id)?.display_name || id.slice(0, 8)) : "Unassigned";
   const projectName = (id: string) => projects.find((p) => p.id === id)?.title || "—";
+
+  const filtered = tasks.filter((t) => {
+    if (filterProject !== "all" && t.project_id !== filterProject) return false;
+    if (filterStatus !== "all" && t.status !== filterStatus) return false;
+    return true;
+  });
+
+  const paginated = filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+
+  const total = tasks.length;
+  const done = tasks.filter((t) => t.status === "done").length;
+  const inProgress = tasks.filter((t) => t.status === "in-progress").length;
+  const overdue = tasks.filter((t) => t.due_date && new Date(t.due_date) < new Date() && t.status !== "done").length;
 
   const openCreate = () => {
     setEditing(null);
@@ -81,10 +94,7 @@ const AdminTasks = () => {
   };
   const openEdit = (t: Task) => {
     setEditing(t.id);
-    setForm({
-      title: t.title, description: t.description || "", project_id: t.project_id,
-      status: t.status, priority: t.priority, assigned_to: t.assigned_to || "", due_date: t.due_date || "",
-    });
+    setForm({ title: t.title, description: t.description || "", project_id: t.project_id, status: t.status, priority: t.priority, assigned_to: t.assigned_to || "", due_date: t.due_date || "" });
     setShowEditor(true);
   };
 
@@ -94,43 +104,40 @@ const AdminTasks = () => {
     }
     const user = (await supabase.auth.getUser()).data.user;
     const payload = {
-      title: form.title.trim(),
-      description: form.description.trim() || null,
-      project_id: form.project_id,
-      status: form.status,
-      priority: form.priority,
-      assigned_to: form.assigned_to || null,
-      due_date: form.due_date || null,
+      title: form.title.trim(), description: form.description.trim() || null,
+      project_id: form.project_id, status: form.status, priority: form.priority,
+      assigned_to: form.assigned_to || null, due_date: form.due_date || null,
       completed_at: form.status === "done" ? new Date().toISOString() : null,
       ...(editing ? {} : { created_by: user?.id }),
     };
-    const { data, error } = editing
+    const { data: result, error } = editing
       ? await supabase.from("project_tasks").update(payload).eq("id", editing).select("id").single()
       : await supabase.from("project_tasks").insert(payload).select("id").single();
     if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
-    await logAudit({ action: editing ? "update" : "create", entity_type: "task", entity_id: data?.id, details: { title: form.title, project: projectName(form.project_id), assigned_to: userName(form.assigned_to || null) } });
+    await logAudit({ action: editing ? "update" : "create", entity_type: "task", entity_id: result?.id, details: { title: form.title, project: projectName(form.project_id) } });
     toast({ title: editing ? "Task updated" : "Task created" });
-    setShowEditor(false); load();
+    setShowEditor(false);
+    refresh();
   };
 
   const deleteTask = async (id: string, title: string) => {
     if (!confirm("Delete this task?")) return;
     await supabase.from("project_tasks").delete().eq("id", id);
     await logAudit({ action: "delete", entity_type: "task", entity_id: id, details: { title } });
-    toast({ title: "Task deleted" }); load();
+    toast({ title: "Task deleted" });
+    refresh();
   };
 
-  const filtered = tasks.filter((t) => {
-    if (filterProject !== "all" && t.project_id !== filterProject) return false;
-    if (filterStatus !== "all" && t.status !== filterStatus) return false;
-    return true;
-  });
-
-  // Stats
-  const total = tasks.length;
-  const done = tasks.filter((t) => t.status === "done").length;
-  const inProgress = tasks.filter((t) => t.status === "in-progress").length;
-  const overdue = tasks.filter((t) => t.due_date && new Date(t.due_date) < new Date() && t.status !== "done").length;
+  const inlineUpdate = async (taskId: string, field: "status" | "priority", value: string) => {
+    const update: Record<string, unknown> = { [field]: value };
+    if (field === "status" && value === "done") update.completed_at = new Date().toISOString();
+    if (field === "status" && value !== "done") update.completed_at = null;
+    await supabase.from("project_tasks").update(update).eq("id", taskId);
+    queryClient.setQueryData(["admin-tasks"], (old: typeof data) => {
+      if (!old) return old;
+      return { ...old, tasks: old.tasks.map((t) => t.id === taskId ? { ...t, [field]: value } : t) };
+    });
+  };
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -159,74 +166,113 @@ const AdminTasks = () => {
         <div>
           <div className="flex items-center justify-between mb-1">
             <span className="text-xs text-muted-foreground">Overall Completion</span>
-            <span className="text-xs font-medium">{total ? Math.round((done / total) * 100) : 0}%</span>
+            <span className="text-xs font-medium">{Math.round((done / total) * 100)}%</span>
           </div>
-          <Progress value={total ? (done / total) * 100 : 0} className="h-2" />
+          <Progress value={(done / total) * 100} className="h-2" />
         </div>
       )}
 
       {/* Filters */}
       <div className="flex flex-wrap gap-3 items-center">
         <Filter size={16} className="text-muted-foreground" />
-        <Select value={filterProject} onValueChange={setFilterProject}>
+        <Select value={filterProject} onValueChange={(v) => { setFilterProject(v); setPage(0); }}>
           <SelectTrigger className="w-48"><SelectValue placeholder="All projects" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Projects</SelectItem>
             {projects.map((p) => <SelectItem key={p.id} value={p.id}>{p.title}</SelectItem>)}
           </SelectContent>
         </Select>
-        <Select value={filterStatus} onValueChange={setFilterStatus}>
+        <Select value={filterStatus} onValueChange={(v) => { setFilterStatus(v); setPage(0); }}>
           <SelectTrigger className="w-40"><SelectValue placeholder="All statuses" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Statuses</SelectItem>
             {statusOptions.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
           </SelectContent>
         </Select>
+        <span className="text-xs text-muted-foreground ml-auto">{filtered.length} tasks</span>
       </div>
 
-      {loading ? <p className="text-muted-foreground">Loading...</p> : filtered.length === 0 ? (
+      {isLoading ? (
+        <div className="space-y-2">{[...Array(6)].map((_, i) => <div key={i} className="h-12 rounded-lg bg-muted animate-pulse" />)}</div>
+      ) : filtered.length === 0 ? (
         <Card className="glass"><CardContent className="py-12 text-center">
           <ListTodo className="mx-auto text-muted-foreground mb-4" size={48} />
           <p className="text-muted-foreground">No tasks found.</p>
         </CardContent></Card>
       ) : (
-        <Card className="glass overflow-auto">
-          <Table>
-            <TableHeader><TableRow>
-              <TableHead>Task</TableHead><TableHead>Project</TableHead><TableHead>Assigned To</TableHead>
-              <TableHead>Priority</TableHead><TableHead>Status</TableHead><TableHead>Due</TableHead><TableHead></TableHead>
-            </TableRow></TableHeader>
-            <TableBody>
-              {filtered.map((t) => (
-                <TableRow key={t.id}>
-                  <TableCell>
-                    <div>
-                      <p className="font-medium">{t.title}</p>
-                      {t.description && <p className="text-xs text-muted-foreground line-clamp-1">{t.description}</p>}
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-sm">{projectName(t.project_id)}</TableCell>
-                  <TableCell className="text-sm">{userName(t.assigned_to)}</TableCell>
-                  <TableCell><Badge className={priorityColor[t.priority] || ""}>{t.priority}</Badge></TableCell>
-                  <TableCell><Badge className={statusColor[t.status] || ""}>{t.status}</Badge></TableCell>
-                  <TableCell className="text-sm">
-                    {t.due_date ? (
-                      <span className={new Date(t.due_date) < new Date() && t.status !== "done" ? "text-destructive font-medium" : ""}>
-                        {new Date(t.due_date).toLocaleDateString()}
-                      </span>
-                    ) : "—"}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex gap-1">
-                      <Button size="icon" variant="ghost" onClick={() => openEdit(t)}><Pencil size={14} /></Button>
-                      <Button size="icon" variant="ghost" onClick={() => deleteTask(t.id, t.title)} className="text-destructive"><Trash2 size={14} /></Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Card>
+        <>
+          <Card className="glass overflow-auto">
+            <Table>
+              <TableHeader><TableRow>
+                <TableHead>Task</TableHead><TableHead>Project</TableHead><TableHead>Assigned To</TableHead>
+                <TableHead>Priority</TableHead><TableHead>Status</TableHead><TableHead>Due</TableHead><TableHead></TableHead>
+              </TableRow></TableHeader>
+              <TableBody>
+                {paginated.map((t) => (
+                  <TableRow key={t.id}>
+                    <TableCell>
+                      <div>
+                        <p className="font-medium">{t.title}</p>
+                        {t.description && <p className="text-xs text-muted-foreground line-clamp-1">{t.description}</p>}
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-sm">{projectName(t.project_id)}</TableCell>
+                    <TableCell className="text-sm">{userName(t.assigned_to)}</TableCell>
+                    <TableCell>
+                      <Select value={t.priority} onValueChange={(v) => inlineUpdate(t.id, "priority", v)}>
+                        <SelectTrigger className="h-7 border-0 p-0 w-auto shadow-none focus:ring-0">
+                          <Badge className={`${priorityColor[t.priority] || ""} cursor-pointer`}>{t.priority}</Badge>
+                        </SelectTrigger>
+                        <SelectContent>
+                          {priorityOptions.map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}
+                        </SelectContent>
+                      </Select>
+                    </TableCell>
+                    <TableCell>
+                      <Select value={t.status} onValueChange={(v) => inlineUpdate(t.id, "status", v)}>
+                        <SelectTrigger className="h-7 border-0 p-0 w-auto shadow-none focus:ring-0">
+                          <Badge className={`${statusColor[t.status] || ""} cursor-pointer`}>{t.status}</Badge>
+                        </SelectTrigger>
+                        <SelectContent>
+                          {statusOptions.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                        </SelectContent>
+                      </Select>
+                    </TableCell>
+                    <TableCell className="text-sm">
+                      {t.due_date ? (
+                        <span className={new Date(t.due_date) < new Date() && t.status !== "done" ? "text-destructive font-medium" : ""}>
+                          {new Date(t.due_date).toLocaleDateString()}
+                        </span>
+                      ) : "—"}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex gap-1">
+                        <Button size="icon" variant="ghost" onClick={() => openEdit(t)}><Pencil size={14} /></Button>
+                        <Button size="icon" variant="ghost" onClick={() => deleteTask(t.id, t.title)} className="text-destructive"><Trash2 size={14} /></Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Card>
+
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between">
+              <p className="text-sm text-muted-foreground">
+                {page * PAGE_SIZE + 1}–{Math.min((page + 1) * PAGE_SIZE, filtered.length)} of {filtered.length}
+              </p>
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" disabled={page === 0} onClick={() => setPage(page - 1)}>
+                  <ChevronLeft size={16} /> Previous
+                </Button>
+                <Button variant="outline" size="sm" disabled={page >= totalPages - 1} onClick={() => setPage(page + 1)}>
+                  Next <ChevronRight size={16} />
+                </Button>
+              </div>
+            </div>
+          )}
+        </>
       )}
 
       <Dialog open={showEditor} onOpenChange={setShowEditor}>
@@ -245,7 +291,7 @@ const AdminTasks = () => {
               <div><Label>Assign To</Label>
                 <Select value={form.assigned_to} onValueChange={(v) => setForm((f) => ({ ...f, assigned_to: v }))}>
                   <SelectTrigger><SelectValue placeholder="Unassigned" /></SelectTrigger>
-                  <SelectContent>{teamMembers.map((u) => <SelectItem key={u.user_id} value={u.user_id}>{u.display_name || u.user_id.slice(0, 8)}</SelectItem>)}</SelectContent>
+                  <SelectContent>{members.map((u) => <SelectItem key={u.user_id} value={u.user_id}>{u.display_name || u.user_id.slice(0, 8)}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
             </div>

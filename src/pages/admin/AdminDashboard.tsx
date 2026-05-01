@@ -1,12 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Target, FolderKanban, Receipt, CalendarDays, Users, TrendingUp, CheckCircle, Clock, AlertTriangle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Target, FolderKanban, Receipt, CalendarDays, Users, TrendingUp, CheckCircle, Clock, AlertTriangle, Plus, ListTodo } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
-  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, LineChart, Line, Legend, AreaChart, Area,
+  AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer,
+  PieChart, Pie, Cell, LineChart, Line, Legend,
 } from "recharts";
 
 const COLORS = {
@@ -18,59 +21,82 @@ const COLORS = {
   muted: "hsl(var(--muted-foreground))",
 };
 
+const STATUS_PIE_COLORS: Record<string, string> = {
+  planning: COLORS.muted, "in-progress": COLORS.primary, review: COLORS.accent, completed: COLORS.green,
+};
+const TASK_PIE_COLORS: Record<string, string> = {
+  todo: COLORS.muted, "in-progress": COLORS.yellow, done: COLORS.green,
+};
+
+const chartTooltipStyle = {
+  backgroundColor: "hsl(var(--card))",
+  border: "1px solid hsl(var(--border))",
+  borderRadius: 8,
+  fontSize: 12,
+};
+
 const AdminDashboard = () => {
   const { role } = useAuth();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const isFullAdmin = role === "super_admin" || role === "admin";
   const isPM = role === "project_manager";
 
-  const [stats, setStats] = useState({ leads: 0, projects: 0, invoices: 0, consultations: 0, users: 0, revenue: 0 });
-  const [projectStatusData, setProjectStatusData] = useState<{ name: string; value: number }[]>([]);
-  const [revenueData, setRevenueData] = useState<{ month: string; revenue: number }[]>([]);
-  const [leadTrend, setLeadTrend] = useState<{ month: string; leads: number; consultations: number }[]>([]);
-  const [taskStats, setTaskStats] = useState<{ name: string; value: number }[]>([]);
-  const [recentLeads, setRecentLeads] = useState<{ id: string; full_name: string; project_type: string; created_at: string }[]>([]);
-  const [overdueItems, setOverdueItems] = useState<{ tasks: number; milestones: number; invoices: number }>({ tasks: 0, milestones: 0, invoices: 0 });
+  const { data, isLoading } = useQuery({
+    queryKey: ["admin-dashboard", role],
+    enabled: !!role,
+    staleTime: 60_000,
+    queryFn: async () => {
+      const today = new Date().toISOString().split("T")[0];
 
-  useEffect(() => {
-    if (!role) return;
-    const load = async () => {
-      // Basic counts
-      const projectsRes = await supabase.from("client_projects").select("id, status, progress", { count: "exact" });
-      let leads = 0, consultations = 0, users = 0, invoices = 0, revenue = 0;
+      const projectsRes = await supabase.from("client_projects").select("id, status, progress");
+      const tasksRes = await supabase.from("project_tasks").select("status, due_date");
+      const milestonesRes = await supabase.from("project_milestones").select("status, due_date").neq("status", "completed");
+
+      let leads = 0, consultations = 0, users = 0, invoices = 0;
+      let revenueByKES = 0, revenueByUSD = 0;
+      let revenueData: { month: string; revenue: number }[] = [];
+      let leadTrend: { month: string; leads: number; consultations: number }[] = [];
+      let recentLeads: { id: string; full_name: string; project_type: string; created_at: string }[] = [];
+      let overdueInvoices = 0;
 
       if (isFullAdmin || isPM) {
         const [leadsRes, consultsRes, invoicesRes, paidInvoices, leadsAll, consultsAll, recentLeadsRes] = await Promise.all([
           supabase.from("project_inquiries").select("id", { count: "exact", head: true }),
           supabase.from("consultation_bookings").select("id", { count: "exact", head: true }),
-          supabase.from("invoices").select("id, status, amount, due_date", { count: "exact" }),
-          supabase.from("invoices").select("amount, paid_at").eq("status", "paid"),
+          supabase.from("invoices").select("id, status, amount, currency, due_date", { count: "exact" }),
+          supabase.from("invoices").select("amount, currency, paid_at").eq("status", "paid"),
           supabase.from("project_inquiries").select("created_at"),
           supabase.from("consultation_bookings").select("created_at"),
           supabase.from("project_inquiries").select("id, full_name, project_type, created_at").order("created_at", { ascending: false }).limit(5),
         ]);
+
         leads = leadsRes.count || 0;
         consultations = consultsRes.count || 0;
         invoices = invoicesRes.count || 0;
-        revenue = (paidInvoices.data || []).reduce((sum, i) => sum + Number(i.amount), 0);
 
-        // Overdue invoices
-        const now = new Date().toISOString().split("T")[0];
-        const overdueInvoices = (invoicesRes.data || []).filter(
-          (i) => i.status !== "paid" && i.due_date && i.due_date < now
+        // Revenue separated by currency — no cross-currency summing
+        (paidInvoices.data || []).forEach((inv) => {
+          const amt = Number(inv.amount);
+          if ((inv.currency || "KES").toUpperCase() === "USD") revenueByUSD += amt;
+          else revenueByKES += amt;
+        });
+
+        overdueInvoices = (invoicesRes.data || []).filter(
+          (i) => i.status !== "paid" && i.due_date && i.due_date < today
         ).length;
 
-        // Revenue by month (last 6 months)
+        // Revenue trend by month (KES only for chart simplicity)
         const monthlyRev: Record<string, number> = {};
         (paidInvoices.data || []).forEach((inv) => {
-          if (inv.paid_at) {
+          if (inv.paid_at && (inv.currency || "KES").toUpperCase() === "KES") {
             const m = new Date(inv.paid_at).toLocaleDateString("en-US", { month: "short", year: "2-digit" });
             monthlyRev[m] = (monthlyRev[m] || 0) + Number(inv.amount);
           }
         });
-        const revArr = Object.entries(monthlyRev).map(([month, rev]) => ({ month, revenue: rev }));
-        setRevenueData(revArr.slice(-6));
+        revenueData = Object.entries(monthlyRev).map(([month, revenue]) => ({ month, revenue })).slice(-6);
 
-        // Lead trend by month
+        // Lead trend
         const leadMonths: Record<string, { leads: number; consultations: number }> = {};
         (leadsAll.data || []).forEach((l) => {
           const m = new Date(l.created_at).toLocaleDateString("en-US", { month: "short", year: "2-digit" });
@@ -82,9 +108,8 @@ const AdminDashboard = () => {
           if (!leadMonths[m]) leadMonths[m] = { leads: 0, consultations: 0 };
           leadMonths[m].consultations++;
         });
-        setLeadTrend(Object.entries(leadMonths).map(([month, d]) => ({ month, ...d })).slice(-6));
-        setRecentLeads(recentLeadsRes.data || []);
-        setOverdueItems((prev) => ({ ...prev, invoices: overdueInvoices }));
+        leadTrend = Object.entries(leadMonths).map(([month, d]) => ({ month, ...d })).slice(-6);
+        recentLeads = recentLeadsRes.data || [];
       }
 
       if (isFullAdmin) {
@@ -92,75 +117,95 @@ const AdminDashboard = () => {
         users = usersRes.count || 0;
       }
 
-      // Project status distribution
       const statusCounts: Record<string, number> = {};
-      (projectsRes.data || []).forEach((p) => {
-        statusCounts[p.status] = (statusCounts[p.status] || 0) + 1;
-      });
-      setProjectStatusData(Object.entries(statusCounts).map(([name, value]) => ({ name, value })));
+      (projectsRes.data || []).forEach((p) => { statusCounts[p.status] = (statusCounts[p.status] || 0) + 1; });
+      const projectStatusData = Object.entries(statusCounts).map(([name, value]) => ({ name, value }));
 
-      // Task stats
-      const tasksRes = await supabase.from("project_tasks").select("status, due_date");
       const tCounts: Record<string, number> = {};
       let overdueTasks = 0;
-      const today = new Date().toISOString().split("T")[0];
       (tasksRes.data || []).forEach((t) => {
         tCounts[t.status] = (tCounts[t.status] || 0) + 1;
         if (t.status !== "done" && t.due_date && t.due_date < today) overdueTasks++;
       });
-      setTaskStats(Object.entries(tCounts).map(([name, value]) => ({ name, value })));
+      const taskStats = Object.entries(tCounts).map(([name, value]) => ({ name, value }));
+      const overdueMilestones = (milestonesRes.data || []).filter((m) => m.due_date && m.due_date < today).length;
 
-      // Overdue milestones
-      const milestonesRes = await supabase.from("project_milestones").select("status, due_date").neq("status", "completed");
-      const overdueMilestones = (milestonesRes.data || []).filter(
-        (m) => m.due_date && m.due_date < today
-      ).length;
+      return {
+        stats: { leads, projects: projectsRes.count || 0, invoices, consultations, users, revenueByKES, revenueByUSD },
+        projectStatusData, revenueData, leadTrend, taskStats, recentLeads,
+        overdueItems: { tasks: overdueTasks, milestones: overdueMilestones, invoices: overdueInvoices },
+      };
+    },
+  });
 
-      setOverdueItems((prev) => ({ ...prev, tasks: overdueTasks, milestones: overdueMilestones }));
+  // Real-time: invalidate on new leads, milestones, invoices
+  useEffect(() => {
+    const channel = supabase
+      .channel("admin-dashboard-rt")
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "project_inquiries" }, () =>
+        queryClient.invalidateQueries({ queryKey: ["admin-dashboard"] }))
+      .on("postgres_changes", { event: "*", schema: "public", table: "invoices" }, () =>
+        queryClient.invalidateQueries({ queryKey: ["admin-dashboard"] }))
+      .on("postgres_changes", { event: "*", schema: "public", table: "project_milestones" }, () =>
+        queryClient.invalidateQueries({ queryKey: ["admin-dashboard"] }))
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [queryClient]);
 
-      setStats({ leads, projects: projectsRes.count || 0, invoices, consultations, users, revenue });
-    };
-    load();
-  }, [role, isFullAdmin, isPM]);
-
-  const STATUS_PIE_COLORS: Record<string, string> = {
-    planning: COLORS.muted,
-    "in-progress": COLORS.primary,
-    review: COLORS.accent,
-    completed: COLORS.green,
-  };
-
-  const TASK_PIE_COLORS: Record<string, string> = {
-    todo: COLORS.muted,
-    "in-progress": COLORS.yellow,
-    done: COLORS.green,
-  };
+  const { stats, projectStatusData = [], revenueData = [], leadTrend = [], taskStats = [], recentLeads = [], overdueItems = { tasks: 0, milestones: 0, invoices: 0 } } = data || {};
 
   const statWidgets = [
-    ...(isFullAdmin || isPM ? [{ label: "Total Leads", value: stats.leads, icon: Target, color: "text-primary" }] : []),
-    { label: "Active Projects", value: stats.projects, icon: FolderKanban, color: "text-accent" },
+    ...(isFullAdmin || isPM ? [{ label: "Total Leads", value: stats?.leads ?? "—", icon: Target, color: "text-primary" }] : []),
+    { label: "Active Projects", value: stats?.projects ?? "—", icon: FolderKanban, color: "text-accent" },
     ...(isFullAdmin || isPM ? [
-      { label: "Revenue (NGN)", value: `₦${stats.revenue.toLocaleString()}`, icon: TrendingUp, color: "text-green-400" },
-      { label: "Consultations", value: stats.consultations, icon: CalendarDays, color: "text-primary" },
-      { label: "Invoices", value: stats.invoices, icon: Receipt, color: "text-accent" },
+      { label: "Revenue (KES)", value: stats ? `KSh ${stats.revenueByKES.toLocaleString()}` : "—", icon: TrendingUp, color: "text-green-400" },
+      ...(stats?.revenueByUSD ? [{ label: "Revenue (USD)", value: `$${stats.revenueByUSD.toLocaleString()}`, icon: TrendingUp, color: "text-emerald-400" }] : []),
+      { label: "Consultations", value: stats?.consultations ?? "—", icon: CalendarDays, color: "text-primary" },
+      { label: "Invoices", value: stats?.invoices ?? "—", icon: Receipt, color: "text-accent" },
     ] : []),
-    ...(isFullAdmin ? [{ label: "Users", value: stats.users, icon: Users, color: "text-primary" }] : []),
+    ...(isFullAdmin ? [{ label: "Users", value: stats?.users ?? "—", icon: Users, color: "text-primary" }] : []),
   ];
 
-  const chartTooltipStyle = {
-    backgroundColor: "hsl(var(--card))",
-    border: "1px solid hsl(var(--border))",
-    borderRadius: 8,
-    fontSize: 12,
-  };
+  const Skeleton = () => (
+    <div className="space-y-8 animate-fade-in">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {[...Array(4)].map((_, i) => <div key={i} className="h-28 rounded-xl bg-muted animate-pulse" />)}
+      </div>
+      <div className="grid lg:grid-cols-2 gap-6">
+        {[...Array(2)].map((_, i) => <div key={i} className="h-64 rounded-xl bg-muted animate-pulse" />)}
+      </div>
+    </div>
+  );
+
+  if (isLoading) return <Skeleton />;
 
   return (
     <div className="space-y-8 animate-fade-in">
-      <div>
-        <h1 className="font-display font-bold text-2xl">
-          {role === "developer" ? "Developer Dashboard" : role === "project_manager" ? "PM Dashboard" : "Admin Dashboard"}
-        </h1>
-        <p className="text-sm text-muted-foreground mt-1 capitalize">{role?.replace("_", " ")} view</p>
+      <div className="flex items-start justify-between flex-wrap gap-4">
+        <div>
+          <h1 className="font-display font-bold text-2xl">
+            {role === "developer" ? "Developer Dashboard" : role === "project_manager" ? "PM Dashboard" : "Admin Dashboard"}
+          </h1>
+          <p className="text-sm text-muted-foreground mt-1 capitalize">{role?.replace("_", " ")} view</p>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="flex flex-wrap gap-2">
+          <Button size="sm" variant="outline" onClick={() => navigate("/admin/tasks")} className="gap-1.5">
+            <Plus size={14} /> New Task
+          </Button>
+          {(isFullAdmin || isPM) && (
+            <Button size="sm" variant="outline" onClick={() => navigate("/admin/invoices")} className="gap-1.5">
+              <Receipt size={14} /> New Invoice
+            </Button>
+          )}
+          <Button size="sm" variant="outline" onClick={() => navigate("/admin/projects")} className="gap-1.5">
+            <FolderKanban size={14} /> New Project
+          </Button>
+          <Button size="sm" variant="outline" onClick={() => navigate("/admin/time-tracking")} className="gap-1.5">
+            <Clock size={14} /> Log Time
+          </Button>
+        </div>
       </div>
 
       {/* Stat Cards */}
@@ -180,28 +225,34 @@ const AdminDashboard = () => {
       {(overdueItems.tasks > 0 || overdueItems.milestones > 0 || overdueItems.invoices > 0) && (
         <div className="flex flex-wrap gap-3">
           {overdueItems.tasks > 0 && (
-            <Badge variant="outline" className="gap-1.5 border-red-500/30 text-red-400 py-1.5 px-3">
-              <AlertTriangle size={14} /> {overdueItems.tasks} Overdue Tasks
-            </Badge>
+            <button onClick={() => navigate("/admin/tasks")} className="focus:outline-none">
+              <Badge variant="outline" className="gap-1.5 border-red-500/30 text-red-400 py-1.5 px-3 hover:bg-red-500/10 cursor-pointer transition-colors">
+                <AlertTriangle size={14} /> {overdueItems.tasks} Overdue Tasks
+              </Badge>
+            </button>
           )}
           {overdueItems.milestones > 0 && (
-            <Badge variant="outline" className="gap-1.5 border-yellow-500/30 text-yellow-400 py-1.5 px-3">
-              <Clock size={14} /> {overdueItems.milestones} Overdue Milestones
-            </Badge>
+            <button onClick={() => navigate("/admin/milestones")} className="focus:outline-none">
+              <Badge variant="outline" className="gap-1.5 border-yellow-500/30 text-yellow-400 py-1.5 px-3 hover:bg-yellow-500/10 cursor-pointer transition-colors">
+                <Clock size={14} /> {overdueItems.milestones} Overdue Milestones
+              </Badge>
+            </button>
           )}
           {overdueItems.invoices > 0 && (
-            <Badge variant="outline" className="gap-1.5 border-red-500/30 text-red-400 py-1.5 px-3">
-              <Receipt size={14} /> {overdueItems.invoices} Overdue Invoices
-            </Badge>
+            <button onClick={() => navigate("/admin/invoices")} className="focus:outline-none">
+              <Badge variant="outline" className="gap-1.5 border-red-500/30 text-red-400 py-1.5 px-3 hover:bg-red-500/10 cursor-pointer transition-colors">
+                <Receipt size={14} /> {overdueItems.invoices} Overdue Invoices
+              </Badge>
+            </button>
           )}
         </div>
       )}
 
-      {/* Charts Row 1: Revenue + Lead Trends */}
+      {/* Charts Row 1 */}
       {(isFullAdmin || isPM) && (
         <div className="grid lg:grid-cols-2 gap-6">
           <Card className="glass">
-            <CardHeader><CardTitle className="text-lg">Revenue Trend</CardTitle></CardHeader>
+            <CardHeader><CardTitle className="text-lg">Revenue Trend (KES)</CardTitle></CardHeader>
             <CardContent>
               {revenueData.length === 0 ? (
                 <p className="text-sm text-muted-foreground text-center py-8">No revenue data yet</p>
@@ -209,8 +260,8 @@ const AdminDashboard = () => {
                 <ResponsiveContainer width="100%" height={240}>
                   <AreaChart data={revenueData}>
                     <XAxis dataKey="month" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
-                    <YAxis tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} tickFormatter={(v) => `₦${(v / 1000).toFixed(0)}k`} />
-                    <Tooltip contentStyle={chartTooltipStyle} formatter={(v: number) => [`₦${v.toLocaleString()}`, "Revenue"]} />
+                    <YAxis tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} tickFormatter={(v) => `KSh ${(v / 1000).toFixed(0)}k`} />
+                    <Tooltip contentStyle={chartTooltipStyle} formatter={(v: number) => [`KSh ${v.toLocaleString()}`, "Revenue"]} />
                     <defs>
                       <linearGradient id="revGrad" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor={COLORS.green} stopOpacity={0.3} />
@@ -246,7 +297,7 @@ const AdminDashboard = () => {
         </div>
       )}
 
-      {/* Charts Row 2: Project Status + Task Distribution */}
+      {/* Charts Row 2 */}
       <div className="grid lg:grid-cols-3 gap-6">
         <Card className="glass">
           <CardHeader><CardTitle className="text-lg">Project Status</CardTitle></CardHeader>
@@ -290,10 +341,14 @@ const AdminDashboard = () => {
           </CardContent>
         </Card>
 
-        {/* Recent Leads */}
         {(isFullAdmin || isPM) && (
           <Card className="glass">
-            <CardHeader><CardTitle className="text-lg">Recent Leads</CardTitle></CardHeader>
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center justify-between">
+                Recent Leads
+                <Button variant="ghost" size="sm" className="text-xs h-7" onClick={() => navigate("/admin/leads")}>View all</Button>
+              </CardTitle>
+            </CardHeader>
             <CardContent className="space-y-3">
               {recentLeads.length === 0 ? (
                 <p className="text-sm text-muted-foreground">No leads yet</p>

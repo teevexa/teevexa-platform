@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -13,11 +14,10 @@ import { logAudit } from "@/lib/audit";
 
 interface Ticket {
   id: string; user_id: string; subject: string; description: string; category: string;
-  priority: string; status: string; created_at: string; user_email?: string;
+  priority: string; status: string; created_at: string; assigned_to: string | null;
+  user_email?: string;
 }
-interface Reply {
-  id: string; content: string; sender_id: string; created_at: string;
-}
+interface Reply { id: string; content: string; sender_id: string; created_at: string; }
 
 const statusColor: Record<string, string> = {
   open: "bg-accent/20 text-accent",
@@ -25,34 +25,56 @@ const statusColor: Record<string, string> = {
   resolved: "bg-green-500/20 text-green-400",
   closed: "bg-muted text-muted-foreground",
 };
+const priorityColor: Record<string, string> = {
+  low: "bg-muted text-muted-foreground",
+  medium: "bg-yellow-500/20 text-yellow-400",
+  high: "bg-orange-500/20 text-orange-400",
+  urgent: "bg-destructive/20 text-destructive",
+};
 
 const AdminSupportTickets = () => {
   const { toast } = useToast();
-  const [tickets, setTickets] = useState<Ticket[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
   const [selected, setSelected] = useState<Ticket | null>(null);
   const [replies, setReplies] = useState<Reply[]>([]);
   const [newReply, setNewReply] = useState("");
-  const [userId, setUserId] = useState("");
   const [filter, setFilter] = useState("all");
 
-  useEffect(() => {
-    const load = async () => {
+  const { data, isLoading } = useQuery({
+    queryKey: ["admin-tickets"],
+    queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (user) setUserId(user.id);
+      const [ticketsData, profiles, staffData] = await Promise.all([
+        supabase.from("support_tickets").select("*").order("created_at", { ascending: false }),
+        supabase.from("profiles").select("user_id, display_name"),
+        supabase.from("user_roles").select("user_id, role").neq("role", "client"),
+      ]);
+      const staffIds = (staffData.data || []).map((r) => r.user_id);
+      const staffProfiles = (profiles.data || []).filter((p) => staffIds.includes(p.user_id));
 
-      const { data: ticketsData } = await supabase.from("support_tickets").select("*").order("created_at", { ascending: false });
-      const { data: profiles } = await supabase.from("profiles").select("user_id, display_name");
-
-      const enriched = (ticketsData || []).map((t) => ({
+      const enriched: Ticket[] = (ticketsData.data || []).map((t) => ({
         ...t,
-        user_email: profiles?.find((p) => p.user_id === t.user_id)?.display_name || "Unknown",
+        user_email: profiles.data?.find((p) => p.user_id === t.user_id)?.display_name || "Unknown",
       }));
-      setTickets(enriched);
-      setLoading(false);
-    };
-    load();
-  }, []);
+      return { tickets: enriched, userId: user?.id, staffProfiles };
+    },
+    staleTime: 30_000,
+  });
+
+  const tickets = data?.tickets ?? [];
+  const userId = data?.userId;
+  const staffProfiles = data?.staffProfiles ?? [];
+
+  // Real-time reply subscription for selected ticket
+  useEffect(() => {
+    if (!selected) return;
+    const channel = supabase
+      .channel(`ticket-replies-${selected.id}`)
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "ticket_replies", filter: `ticket_id=eq.${selected.id}` },
+        (payload) => setReplies((prev) => [...prev, payload.new as Reply]))
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [selected?.id]);
 
   const openTicket = async (ticket: Ticket) => {
     setSelected(ticket);
@@ -61,7 +83,7 @@ const AdminSupportTickets = () => {
   };
 
   const sendReply = async () => {
-    if (!newReply.trim() || !selected) return;
+    if (!newReply.trim() || !selected || !userId) return;
     const { data } = await supabase.from("ticket_replies").insert({
       ticket_id: selected.id, sender_id: userId, content: newReply.trim(),
     }).select().single();
@@ -69,20 +91,23 @@ const AdminSupportTickets = () => {
     setNewReply("");
   };
 
-  const updateStatus = async (ticketId: string, newStatus: string) => {
-    await supabase.from("support_tickets").update({
-      status: newStatus,
-      ...(newStatus === "closed" ? { closed_at: new Date().toISOString() } : {}),
-    }).eq("id", ticketId);
-    setTickets((prev) => prev.map((t) => t.id === ticketId ? { ...t, status: newStatus } : t));
-    if (selected?.id === ticketId) setSelected({ ...selected, status: newStatus });
-    await logAudit({ action: "update_status", entity_type: "support_ticket", entity_id: ticketId, details: { new_status: newStatus } });
-    toast({ title: `Ticket ${newStatus}` });
+  const updateTicketField = async (ticketId: string, field: "status" | "priority" | "assigned_to", value: string | null) => {
+    const update: Record<string, unknown> = { [field]: value };
+    if (field === "status" && value === "closed") update.closed_at = new Date().toISOString();
+    await supabase.from("support_tickets").update(update).eq("id", ticketId);
+    queryClient.setQueryData(["admin-tickets"], (old: typeof data) => {
+      if (!old) return old;
+      return { ...old, tickets: old.tickets.map((t) => t.id === ticketId ? { ...t, [field]: value } : t) };
+    });
+    if (selected?.id === ticketId) setSelected((prev) => prev ? { ...prev, [field]: value } : prev);
+    if (field === "status") {
+      await logAudit({ action: "update_status", entity_type: "support_ticket", entity_id: ticketId, details: { new_status: value } });
+      toast({ title: `Ticket ${value}` });
+    }
   };
 
   const filtered = filter === "all" ? tickets : tickets.filter((t) => t.status === filter);
-
-  if (loading) return <div className="animate-pulse-glow text-primary p-8">Loading...</div>;
+  const staffName = (id: string | null) => id ? (staffProfiles.find((p) => p.user_id === id)?.display_name || id.slice(0, 8)) : "Unassigned";
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -103,7 +128,9 @@ const AdminSupportTickets = () => {
         </div>
       </div>
 
-      {filtered.length === 0 ? (
+      {isLoading ? (
+        <div className="space-y-2">{[...Array(5)].map((_, i) => <div key={i} className="h-12 rounded-lg bg-muted animate-pulse" />)}</div>
+      ) : filtered.length === 0 ? (
         <Card className="glass">
           <CardContent className="py-12 text-center">
             <LifeBuoy className="mx-auto text-muted-foreground mb-4" size={48} />
@@ -116,7 +143,8 @@ const AdminSupportTickets = () => {
             <TableHeader>
               <TableRow>
                 <TableHead>Client</TableHead><TableHead>Subject</TableHead><TableHead>Category</TableHead>
-                <TableHead>Priority</TableHead><TableHead>Status</TableHead><TableHead>Date</TableHead><TableHead></TableHead>
+                <TableHead>Priority</TableHead><TableHead>Status</TableHead><TableHead>Assigned</TableHead>
+                <TableHead>Date</TableHead><TableHead></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -125,8 +153,9 @@ const AdminSupportTickets = () => {
                   <TableCell className="font-medium">{t.user_email}</TableCell>
                   <TableCell>{t.subject}</TableCell>
                   <TableCell><Badge variant="outline">{t.category}</Badge></TableCell>
-                  <TableCell><Badge variant="outline">{t.priority}</Badge></TableCell>
+                  <TableCell><Badge className={priorityColor[t.priority] || ""}>{t.priority}</Badge></TableCell>
                   <TableCell><Badge className={statusColor[t.status] || ""}>{t.status}</Badge></TableCell>
+                  <TableCell className="text-sm text-muted-foreground">{staffName(t.assigned_to)}</TableCell>
                   <TableCell className="text-xs">{new Date(t.created_at).toLocaleDateString()}</TableCell>
                   <TableCell><Button size="icon" variant="ghost"><MessageSquare size={16} /></Button></TableCell>
                 </TableRow>
@@ -137,12 +166,14 @@ const AdminSupportTickets = () => {
       )}
 
       <Dialog open={!!selected} onOpenChange={() => setSelected(null)}>
-        <DialogContent className="glass max-w-lg max-h-[80vh] flex flex-col">
+        <DialogContent className="glass max-w-lg max-h-[85vh] flex flex-col">
           <DialogHeader>
             <DialogTitle>{selected?.subject}</DialogTitle>
-            <div className="flex gap-2 mt-1">
+            <div className="flex flex-wrap gap-2 mt-2">
               <Badge variant="outline">{selected?.category}</Badge>
-              <Select value={selected?.status || "open"} onValueChange={(v) => selected && updateStatus(selected.id, v)}>
+
+              {/* Status */}
+              <Select value={selected?.status || "open"} onValueChange={(v) => selected && updateTicketField(selected.id, "status", v)}>
                 <SelectTrigger className="w-32 h-7 text-xs"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="open">Open</SelectItem>
@@ -151,11 +182,36 @@ const AdminSupportTickets = () => {
                   <SelectItem value="closed">Closed</SelectItem>
                 </SelectContent>
               </Select>
+
+              {/* Priority */}
+              <Select value={selected?.priority || "medium"} onValueChange={(v) => selected && updateTicketField(selected.id, "priority", v)}>
+                <SelectTrigger className="w-28 h-7 text-xs"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="low">Low</SelectItem>
+                  <SelectItem value="medium">Medium</SelectItem>
+                  <SelectItem value="high">High</SelectItem>
+                  <SelectItem value="urgent">Urgent</SelectItem>
+                </SelectContent>
+              </Select>
+
+              {/* Assign To */}
+              <Select
+                value={selected?.assigned_to || "unassigned"}
+                onValueChange={(v) => selected && updateTicketField(selected.id, "assigned_to", v === "unassigned" ? null : v)}
+              >
+                <SelectTrigger className="w-36 h-7 text-xs"><SelectValue placeholder="Assign to…" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="unassigned">Unassigned</SelectItem>
+                  {staffProfiles.map((p) => <SelectItem key={p.user_id} value={p.user_id}>{p.display_name || p.user_id.slice(0, 8)}</SelectItem>)}
+                </SelectContent>
+              </Select>
             </div>
           </DialogHeader>
+
           <p className="text-sm text-muted-foreground">From: {selected?.user_email}</p>
           <p className="text-sm">{selected?.description}</p>
-          <div className="flex-1 overflow-auto space-y-3 border-t border-border pt-3 min-h-[200px]">
+
+          <div className="flex-1 overflow-auto space-y-3 border-t border-border pt-3 min-h-[160px]">
             {replies.length === 0 ? (
               <p className="text-xs text-muted-foreground text-center py-8">No replies yet</p>
             ) : replies.map((r) => (
@@ -166,7 +222,7 @@ const AdminSupportTickets = () => {
             ))}
           </div>
           <div className="border-t border-border pt-3 flex gap-2">
-            <Input value={newReply} onChange={(e) => setNewReply(e.target.value)} placeholder="Reply to client..." onKeyDown={(e) => e.key === "Enter" && sendReply()} />
+            <Input value={newReply} onChange={(e) => setNewReply(e.target.value)} placeholder="Reply to client…" onKeyDown={(e) => e.key === "Enter" && sendReply()} />
             <Button onClick={sendReply} size="icon"><Send size={16} /></Button>
           </div>
         </DialogContent>

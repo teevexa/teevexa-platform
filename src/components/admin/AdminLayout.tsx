@@ -1,4 +1,5 @@
 import { useNavigate, Outlet, Link, useLocation } from "react-router-dom";
+import { ArrowUpLeft } from "lucide-react";
 import logo from "@/assets/teevexa-logo.jpeg";
 import { useAuth, AppRole } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,7 +9,7 @@ import NotificationCenter from "@/components/NotificationCenter";
 import {
   LayoutDashboard, Users, FolderKanban, Milestone, Receipt, MessageSquare,
   FileText, Briefcase, Image, Clock, ScrollText, Settings, LogOut, Menu, X,
-  Target, CalendarDays, ListTodo, Columns3, FileCheck, LifeBuoy
+  Target, CalendarDays, ListTodo, Columns3, FileCheck, LifeBuoy,
 } from "lucide-react";
 
 const navSections = [
@@ -118,10 +119,17 @@ const AdminLayout = () => {
             ))}
           </nav>
 
-          <div className="border-t border-sidebar-border pt-4 space-y-2">
+          <div className="border-t border-sidebar-border pt-4 space-y-1">
             <p className="text-xs text-muted-foreground truncate px-3">{user.email}</p>
-            <p className="text-[10px] text-muted-foreground/60 px-3 capitalize">{role.replace("_", " ")}</p>
-            <Button variant="ghost" size="sm" onClick={logout} className="w-full justify-start gap-2">
+            <p className="text-[10px] text-muted-foreground/60 px-3 capitalize mb-2">{role.replace("_", " ")}</p>
+            <Link
+              to="/"
+              className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-sidebar-accent/50 transition-colors"
+            >
+              <ArrowUpLeft size={16} />
+              Back to website
+            </Link>
+            <Button variant="ghost" size="sm" onClick={logout} className="w-full justify-start gap-2 text-muted-foreground hover:text-foreground">
               <LogOut size={16} /> Sign Out
             </Button>
           </div>
