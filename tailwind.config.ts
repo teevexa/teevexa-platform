@@ -14,8 +14,10 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["Plus Jakarta Sans", "system-ui", "sans-serif"],
-        display: ["Sora", "Plus Jakarta Sans", "system-ui", "sans-serif"],
+        /* Inter for all UI text — the gold standard for SaaS */
+        sans: ["Inter", "system-ui", "sans-serif"],
+        /* Sora for display / hero headings */
+        display: ["Sora", "Inter", "system-ui", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -61,17 +63,14 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
-        teal: {
-          deep: "hsl(195 53% 13%)",
-        },
-        cyan: {
-          brand: "hsl(195 73% 45%)",
-        },
-        electric: {
-          blue: "hsl(195 80% 53%)",
-        },
-        steel: {
-          blue: "hsl(195 40% 55%)",
+        /* Brand palette literals — for use when CSS vars can't be applied */
+        brand: {
+          teal:       "hsl(186 100% 44%)",
+          "teal-dim": "hsl(186 90% 36%)",
+          amber:      "hsl(38 92% 50%)",
+          "amber-dim":"hsl(38 92% 44%)",
+          navy:       "hsl(222 47% 6%)",
+          "navy-mid": "hsl(222 47% 9%)",
         },
       },
       borderRadius: {

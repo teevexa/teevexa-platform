@@ -184,7 +184,7 @@ const CookiePolicy = () => (
       <p>If you have questions about our use of cookies or this Cookie Policy, please reach out:</p>
       <LegalContactBox>
         <p className="font-semibold text-foreground">TEEVEXA — Privacy Team</p>
-        <p>Email: <span className="text-primary font-medium">privacy@teevexa.com</span></p>
+        <p>Email: <span className="text-primary font-medium">info@teevexa.com</span></p>
         <p>Phone: <span className="text-foreground/70">+254 783 797 132</span></p>
         <p>Address: <span className="text-foreground/70">Nairobi, Kenya</span></p>
       </LegalContactBox>

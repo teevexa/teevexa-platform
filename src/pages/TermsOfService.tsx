@@ -272,7 +272,7 @@ const TermsOfService = () => (
       <p>For legal inquiries, notices, or questions about these Terms, please contact us at:</p>
       <LegalContactBox>
         <p className="font-semibold text-foreground">TEEVEXA — Legal Department</p>
-        <p>Email: <span className="text-primary font-medium">legal@teevexa.com</span></p>
+        <p>Email: <span className="text-primary font-medium">info@teevexa.com</span></p>
         <p>Phone: <span className="text-foreground/70">+254 783 797 132</span></p>
         <p>Address: <span className="text-foreground/70">Nairobi, Kenya</span></p>
       </LegalContactBox>

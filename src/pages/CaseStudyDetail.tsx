@@ -3,8 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, ArrowRight, Calendar, Building2, Layers, BarChart3 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Calendar, Building2, Layers, BarChart3, Target, Lightbulb, TrendingUp } from "lucide-react";
 
 interface CaseStudy {
   id: string;
@@ -44,16 +43,21 @@ const CaseStudyDetail = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-muted-foreground">Loading case study...</p>
+        <p className="text-muted-foreground animate-pulse">Loading case study...</p>
       </div>
     );
   }
 
   if (!study) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-4">
-        <BarChart3 className="text-muted-foreground" size={48} />
-        <p className="text-muted-foreground">Case study not found.</p>
+      <div className="min-h-screen flex flex-col items-center justify-center gap-5 px-4 text-center">
+        <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center">
+          <BarChart3 className="text-muted-foreground" size={32} />
+        </div>
+        <div>
+          <h2 className="font-display font-bold text-xl mb-2">Case study not found</h2>
+          <p className="text-muted-foreground text-sm">It may have been moved or unpublished.</p>
+        </div>
         <Button variant="outline" asChild>
           <Link to="/portfolio"><ArrowLeft size={16} className="mr-2" /> Back to Portfolio</Link>
         </Button>
@@ -61,16 +65,30 @@ const CaseStudyDetail = () => {
     );
   }
 
+  const sections = [
+    study.challenge ? { icon: Target,    num: "01", label: "The Challenge",  text: study.challenge } : null,
+    study.solution  ? { icon: Lightbulb, num: "02", label: "Our Solution",   text: study.solution  } : null,
+    study.results   ? { icon: TrendingUp,num: "03", label: "The Results",    text: study.results   } : null,
+  ].filter(Boolean) as { icon: typeof Target; num: string; label: string; text: string }[];
+
   return (
     <>
-      {/* Hero */}
-      <section className="pt-32 pb-16 px-4 gradient-hero">
-        <div className="container mx-auto max-w-4xl">
-          <Link to="/portfolio" className="inline-flex items-center text-sm text-muted-foreground hover:text-primary transition-colors mb-6">
-            <ArrowLeft size={16} className="mr-1" /> Back to Portfolio
+      {/* ── Hero ── */}
+      <section className="relative pt-32 pb-20 px-4 gradient-hero network-bg overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/3 right-1/4 w-72 h-72 rounded-full bg-primary/8 blur-3xl animate-pulse-glow" />
+        </div>
+        <div className="container mx-auto max-w-4xl relative z-10 animate-fade-in">
+          <Link
+            to="/portfolio"
+            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors mb-8"
+          >
+            <ArrowLeft size={15} /> Portfolio
           </Link>
-          <div className="flex flex-wrap gap-2 mb-4">
-            {study.industry && <Badge variant="secondary">{study.industry}</Badge>}
+          <div className="flex flex-wrap items-center gap-3 mb-5">
+            {study.industry && (
+              <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary">{study.industry}</span>
+            )}
             {study.published_at && (
               <span className="flex items-center text-xs text-muted-foreground gap-1">
                 <Calendar size={12} />
@@ -78,100 +96,111 @@ const CaseStudyDetail = () => {
               </span>
             )}
           </div>
-          <h1 className="text-3xl md:text-5xl font-display font-bold">{study.title}</h1>
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-display font-bold leading-tight mb-5">
+            {study.title}
+          </h1>
           {study.client_name && (
-            <p className="mt-3 flex items-center gap-2 text-muted-foreground">
-              <Building2 size={16} /> {study.client_name}
+            <p className="flex items-center gap-2 text-muted-foreground text-sm mb-4">
+              <Building2 size={15} className="text-primary" /> {study.client_name}
             </p>
           )}
-          <p className="mt-4 text-lg text-muted-foreground max-w-2xl">{study.description}</p>
+          <p className="text-lg text-muted-foreground max-w-2xl leading-relaxed">{study.description}</p>
         </div>
       </section>
 
-      {/* Cover Image */}
+      {/* ── Cover Image ── */}
       {study.cover_image_url && (
-        <section className="px-4 -mt-4">
+        <section className="px-4 -mt-6">
           <div className="container mx-auto max-w-4xl">
-            <div className="rounded-2xl overflow-hidden border border-border shadow-lg">
-              <img src={study.cover_image_url} alt={study.title} className="w-full h-64 md:h-96 object-cover" />
+            <div className="rounded-2xl overflow-hidden border border-border shadow-xl">
+              <img
+                src={study.cover_image_url}
+                alt={study.title}
+                className="w-full h-64 md:h-[440px] object-cover"
+              />
             </div>
           </div>
         </section>
       )}
 
-      {/* Content Sections */}
-      <section className="py-16 px-4">
-        <div className="container mx-auto max-w-4xl space-y-12">
-          {study.challenge && (
-            <div>
-              <h2 className="text-2xl font-display font-bold mb-4 flex items-center gap-2">
-                <span className="w-8 h-8 rounded-lg bg-destructive/10 flex items-center justify-center text-destructive text-sm font-bold">1</span>
-                The Challenge
-              </h2>
-              <p className="text-muted-foreground leading-relaxed whitespace-pre-line">{study.challenge}</p>
-            </div>
-          )}
+      {/* ── Challenge / Solution / Results ── */}
+      {sections.length > 0 && (
+        <section className="py-24 px-4">
+          <div className="container mx-auto max-w-4xl space-y-10">
+            {sections.map(({ icon: Icon, num, label, text }) => (
+              <div key={num} className="grid md:grid-cols-[auto_1fr] gap-6 md:gap-10">
+                <div className="flex flex-col items-start gap-3">
+                  <span className="text-[11px] font-bold tracking-[0.2em] text-primary/60">{num}</span>
+                  <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <Icon className="text-primary" size={22} />
+                  </div>
+                </div>
+                <div className="pt-1">
+                  <h2 className="text-xl font-display font-bold mb-3">{label}</h2>
+                  <p className="text-muted-foreground leading-relaxed whitespace-pre-line text-[15px]">{text}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
-          {study.solution && (
-            <div>
-              <h2 className="text-2xl font-display font-bold mb-4 flex items-center gap-2">
-                <span className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary text-sm font-bold">2</span>
-                Our Solution
-              </h2>
-              <p className="text-muted-foreground leading-relaxed whitespace-pre-line">{study.solution}</p>
-            </div>
-          )}
-
-          {study.results && (
-            <div>
-              <h2 className="text-2xl font-display font-bold mb-4 flex items-center gap-2">
-                <span className="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center text-green-500 text-sm font-bold">3</span>
-                Results
-              </h2>
-              <p className="text-muted-foreground leading-relaxed whitespace-pre-line">{study.results}</p>
-            </div>
-          )}
-
-          {/* Technologies */}
-          {study.technologies && study.technologies.length > 0 && (
-            <div>
-              <Separator className="mb-8" />
-              <h3 className="text-lg font-display font-semibold mb-4 flex items-center gap-2">
-                <Layers size={18} /> Technologies Used
-              </h3>
+      {/* ── Technologies ── */}
+      {study.technologies && study.technologies.length > 0 && (
+        <section className="section-teal py-16 px-4">
+          <div className="container mx-auto max-w-4xl">
+            <div className="flex flex-col sm:flex-row gap-6 sm:items-start">
+              <div className="flex-shrink-0 flex items-center gap-2">
+                <Layers size={18} className="text-primary" />
+                <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Technologies</h3>
+              </div>
               <div className="flex flex-wrap gap-2">
                 {study.technologies.map((t) => (
                   <Badge key={t} variant="outline" className="text-sm px-3 py-1">{t}</Badge>
                 ))}
               </div>
             </div>
-          )}
+          </div>
+        </section>
+      )}
 
-          {/* Gallery */}
-          {study.gallery_urls && study.gallery_urls.length > 0 && (
-            <div>
-              <Separator className="mb-8" />
-              <h3 className="text-lg font-display font-semibold mb-4">Project Gallery</h3>
-              <div className="grid sm:grid-cols-2 gap-4">
-                {study.gallery_urls.map((url, i) => (
-                  <div key={i} className="rounded-xl overflow-hidden border border-border">
-                    <img src={url} alt={`${study.title} screenshot ${i + 1}`} className="w-full h-48 object-cover" />
-                  </div>
-                ))}
-              </div>
+      {/* ── Gallery ── */}
+      {study.gallery_urls && study.gallery_urls.length > 0 && (
+        <section className="py-24 px-4">
+          <div className="container mx-auto max-w-4xl">
+            <h3 className="text-lg font-display font-bold mb-6">Project Gallery</h3>
+            <div className="grid sm:grid-cols-2 gap-4">
+              {study.gallery_urls.map((url, i) => (
+                <div key={i} className="rounded-2xl overflow-hidden border border-border shadow-sm">
+                  <img
+                    src={url}
+                    alt={`${study.title} — screenshot ${i + 1}`}
+                    className="w-full h-52 object-cover"
+                  />
+                </div>
+              ))}
             </div>
-          )}
-        </div>
-      </section>
+          </div>
+        </section>
+      )}
 
-      {/* CTA */}
-      <section className="py-16 px-4 bg-card/30">
-        <div className="container mx-auto text-center">
-          <h2 className="text-3xl font-display font-bold">Want Similar Results?</h2>
-          <p className="mt-3 text-muted-foreground">Let's discuss how we can help your business grow.</p>
-          <Button size="lg" className="mt-6 glow-primary" asChild>
-            <Link to="/start-project">Start a Project <ArrowRight className="ml-2" size={18} /></Link>
-          </Button>
+      {/* ── CTA ── */}
+      <section className="section-navy py-24 px-4">
+        <div className="container mx-auto text-center max-w-2xl">
+          <h2 className="text-4xl font-display font-bold mb-4">
+            Want <span className="gradient-text">Similar Results?</span>
+          </h2>
+          <p className="text-muted-foreground leading-relaxed mb-10">
+            Let's discuss how we can build something exceptional for your business. Start with a free 30-minute consultation.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Button size="lg" className="glow-primary px-10" asChild>
+              <Link to="/start-project">Start a Project <ArrowRight className="ml-2" size={18} /></Link>
+            </Button>
+            <Button variant="outline" size="lg" className="px-8 bg-transparent text-foreground border-foreground/30 hover:bg-foreground/10 hover:border-foreground/50" asChild>
+              <Link to="/portfolio"><ArrowLeft size={14} className="mr-1" /> More Case Studies</Link>
+            </Button>
+          </div>
         </div>
       </section>
     </>

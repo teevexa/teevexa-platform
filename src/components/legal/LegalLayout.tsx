@@ -26,38 +26,43 @@ export function LegalLayout({ title, subtitle, lastUpdated, sections, children }
   }, []);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-        if (visible.length > 0) setActiveId(visible[0].target.id);
-      },
-      { rootMargin: "-16% 0% -70% 0%", threshold: 0 }
-    );
+    if (sections.length === 0) return;
 
-    sections.forEach(({ id }) => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
-    return () => observer.disconnect();
+    const OFFSET = 100;
+
+    const updateActive = () => {
+      let current = sections[0].id;
+      for (const { id } of sections) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        if (el.getBoundingClientRect().top <= OFFSET) current = id;
+      }
+      setActiveId(current);
+    };
+
+    window.addEventListener("scroll", updateActive, { passive: true });
+    updateActive();
+    return () => window.removeEventListener("scroll", updateActive);
   }, [sections]);
 
   const scrollToSection = (id: string) => (e: React.MouseEvent) => {
     e.preventDefault();
     const el = document.getElementById(id);
     if (!el) return;
-    const offset = 96;
-    const top = el.getBoundingClientRect().top + window.scrollY - offset;
+    const top = el.getBoundingClientRect().top + window.scrollY - 80;
     window.scrollTo({ top, behavior: "smooth" });
   };
 
   return (
-    <div className="min-h-screen pt-20 pb-24">
-      {/* Hero */}
-      <div className="border-b border-border/30 bg-gradient-to-b from-background via-background to-card/20">
-        <div className="container mx-auto px-4 lg:px-8 py-12 max-w-7xl">
-          <nav className="flex items-center gap-1.5 text-xs text-muted-foreground mb-6 flex-wrap">
+    /* pt-20 accounts for fixed navbar on screen; print:pt-8 removes it for PDF */
+    <div className="min-h-screen pt-20 pb-24 print:pt-8 print:pb-8 print:min-h-0">
+
+      {/* ── Document header ── */}
+      <div className="border-b border-border/30 bg-gradient-to-b from-background via-background to-card/20 print:bg-white print:border-slate-200">
+        <div className="container mx-auto px-4 lg:px-8 py-12 max-w-7xl print:py-6">
+
+          {/* Breadcrumb — hide in print (redundant in a saved PDF) */}
+          <nav className="flex items-center gap-1.5 text-xs text-muted-foreground mb-6 flex-wrap print:hidden">
             <Link to="/" className="hover:text-primary transition-colors">Home</Link>
             <ChevronRight size={12} className="flex-shrink-0" />
             <span className="text-foreground/60">Legal</span>
@@ -76,9 +81,11 @@ export function LegalLayout({ title, subtitle, lastUpdated, sections, children }
                 <span>{sections.length} sections</span>
               </div>
             </div>
+
+            {/* Print button — visible on screen, hidden in the PDF output */}
             <button
               onClick={() => window.print()}
-              className="hidden sm:flex items-center gap-2 text-xs text-muted-foreground hover:text-primary transition-colors border border-border/50 hover:border-primary/40 rounded-lg px-3 py-2 bg-card/40"
+              className="hidden sm:flex print:hidden items-center gap-2 text-xs text-muted-foreground hover:text-primary transition-colors border border-border/50 hover:border-primary/40 rounded-lg px-3 py-2 bg-card/40"
             >
               <Printer size={13} />
               Print / Save PDF
@@ -87,11 +94,17 @@ export function LegalLayout({ title, subtitle, lastUpdated, sections, children }
         </div>
       </div>
 
-      {/* Body */}
-      <div className="container mx-auto px-4 lg:px-8 max-w-7xl mt-10">
-        <div className="lg:grid lg:grid-cols-[220px_1fr] xl:grid-cols-[240px_1fr] lg:gap-10 xl:gap-14 items-start">
-          {/* Sticky TOC sidebar */}
-          <aside className="hidden lg:block">
+      {/* ── Body: TOC sidebar + content ── */}
+      <div className="container mx-auto px-4 lg:px-8 max-w-7xl mt-10 print:mt-6">
+        {/*
+          Default grid for screens. `print:block` collapses it to a single
+          column so the PDF is full-width with no sidebar wasted space.
+          No `items-start` — default stretch lets sticky work on screen.
+        */}
+        <div className="lg:grid lg:grid-cols-[220px_1fr] xl:grid-cols-[240px_1fr] lg:gap-10 xl:gap-14 print:block">
+
+          {/* Sticky TOC sidebar — screen only, hidden in print via @media print aside rule */}
+          <aside className="hidden lg:block relative">
             <div className="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto pr-1">
               <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground mb-3 px-3">Contents</p>
               <nav className="flex flex-col">
@@ -114,15 +127,15 @@ export function LegalLayout({ title, subtitle, lastUpdated, sections, children }
           </aside>
 
           {/* Main content */}
-          <main className="bg-card/30 border border-border/40 rounded-2xl shadow-sm overflow-hidden">
-            <div className="divide-y divide-border/25">
+          <main className="bg-card/30 border border-border/40 rounded-2xl shadow-sm overflow-hidden print:border-none print:rounded-none print:shadow-none print:bg-white print:overflow-visible">
+            <div className="divide-y divide-border/25 print:divide-slate-200">
               {children}
             </div>
           </main>
         </div>
       </div>
 
-      {/* Back to top */}
+      {/* Back to top — fixed, hidden by @media print .fixed rule */}
       <button
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         className={`fixed bottom-6 right-6 z-40 p-3 bg-primary text-primary-foreground rounded-full shadow-lg hover:opacity-90 transition-all duration-300 ${
@@ -145,16 +158,16 @@ interface LegalSectionProps {
 
 export function LegalSection({ id, number, title, children }: LegalSectionProps) {
   return (
-    <section id={id} className="scroll-mt-28 px-6 py-8 lg:px-10 lg:py-9 group">
+    <section id={id} className="scroll-mt-20 px-6 py-8 lg:px-10 lg:py-9 print:px-0 print:py-6 group">
       <div className="flex items-start gap-4 mb-4">
         {number && (
-          <span className="flex-shrink-0 mt-0.5 w-7 h-7 rounded-lg bg-primary/10 text-primary text-xs font-bold flex items-center justify-center">
+          <span className="flex-shrink-0 mt-0.5 w-7 h-7 rounded-lg bg-primary/10 text-primary text-xs font-bold flex items-center justify-center print:bg-slate-100 print:text-slate-700">
             {number}
           </span>
         )}
         <h2 className="text-lg font-display font-bold text-foreground leading-snug">{title}</h2>
       </div>
-      <div className={`space-y-3 text-sm text-foreground/80 leading-relaxed ${number ? "pl-11" : ""}`}>
+      <div className={`space-y-3 text-sm text-foreground/80 leading-relaxed ${number ? "pl-11 print:pl-10" : ""}`}>
         {children}
       </div>
     </section>
@@ -175,7 +188,7 @@ export function LegalList({ items }: { items: (string | React.ReactNode)[] }) {
     <ul className="space-y-1.5 pl-4">
       {items.map((item, i) => (
         <li key={i} className="flex gap-2 items-start">
-          <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-primary/60 flex-shrink-0" />
+          <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-primary/60 flex-shrink-0 print:bg-slate-400" />
           <span>{item}</span>
         </li>
       ))}
@@ -185,7 +198,7 @@ export function LegalList({ items }: { items: (string | React.ReactNode)[] }) {
 
 export function LegalContactBox({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mt-2 rounded-xl border border-border/50 bg-background/50 px-5 py-4 space-y-1.5 text-sm">
+    <div className="mt-2 rounded-xl border border-border/50 bg-background/50 px-5 py-4 space-y-1.5 text-sm print:bg-slate-50 print:border-slate-200 print:rounded-lg">
       {children}
     </div>
   );

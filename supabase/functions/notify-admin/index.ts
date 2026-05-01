@@ -6,6 +6,33 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+// ── Email helper (Resend) ─────────────────────────────────────────────────────
+// Requires RESEND_API_KEY set as a Supabase secret.
+// Sender domain must be verified in your Resend account.
+async function sendEmail(opts: {
+  to: string;
+  subject: string;
+  html: string;
+}) {
+  const key = Deno.env.get("RESEND_API_KEY");
+  if (!key) return; // Silently skip if not configured yet
+
+  await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${key}`,
+    },
+    body: JSON.stringify({
+      from: "Teevexa Website <no-reply@teevexa.com>",
+      to: [opts.to],
+      subject: opts.subject,
+      html: opts.html,
+    }),
+  });
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -21,7 +48,54 @@ Deno.serve(async (req) => {
 
     console.log(`[ADMIN NOTIFICATION] Type: ${type}`, JSON.stringify(data, null, 2));
 
-    // Determine notification details based on event type
+    // ── Email notifications for inbound public forms ──────────────────────────
+    if (type === "new_contact") {
+      await sendEmail({
+        to: "teevexa@gmail.com",
+        subject: `[Teevexa] New Contact: ${data?.subject || "No subject"}`,
+        html: `
+          <h2 style="color:#0e7490;">New Contact Form Submission</h2>
+          <table cellpadding="6" style="border-collapse:collapse;font-family:sans-serif;font-size:14px;">
+            <tr><td><strong>Name</strong></td><td>${data?.full_name || "—"}</td></tr>
+            <tr><td><strong>Email</strong></td><td><a href="mailto:${data?.email}">${data?.email || "—"}</a></td></tr>
+            <tr><td><strong>Subject</strong></td><td>${data?.subject || "—"}</td></tr>
+          </table>
+          <hr/>
+          <p style="font-family:sans-serif;font-size:14px;white-space:pre-wrap;">${data?.message || "—"}</p>
+          <hr/>
+          <p style="font-family:sans-serif;font-size:12px;color:#64748b;">
+            View in admin panel: <a href="https://teevexa.com/admin/messages">teevexa.com/admin/messages</a>
+          </p>
+        `,
+      });
+    }
+
+    // new_consultation emails are sent directly by the book-consultation edge function
+    // (which includes the Zoom host link). Only in-app notification is handled here.
+
+    if (type === "new_lead") {
+      await sendEmail({
+        to: "teevexa@gmail.com",
+        subject: `[Teevexa] New Project Inquiry — ${data?.project_type || "Unknown type"}`,
+        html: `
+          <h2 style="color:#0e7490;">New Project Inquiry</h2>
+          <table cellpadding="6" style="border-collapse:collapse;font-family:sans-serif;font-size:14px;">
+            <tr><td><strong>Name</strong></td><td>${data?.full_name || "—"}</td></tr>
+            <tr><td><strong>Email</strong></td><td><a href="mailto:${data?.email}">${data?.email || "—"}</a></td></tr>
+            <tr><td><strong>Project Type</strong></td><td>${data?.project_type || "—"}</td></tr>
+            <tr><td><strong>Budget</strong></td><td>${data?.budget || "—"}</td></tr>
+            <tr><td><strong>Timeline</strong></td><td>${data?.timeline || "—"}</td></tr>
+          </table>
+          <hr/>
+          <p style="font-family:sans-serif;font-size:12px;color:#64748b;">
+            View in admin panel: <a href="https://teevexa.com/admin/leads">teevexa.com/admin/leads</a>
+          </p>
+        `,
+      });
+    }
+    // ─────────────────────────────────────────────────────────────────────────
+
+    // ── In-app notifications ──────────────────────────────────────────────────
     const notificationMap: Record<string, { title: string; message: string; notifyType: string; link?: string; targetRole?: string[] }> = {
       new_lead: {
         title: "New Project Inquiry",
@@ -105,7 +179,6 @@ Deno.serve(async (req) => {
     const config = notificationMap[type];
 
     if (config) {
-      // Find admin/team user IDs that should receive the notification
       const targetRoles = config.targetRole || ["super_admin", "admin"];
       const { data: roleUsers } = await supabase
         .from("user_roles")
@@ -124,7 +197,6 @@ Deno.serve(async (req) => {
         await supabase.from("notifications").insert(notifications);
       }
 
-      // Also notify the specific client if applicable
       if (data?.user_id && ["milestone_completed", "invoice_created", "deliverable_submitted"].includes(type)) {
         await supabase.from("notifications").insert({
           user_id: data.user_id,

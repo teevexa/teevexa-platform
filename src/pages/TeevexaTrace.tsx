@@ -68,9 +68,9 @@ const TeevexaTrace = () => {
     <>
       {/* Hero */}
       <section className="relative min-h-[80vh] flex items-center justify-center gradient-hero network-bg overflow-hidden">
-        <div className="absolute inset-0 opacity-30">
-          <div className="absolute top-1/4 left-1/4 w-64 h-64 rounded-full bg-primary/10 blur-3xl animate-pulse-glow" />
-          <div className="absolute bottom-1/3 right-1/4 w-80 h-80 rounded-full bg-accent/10 blur-3xl animate-pulse-glow" style={{ animationDelay: "1.5s" }} />
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/4 left-1/4 w-72 h-72 rounded-full bg-primary/8 blur-3xl animate-pulse-glow" />
+          <div className="absolute bottom-1/3 right-1/4 w-80 h-80 rounded-full bg-accent/7 blur-3xl animate-pulse-glow" style={{ animationDelay: "1.5s" }} />
         </div>
         <div className="container mx-auto px-4 text-center relative z-10 animate-fade-in">
           <span className="inline-block text-xs font-semibold uppercase tracking-widest text-primary mb-4">
@@ -94,7 +94,7 @@ const TeevexaTrace = () => {
       </section>
 
       {/* Problem Statement */}
-      <section className="py-24 px-4">
+      <section className="section-teal py-24 px-4">
         <div className="container mx-auto max-w-4xl text-center">
           <SectionHeading label="The Problem" title="Supply Chains Lack Transparency" />
           <div className="mt-8 grid md:grid-cols-3 gap-6">
@@ -113,7 +113,7 @@ const TeevexaTrace = () => {
       </section>
 
       {/* Features */}
-      <section id="features" className="py-24 px-4 bg-card/30">
+      <section id="features" className="py-24 px-4 section-card">
         <div className="container mx-auto">
           <SectionHeading label="Features" title="Everything You Need for Full Traceability" description="Built for enterprises and smallholders alike." />
           <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -152,7 +152,7 @@ const TeevexaTrace = () => {
       </section>
 
       {/* Use Cases */}
-      <section className="py-24 px-4 bg-card/30">
+      <section className="py-24 px-4 section-card">
         <div className="container mx-auto">
           <SectionHeading label="Use Cases" title="Built for Multiple Industries" />
           <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -212,7 +212,7 @@ const TeevexaTrace = () => {
       </section>
 
       {/* Competitive Differentiation */}
-      <section className="py-24 px-4 bg-card/30">
+      <section className="py-24 px-4 section-card">
         <div className="container mx-auto max-w-5xl">
           <SectionHeading
             label="Why Teevexa Trace"
@@ -329,7 +329,7 @@ const TeevexaTrace = () => {
       </section>
 
       {/* CTA */}
-      <section className="py-24 px-4 bg-card/30 network-bg">
+      <section className="section-navy py-24 px-4 network-bg">
         <div className="container mx-auto text-center max-w-2xl">
           <h2 className="text-3xl md:text-4xl font-display font-bold">
             Be the First to <span className="gradient-text">Trace</span>

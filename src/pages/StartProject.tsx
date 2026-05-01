@@ -210,24 +210,56 @@ const StartProject = () => {
 
   return (
     <>
-      <section className="py-24 px-4 gradient-hero network-bg">
-        <div className="container mx-auto text-center animate-fade-in">
-          <SectionHeading label="Get Started" title="Start a Project" description="Tell us about your project and we'll craft a tailored solution." />
+      {/* ── Hero ── */}
+      <section className="relative py-28 px-4 gradient-hero network-bg overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/3 right-1/4 w-72 h-72 rounded-full bg-primary/8 blur-3xl animate-pulse-glow" />
+          <div className="absolute bottom-1/4 left-1/3 w-60 h-60 rounded-full bg-accent/7 blur-3xl animate-pulse-glow" style={{ animationDelay: "2s" }} />
+        </div>
+        <div className="container mx-auto text-center relative z-10 animate-fade-in max-w-3xl">
+          <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary block mb-4">Get Started</span>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold leading-tight mb-4">
+            Tell Us About Your <span className="gradient-text">Project</span>
+          </h1>
+          <p className="text-lg text-muted-foreground leading-relaxed">
+            A 5-minute brief gives us everything we need to prepare an accurate proposal — no obligation.
+          </p>
         </div>
       </section>
 
       <section className="py-16 px-4">
         <div className="container mx-auto max-w-2xl">
-          <div className="mb-8">
-            <div className="flex justify-between text-xs text-muted-foreground mb-2">
-              {STEPS.map((s, i) => (<span key={s} className={i <= step ? "text-primary font-medium" : ""}>{s}</span>))}
+          {/* Step indicator */}
+          <div className="mb-10">
+            <div className="flex items-center justify-between mb-3">
+              {STEPS.map((s, i) => (
+                <div key={s} className="flex flex-col items-center gap-1">
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
+                    i < step ? "bg-primary text-primary-foreground" :
+                    i === step ? "bg-primary text-primary-foreground ring-4 ring-primary/20" :
+                    "bg-muted text-muted-foreground"
+                  }`}>
+                    {i < step ? "✓" : i + 1}
+                  </div>
+                  <span className={`text-[10px] font-medium hidden sm:block ${i <= step ? "text-primary" : "text-muted-foreground"}`}>
+                    {s}
+                  </span>
+                </div>
+              ))}
             </div>
-            <Progress value={((step + 1) / STEPS.length) * 100} className="h-2" />
+            <Progress value={((step + 1) / STEPS.length) * 100} className="h-1.5" />
+            <p className="text-xs text-muted-foreground mt-2">
+              Step {step + 1} of {STEPS.length} — {STEPS[step]}
+            </p>
           </div>
 
           {!user && step === 0 && (
             <div className="glass rounded-xl p-4 mb-4 border-primary/30 text-sm text-muted-foreground">
-              💡 You'll need to <button onClick={() => navigate("/auth?mode=signup&redirect=/start-project")} className="text-primary hover:underline">create an account</button> or <button onClick={() => navigate("/auth?mode=login&redirect=/start-project")} className="text-primary hover:underline">sign in</button> to submit your project inquiry.
+              You'll need to{" "}
+              <button onClick={() => navigate("/auth?mode=signup&redirect=/start-project")} className="text-primary hover:underline font-medium">create an account</button>
+              {" "}or{" "}
+              <button onClick={() => navigate("/auth?mode=login&redirect=/start-project")} className="text-primary hover:underline font-medium">sign in</button>
+              {" "}to submit your project inquiry.
             </div>
           )}
 

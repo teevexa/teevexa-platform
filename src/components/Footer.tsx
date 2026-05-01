@@ -4,7 +4,7 @@ import logo from "@/assets/teevexa-logo.jpeg";
 
 const Footer = () => {
   return (
-    <footer className="border-t border-border/30 bg-card/40">
+    <footer className="nav-dark-surface border-t">
       <div className="container mx-auto px-4 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Brand */}
@@ -71,7 +71,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="mt-12 pt-8 border-t border-border/30 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
+        <div className="mt-12 pt-8 border-t border-border/40 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
           <p>© {new Date().getFullYear()} TEEVEXA. All rights reserved.</p>
           <div className="flex gap-4">
             <Link to="/legal/privacy-policy" className="hover:text-primary transition-colors">Privacy Policy</Link>

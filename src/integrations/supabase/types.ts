@@ -207,6 +207,9 @@ export type Database = {
           selected_date: string
           selected_time: string
           timezone: string
+          zoom_meeting_id: string | null
+          zoom_join_url: string | null
+          zoom_start_url: string | null
         }
         Insert: {
           company?: string | null
@@ -220,6 +223,9 @@ export type Database = {
           selected_date: string
           selected_time: string
           timezone?: string
+          zoom_meeting_id?: string | null
+          zoom_join_url?: string | null
+          zoom_start_url?: string | null
         }
         Update: {
           company?: string | null
@@ -233,6 +239,9 @@ export type Database = {
           selected_date?: string
           selected_time?: string
           timezone?: string
+          zoom_meeting_id?: string | null
+          zoom_join_url?: string | null
+          zoom_start_url?: string | null
         }
         Relationships: []
       }

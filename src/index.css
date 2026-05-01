@@ -1,52 +1,106 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Sora:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Sora:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ── Light Mode (default :root) ─────────────────────────────────────────── */
+/*
+ * Strategy: background is a cool, barely-tinted off-white so pure-white
+ * cards visually float above it. Hero gets its own teal-gradient canvas.
+ * Sections alternate between background, card-white, and tinted variants.
+ */
 @layer base {
   :root {
-    --background: 195 43% 12%;
-    --foreground: 195 60% 94%;
+    /* Page canvas — cool off-white, NOT glaring white */
+    --background: 213 30% 97%;
+    --foreground: 222 47% 11%;
 
-    --card: 195 50% 10%;
-    --card-foreground: 195 60% 94%;
+    /* Cards float above the page — pure white */
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
 
-    --popover: 195 50% 10%;
-    --popover-foreground: 195 60% 94%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
 
-    --primary: 195 73% 45%;
-    --primary-foreground: 195 43% 6%;
+    /* Electric teal slightly darkened for legibility on white */
+    --primary: 186 90% 34%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 195 30% 20%;
-    --secondary-foreground: 195 60% 94%;
+    --secondary: 213 20% 92%;
+    --secondary-foreground: 222 47% 11%;
 
-    --muted: 195 25% 18%;
-    --muted-foreground: 195 20% 60%;
+    --muted: 213 20% 92%;
+    --muted-foreground: 215 16% 45%;
 
-    --accent: 195 80% 53%;
-    --accent-foreground: 195 43% 6%;
+    /* Warm amber accent */
+    --accent: 38 92% 44%;
+    --accent-foreground: 222 47% 6%;
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 56%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 195 25% 20%;
-    --input: 195 25% 20%;
-    --ring: 195 73% 45%;
+    --border: 213 20% 88%;
+    --input: 213 20% 88%;
+    --ring: 186 90% 34%;
 
     --radius: 0.75rem;
 
-    --sidebar-background: 195 50% 8%;
-    --sidebar-foreground: 195 60% 94%;
-    --sidebar-primary: 195 73% 45%;
-    --sidebar-primary-foreground: 195 43% 6%;
-    --sidebar-accent: 195 25% 15%;
-    --sidebar-accent-foreground: 195 60% 94%;
-    --sidebar-border: 195 25% 18%;
-    --sidebar-ring: 195 73% 45%;
+    /* Sidebar is a step darker than the page background */
+    --sidebar-background: 213 30% 94%;
+    --sidebar-foreground: 222 47% 11%;
+    --sidebar-primary: 186 90% 34%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 213 20% 90%;
+    --sidebar-accent-foreground: 222 47% 11%;
+    --sidebar-border: 213 20% 85%;
+    --sidebar-ring: 186 90% 34%;
   }
 }
 
+/* ── Dark Mode (.dark class on <html>) ──────────────────────────────────── */
+@layer base {
+  .dark {
+    --background: 222 47% 6%;
+    --foreground: 210 40% 96%;
+
+    --card: 222 47% 9%;
+    --card-foreground: 210 40% 96%;
+
+    --popover: 222 47% 9%;
+    --popover-foreground: 210 40% 96%;
+
+    --primary: 186 100% 44%;
+    --primary-foreground: 222 47% 6%;
+
+    --secondary: 222 35% 14%;
+    --secondary-foreground: 210 40% 96%;
+
+    --muted: 222 35% 14%;
+    --muted-foreground: 215 16% 55%;
+
+    --accent: 38 92% 50%;
+    --accent-foreground: 222 47% 6%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 222 25% 14%;
+    --input: 222 25% 14%;
+    --ring: 186 100% 44%;
+
+    --sidebar-background: 222 47% 5%;
+    --sidebar-foreground: 210 40% 96%;
+    --sidebar-primary: 186 100% 44%;
+    --sidebar-primary-foreground: 222 47% 6%;
+    --sidebar-accent: 222 35% 12%;
+    --sidebar-accent-foreground: 210 40% 96%;
+    --sidebar-border: 222 25% 12%;
+    --sidebar-ring: 186 100% 44%;
+  }
+}
+
+/* ── Base resets ─────────────────────────────────────────────────────────── */
 @layer base {
   * {
     @apply border-border;
@@ -58,79 +112,377 @@
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-family: 'Inter', system-ui, sans-serif;
+    transition: background-color 0.3s ease, color 0.2s ease;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Sora', 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-family: 'Sora', 'Inter', system-ui, sans-serif;
   }
 }
 
+/* ── Utility classes ─────────────────────────────────────────────────────── */
 @layer utilities {
+
+  /* ── Glass morphism ─── */
+  /* Light: white frosted glass with soft shadow */
   .glass {
-    @apply bg-card/60 backdrop-blur-xl border border-border/50;
+    @apply bg-white/75 backdrop-blur-xl border border-border/50 shadow-sm;
+  }
+  /* Dark: semi-transparent navy card */
+  .dark .glass {
+    @apply bg-card/55 backdrop-blur-xl border-border/35 shadow-none;
   }
 
+  /* ── Glows ─── */
   .glow-primary {
-    box-shadow: 0 0 20px hsl(195 73% 45% / 0.3), 0 0 60px hsl(195 73% 45% / 0.1);
+    box-shadow:
+      0 0 18px hsl(186 90% 34% / 0.30),
+      0 0 50px hsl(186 90% 34% / 0.10);
+  }
+  .dark .glow-primary {
+    box-shadow:
+      0 0 20px hsl(186 100% 44% / 0.38),
+      0 0 60px hsl(186 100% 44% / 0.13);
   }
 
   .glow-accent {
-    box-shadow: 0 0 20px hsl(195 80% 53% / 0.3), 0 0 60px hsl(195 80% 53% / 0.1);
+    box-shadow:
+      0 0 18px hsl(38 92% 44% / 0.30),
+      0 0 50px hsl(38 92% 44% / 0.10);
+  }
+  .dark .glow-accent {
+    box-shadow:
+      0 0 20px hsl(38 92% 50% / 0.38),
+      0 0 60px hsl(38 92% 50% / 0.13);
   }
 
-  .gradient-primary {
-    background: linear-gradient(135deg, hsl(195 43% 12%), hsl(195 73% 45% / 0.3));
-  }
-
-  .gradient-hero {
-    background: linear-gradient(180deg, hsl(195 43% 12%) 0%, hsl(195 50% 8%) 50%, hsl(195 43% 12%) 100%);
-  }
-
+  /* ── Gradient text: teal → amber ─── */
   .gradient-text {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, hsl(195 73% 45%), hsl(195 80% 53%));
+    background-image: linear-gradient(135deg, hsl(186 90% 34%) 0%, hsl(38 92% 44%) 100%);
+  }
+  .dark .gradient-text {
+    background-image: linear-gradient(135deg, hsl(186 100% 44%) 0%, hsl(38 92% 52%) 100%);
   }
 
-  .animate-float {
-    animation: float 6s ease-in-out infinite;
+  /* ── Hero gradient ───
+   * Light: sweeping teal-tinted canvas — distinct from page background,
+   *        creates visual depth without being dark.
+   * Dark:  deep navy with subtle blue midpoint.
+   */
+  .gradient-hero {
+    background:
+      linear-gradient(
+        155deg,
+        hsl(186 55% 93%) 0%,
+        hsl(213 30% 97%) 45%,
+        hsl(38  45% 96%) 100%
+      );
+  }
+  .dark .gradient-hero {
+    background:
+      linear-gradient(
+        155deg,
+        hsl(222 47% 6%)  0%,
+        hsl(222 55% 8%)  50%,
+        hsl(222 47% 6%)  100%
+      );
   }
 
-  .animate-pulse-glow {
-    animation: pulse-glow 3s ease-in-out infinite;
-  }
-
-  .animate-fade-in {
-    animation: fade-in 0.6s ease-out forwards;
-  }
-
-  .animate-slide-up {
-    animation: slide-up 0.6s ease-out forwards;
-  }
-
+  /* ── Ambient radial blobs ─── */
+  /* Light: stronger opacity so blobs are visible on the pale canvas */
   .network-bg {
-    background-image: radial-gradient(circle at 20% 50%, hsl(195 73% 45% / 0.08) 0%, transparent 50%),
-                       radial-gradient(circle at 80% 20%, hsl(195 80% 53% / 0.06) 0%, transparent 50%),
-                       radial-gradient(circle at 40% 80%, hsl(195 73% 45% / 0.04) 0%, transparent 50%);
+    background-image:
+      radial-gradient(ellipse at 15% 45%, hsl(186 80% 44% / 0.14) 0%, transparent 52%),
+      radial-gradient(ellipse at 82% 18%, hsl(38  92% 50% / 0.12) 0%, transparent 52%),
+      radial-gradient(ellipse at 48% 85%, hsl(186 70% 44% / 0.09) 0%, transparent 48%),
+      radial-gradient(ellipse at 70% 60%, hsl(38  80% 55% / 0.07) 0%, transparent 44%);
+  }
+  .dark .network-bg {
+    background-image:
+      radial-gradient(ellipse at 15% 45%, hsl(186 100% 44% / 0.11) 0%, transparent 52%),
+      radial-gradient(ellipse at 82% 18%, hsl(38  92% 50% / 0.09) 0%, transparent 52%),
+      radial-gradient(ellipse at 48% 85%, hsl(186 100% 44% / 0.07) 0%, transparent 48%),
+      radial-gradient(ellipse at 70% 60%, hsl(38  92% 50% / 0.05) 0%, transparent 44%);
+  }
+
+  /* ── Section background variants ───
+   * Use these on <section> elements to break up page monotony.
+   * card-white  → pure white stripe (on off-white page canvas)
+   * section-teal → barely-there teal-tinted wash
+   * section-amber → warm amber hint (great for CTAs)
+   * section-navy → full inverted dark section (hero-in-page moments)
+   */
+  .section-card {
+    background-color: hsl(0 0% 100%);
+  }
+  .dark .section-card {
+    background-color: hsl(var(--card));
+  }
+
+  .section-teal {
+    background: linear-gradient(
+      135deg,
+      hsl(186 50% 94%) 0%,
+      hsl(213 30% 96%) 100%
+    );
+  }
+  .dark .section-teal {
+    background: linear-gradient(
+      135deg,
+      hsl(186 35% 9%)  0%,
+      hsl(222 47% 8%)  100%
+    );
+  }
+
+  .section-amber {
+    background: linear-gradient(
+      135deg,
+      hsl(38 60% 96%) 0%,
+      hsl(213 30% 97%) 100%
+    );
+  }
+  .dark .section-amber {
+    background: linear-gradient(
+      135deg,
+      hsl(38 30% 8%)  0%,
+      hsl(222 47% 7%) 100%
+    );
+  }
+
+  /*
+   * Fully inverted — dark navy in light mode, light grey in dark mode.
+   * We also override the CSS custom properties so that Tailwind utilities
+   * (text-foreground, text-muted-foreground, border-border, etc.) pick up
+   * the correct contrasting values instead of the theme's own tokens.
+   */
+  .section-navy {
+    background: hsl(222 47% 10%);
+    color: hsl(210 40% 96%);
+    --foreground:        210 40% 96%;
+    --card-foreground:   210 40% 96%;
+    --muted-foreground:  215 16% 60%;
+    --border:            222 25% 18%;
+    --primary:           186 100% 44%;
+    --primary-foreground: 222 47% 6%;
+  }
+  .dark .section-navy {
+    background: hsl(213 30% 96%);
+    color: hsl(222 47% 11%);
+    --foreground:        222 47% 11%;
+    --card-foreground:   222 47% 11%;
+    --muted-foreground:  215 16% 45%;
+    --border:            213 20% 85%;
+    --primary:           186 90% 34%;
+    --primary-foreground: 0 0% 100%;
+  }
+  /* gradient-text inside section-navy always uses the vibrant teal→amber variant */
+  .section-navy .gradient-text {
+    background-image: linear-gradient(135deg, hsl(186 100% 44%) 0%, hsl(38 92% 52%) 100%);
+  }
+  .dark .section-navy .gradient-text {
+    background-image: linear-gradient(135deg, hsl(186 90% 34%) 0%, hsl(38 92% 44%) 100%);
+  }
+
+  /* Generic alternate — one step from page background */
+  .section-alt {
+    background-color: hsl(var(--card));
+  }
+  .dark .section-alt {
+    background-color: hsl(222 35% 11%);
+  }
+
+  /* Gradient used behind feature-card rows */
+  .gradient-primary {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--background)) 0%,
+      hsl(186 60% 93% / 0.6) 100%
+    );
+  }
+  .dark .gradient-primary {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--background)) 0%,
+      hsl(186 100% 44% / 0.09) 100%
+    );
+  }
+
+  /* ── Animations ─── */
+  .animate-float       { animation: float       6s ease-in-out infinite; }
+  .animate-pulse-glow  { animation: pulse-glow  3s ease-in-out infinite; }
+  .animate-fade-in     { animation: fade-in     0.5s ease-out forwards; }
+  .animate-slide-up    { animation: slide-up    0.5s ease-out forwards; }
+
+  /*
+   * ── Nav/Footer dark surface ──────────────────────────────────────────────
+   * Forces dark navy in BOTH light and dark mode by overriding CSS custom
+   * properties at the element scope. All Tailwind utilities inside that
+   * consume these tokens (text-foreground, border-border, bg-muted, etc.)
+   * automatically pick up the dark values regardless of the active theme.
+   */
+  .nav-dark-surface {
+    --foreground: 210 40% 96%;
+    --card-foreground: 210 40% 96%;
+    --muted: 222 35% 14%;
+    --muted-foreground: 215 16% 60%;
+    --border: 222 25% 16%;
+    --primary: 186 100% 44%;
+    --primary-foreground: 222 47% 6%;
+    background-color: hsl(222 47% 8%);
+    color: hsl(210 40% 96%);
+  }
+  /* Keep the same dark colour in dark mode (prevents double-dark shift) */
+  .dark .nav-dark-surface {
+    background-color: hsl(222 47% 8%);
+  }
+  /* Gradient text should always use the bright/vibrant variant inside the dark surface */
+  .nav-dark-surface .gradient-text {
+    background-image: linear-gradient(135deg, hsl(186 100% 44%) 0%, hsl(38 92% 52%) 100%);
   }
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
+  0%, 100% { transform: translateY(0px);   }
+  50%       { transform: translateY(-10px); }
 }
 
 @keyframes pulse-glow {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
+  0%, 100% { opacity: 0.5; }
+  50%       { opacity: 1;   }
 }
 
 @keyframes fade-in {
   from { opacity: 0; }
-  to { opacity: 1; }
+  to   { opacity: 1; }
 }
 
 @keyframes slide-up {
   from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+/* ── Print / Save-as-PDF styles ──────────────────────────────────────────── */
+@media print {
+  /* 1. Hide all site chrome ------------------------------------------------ */
+  nav,                    /* fixed top navbar          */
+  footer,                 /* site footer               */
+  aside,                  /* TOC sidebar               */
+  .fixed,                 /* cookie banner, back-to-top, any other fixed UI  */
+  .print-hide {           /* escape hatch for anything else                  */
+    display: none !important;
+  }
+
+  /* 2. Reset page box ------------------------------------------------------- */
+  html, body {
+    height: auto !important;
+    min-height: unset !important;
+    background: white !important;
+    color: #0f172a !important;
+    font-size: 13pt;
+    line-height: 1.6;
+  }
+
+  /* 3. Remove the padding that accounts for the hidden fixed navbar --------- */
+  .pt-20  { padding-top:    0 !important; }
+  .pb-24  { padding-bottom: 0 !important; }
+
+  /* 4. Strip all decorative surfaces --------------------------------------- */
+  *,
+  *::before,
+  *::after {
+    box-shadow:            none !important;
+    backdrop-filter:       none !important;
+    -webkit-backdrop-filter: none !important;
+    text-shadow:           none !important;
+    animation:             none !important;
+    transition:            none !important;
+  }
+
+  /* Glass cards, section washes → clean white */
+  .glass,
+  .section-card,
+  .section-teal,
+  .section-amber,
+  .section-navy,
+  .gradient-hero,
+  .gradient-primary,
+  [class*="bg-card"],
+  [class*="bg-muted"],
+  [class*="bg-primary"] {
+    background: white !important;
+    color: #0f172a !important;
+  }
+
+  /* Borders → subtle print-grey */
+  [class*="border"] {
+    border-color: #cbd5e1 !important;
+  }
+
+  /* Legal content card loses its rounded box treatment */
+  main {
+    border:        none !important;
+    border-radius: 0    !important;
+  }
+
+  /* 5. Typography adjustments --------------------------------------------- */
+  h1 { font-size: 22pt !important; margin-bottom: 6pt !important; }
+  h2 { font-size: 14pt !important; margin-bottom: 4pt !important; }
+  h3 { font-size: 11pt !important; margin-bottom: 3pt !important; }
+
+  /* Gradient text → solid teal so it remains readable (not invisible) */
+  .gradient-text,
+  .gradient-text * {
+    background:                 none !important;
+    -webkit-background-clip:    unset !important;
+    background-clip:            unset !important;
+    -webkit-text-fill-color:    #0e7490 !important;
+    color:                      #0e7490 !important;
+  }
+
+  /* Muted / primary token overrides for print */
+  .text-muted-foreground { color: #475569 !important; }
+  .text-primary          { color: #0e7490 !important; }
+
+  /* Primary-coloured icon backgrounds → light grey */
+  [class*="bg-primary"] { background: #f1f5f9 !important; }
+  .text-primary-foreground { color: #0f172a !important; }
+
+  /* 6. Don't append URLs after hyperlinks --------------------------------- */
+  a::after { content: none !important; }
+
+  /* 7. Page-break rules --------------------------------------------------- */
+  /* Each legal section should try not to split across pages */
+  section {
+    break-inside:      avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Force a page break between every top-level section for long docs */
+  .divide-y > section + section {
+    break-before:      auto;
+    page-break-before: auto;
+  }
+
+  /* Never break inside a sub-section heading or list */
+  h2, h3, h4, ul, ol {
+    break-after:       avoid;
+    page-break-after:  avoid;
+  }
+
+  /* 8. Print-friendly widths ---------------------------------------------- */
+  .container {
+    max-width: 100% !important;
+    padding-left:  1.5rem !important;
+    padding-right: 1.5rem !important;
+  }
+
+  .max-w-7xl,
+  .max-w-5xl,
+  .max-w-4xl,
+  .max-w-3xl,
+  .max-w-2xl {
+    max-width: 100% !important;
+  }
 }

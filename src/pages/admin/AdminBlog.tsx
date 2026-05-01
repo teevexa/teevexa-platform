@@ -227,7 +227,7 @@ const AdminBlog = () => {
                 </TabsContent>
                 <TabsContent value="preview" className="mt-0">
                   <div
-                    className="min-h-[280px] rounded-md border border-input bg-muted/30 p-4 text-sm prose prose-invert max-w-none overflow-auto"
+                    className="min-h-[280px] rounded-md border border-input bg-muted/30 p-4 text-sm prose prose-slate dark:prose-invert max-w-none overflow-auto"
                     dangerouslySetInnerHTML={{ __html: renderMarkdown(form.content) }}
                   />
                 </TabsContent>
