@@ -92,9 +92,14 @@ const Navbar = () => {
             <Link to="/start-project">Start a Project</Link>
           </Button>
           {user && (
-            <Button variant="outline" size="sm" asChild>
+            <Button
+              size="sm"
+              variant="outline"
+              className="border-primary/50 text-primary hover:bg-primary hover:text-primary-foreground transition-colors"
+              asChild
+            >
               <Link to={portalPath}>
-                <LayoutDashboard size={14} className="mr-1" />
+                <LayoutDashboard size={14} className="mr-1.5" />
                 {isAdmin ? "Admin" : "My Portal"}
               </Link>
             </Button>
@@ -146,9 +151,14 @@ const Navbar = () => {
                 <Link to="/start-project" onClick={() => setMobileOpen(false)}>Start a Project</Link>
               </Button>
               {user && (
-                <Button variant="outline" size="sm" asChild>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="border-primary/50 text-primary hover:bg-primary hover:text-primary-foreground transition-colors"
+                  asChild
+                >
                   <Link to={portalPath} onClick={() => setMobileOpen(false)}>
-                    <LayoutDashboard size={14} className="mr-1" />
+                    <LayoutDashboard size={14} className="mr-1.5" />
                     {isAdmin ? "Admin" : "My Portal"}
                   </Link>
                 </Button>

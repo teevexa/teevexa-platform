@@ -1,16 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { FolderKanban, Receipt, MessageSquare, CalendarDays, Download, CheckCircle, Clock } from "lucide-react";
+import { FolderKanban, Receipt, MessageSquare, Download, CheckCircle, Clock, AlertCircle } from "lucide-react";
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from "recharts";
-
-interface ProjectSummary { id: string; title: string; status: string; progress: number; budget: string | null; }
-interface MilestoneSummary { id: string; title: string; status: string; due_date: string | null; project_id: string; }
-interface InvoiceSummary { id: string; invoice_number: string; amount: number; currency: string; status: string; pdf_url: string | null; }
+import { DashboardSkeleton } from "@/components/portal/PortalSkeleton";
+import PortalError from "@/components/portal/PortalError";
+import { formatCurrency } from "@/lib/format";
 
 const STATUS_COLORS: Record<string, string> = {
   planning: "hsl(var(--muted-foreground))",
@@ -26,71 +26,94 @@ const INVOICE_COLORS: Record<string, string> = {
   sent: "hsl(var(--primary))",
 };
 
+const statusBadge: Record<string, string> = {
+  planning: "bg-muted text-muted-foreground",
+  "in-progress": "bg-primary/20 text-primary",
+  review: "bg-accent/20 text-accent",
+  completed: "bg-green-500/20 text-green-400",
+};
+
 const Dashboard = () => {
-  const [profile, setProfile] = useState<{ display_name: string | null } | null>(null);
-  const [projects, setProjects] = useState<ProjectSummary[]>([]);
-  const [milestones, setMilestones] = useState<MilestoneSummary[]>([]);
-  const [invoices, setInvoices] = useState<InvoiceSummary[]>([]);
-  const [stats, setStats] = useState({ projects: 0, invoices: 0, messages: 0, unpaidAmount: 0 });
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const load = async () => {
+  const { data: user } = useQuery({
+    queryKey: ["currentUser"],
+    queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      return user;
+    },
+    staleTime: Infinity,
+  });
 
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ["dashboard", user?.id],
+    enabled: !!user?.id,
+    queryFn: async () => {
+      const uid = user!.id;
       const [profileRes, projectsRes, invoicesRes] = await Promise.all([
-        supabase.from("profiles").select("display_name").eq("user_id", user.id).single(),
-        supabase.from("client_projects").select("id, title, status, progress, budget").eq("user_id", user.id).order("created_at", { ascending: false }).limit(10),
-        supabase.from("invoices").select("id, invoice_number, amount, currency, status, pdf_url").eq("user_id", user.id).order("created_at", { ascending: false }).limit(20),
+        supabase.from("profiles").select("display_name").eq("user_id", uid).single(),
+        supabase.from("client_projects").select("id, title, status, progress, budget")
+          .eq("user_id", uid).order("created_at", { ascending: false }).limit(10),
+        supabase.from("invoices").select("id, invoice_number, amount, currency, status, pdf_url")
+          .eq("user_id", uid).order("created_at", { ascending: false }).limit(20),
       ]);
 
-      const userProjectIds = (projectsRes.data || []).map((p) => p.id);
+      const projects = projectsRes.data || [];
+      const invoices = invoicesRes.data || [];
+      const projectIds = projects.map((p) => p.id);
 
       const [milestonesRes, msgCount] = await Promise.all([
-        supabase.from("project_milestones").select("id, title, status, due_date, project_id")
-          .in("status", ["review", "pending", "in-progress"])
-          .in("project_id", userProjectIds.length > 0 ? userProjectIds : ["__none__"])
-          .order("due_date").limit(5),
-        userProjectIds.length > 0
-          ? supabase.from("messages").select("id", { count: "exact", head: true }).in("project_id", userProjectIds)
-          : Promise.resolve({ count: 0 }),
+        projectIds.length > 0
+          ? supabase.from("project_milestones").select("id, title, status, due_date, project_id")
+              .in("status", ["review", "pending", "in-progress"])
+              .in("project_id", projectIds).order("due_date").limit(5)
+          : { data: [] },
+        projectIds.length > 0
+          ? supabase.from("messages").select("id", { count: "exact", head: true }).in("project_id", projectIds)
+          : { count: 0 },
       ]);
 
-      setProfile(profileRes.data);
-      setProjects(projectsRes.data || []);
-      setMilestones(milestonesRes.data || []);
-      setInvoices(invoicesRes.data || []);
-      const unpaid = (invoicesRes.data || []).filter((i) => i.status !== "paid").reduce((sum, i) => sum + Number(i.amount), 0);
-      setStats({
-        projects: (projectsRes.data || []).length,
-        invoices: (invoicesRes.data || []).length,
-        messages: msgCount.count || 0,
-        unpaidAmount: unpaid,
-      });
-    };
-    load();
-  }, []);
+      const unpaidInvoices = invoices.filter((i) => i.status !== "paid");
+      return {
+        profile: profileRes.data,
+        projects,
+        milestones: milestonesRes.data || [],
+        invoices,
+        unpaidInvoices,
+        unpaidCount: unpaidInvoices.length,
+        messageCount: msgCount.count || 0,
+      };
+    },
+  });
 
-  const statusColor: Record<string, string> = {
-    planning: "bg-muted text-muted-foreground",
-    "in-progress": "bg-primary/20 text-primary",
-    review: "bg-accent/20 text-accent",
-    completed: "bg-green-500/20 text-green-400",
-  };
+  // Real-time: invalidate dashboard when milestones or invoices change
+  useEffect(() => {
+    if (!user?.id) return;
+    const channel = supabase
+      .channel("dashboard-realtime")
+      .on("postgres_changes", { event: "*", schema: "public", table: "project_milestones" },
+        () => queryClient.invalidateQueries({ queryKey: ["dashboard", user.id] }))
+      .on("postgres_changes", { event: "*", schema: "public", table: "invoices" },
+        () => queryClient.invalidateQueries({ queryKey: ["dashboard", user.id] }))
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [user?.id, queryClient]);
+
+  if (isLoading) return <DashboardSkeleton />;
+  if (error) return <PortalError onRetry={refetch} />;
+  if (!data) return null;
+
+  const { profile, projects, milestones, invoices, unpaidInvoices, unpaidCount, messageCount } = data;
 
   const widgets = [
-    { label: "Active Projects", value: stats.projects, icon: FolderKanban, color: "text-primary", href: "/client-portal/projects" },
-    { label: "Invoices", value: stats.invoices, icon: Receipt, color: "text-accent", href: "/client-portal/invoices" },
-    { label: "Messages", value: stats.messages, icon: MessageSquare, color: "text-primary", href: "/client-portal/messages" },
-    { label: "Outstanding (NGN)", value: stats.unpaidAmount.toLocaleString(), icon: CalendarDays, color: "text-accent", href: "/client-portal/invoices" },
+    { label: "Active Projects", value: projects.length, icon: FolderKanban, color: "text-primary", href: "/client-portal/projects" },
+    { label: "Total Invoices", value: invoices.length, icon: Receipt, color: "text-accent", href: "/client-portal/invoices" },
+    { label: "Messages", value: messageCount, icon: MessageSquare, color: "text-primary", href: "/client-portal/messages" },
+    { label: "Unpaid Invoices", value: unpaidCount, icon: AlertCircle, color: unpaidCount > 0 ? "text-destructive" : "text-muted-foreground", href: "/client-portal/invoices" },
   ];
 
-  // Chart data
   const projectStatusData = Object.entries(
-    projects.reduce<Record<string, number>>((acc, p) => {
-      acc[p.status] = (acc[p.status] || 0) + 1;
-      return acc;
-    }, {})
+    projects.reduce<Record<string, number>>((acc, p) => { acc[p.status] = (acc[p.status] || 0) + 1; return acc; }, {})
   ).map(([name, value]) => ({ name, value }));
 
   const projectProgressData = projects.slice(0, 6).map((p) => ({
@@ -99,10 +122,7 @@ const Dashboard = () => {
   }));
 
   const invoiceStatusData = Object.entries(
-    invoices.reduce<Record<string, number>>((acc, i) => {
-      acc[i.status] = (acc[i.status] || 0) + Number(i.amount);
-      return acc;
-    }, {})
+    invoices.reduce<Record<string, number>>((acc, i) => { acc[i.status] = (acc[i.status] || 0) + 1; return acc; }, {})
   ).map(([name, value]) => ({ name, value }));
 
   return (
@@ -118,12 +138,14 @@ const Dashboard = () => {
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {widgets.map((w) => (
           <Link key={w.label} to={w.href}>
-            <Card className="glass hover:border-primary/40 transition-all">
+            <Card className={`glass hover:border-primary/40 transition-all ${w.label === "Unpaid Invoices" && unpaidCount > 0 ? "border-destructive/30" : ""}`}>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">{w.label}</CardTitle>
                 <w.icon size={18} className={w.color} />
               </CardHeader>
-              <CardContent><p className="text-3xl font-display font-bold">{w.value}</p></CardContent>
+              <CardContent>
+                <p className="text-3xl font-display font-bold">{w.value}</p>
+              </CardContent>
             </Card>
           </Link>
         ))}
@@ -131,7 +153,6 @@ const Dashboard = () => {
 
       {/* Charts Row */}
       <div className="grid lg:grid-cols-3 gap-6">
-        {/* Project Status Pie */}
         <Card className="glass">
           <CardHeader><CardTitle className="text-lg">Project Status</CardTitle></CardHeader>
           <CardContent>
@@ -153,7 +174,6 @@ const Dashboard = () => {
           </CardContent>
         </Card>
 
-        {/* Project Progress Bar */}
         <Card className="glass">
           <CardHeader><CardTitle className="text-lg">Progress Overview</CardTitle></CardHeader>
           <CardContent>
@@ -172,7 +192,6 @@ const Dashboard = () => {
           </CardContent>
         </Card>
 
-        {/* Invoice Breakdown */}
         <Card className="glass">
           <CardHeader><CardTitle className="text-lg">Invoice Breakdown</CardTitle></CardHeader>
           <CardContent>
@@ -186,7 +205,7 @@ const Dashboard = () => {
                       <Cell key={entry.name} fill={INVOICE_COLORS[entry.name] || "hsl(var(--muted))"} />
                     ))}
                   </Pie>
-                  <Tooltip contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} formatter={(val: number) => [`₦${val.toLocaleString()}`, "Amount"]} />
+                  <Tooltip contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} formatter={(val: number) => [`${val} invoices`, ""]} />
                   <Legend formatter={(val) => <span className="text-xs capitalize">{val}</span>} />
                 </PieChart>
               </ResponsiveContainer>
@@ -206,14 +225,14 @@ const Dashboard = () => {
             {projects.length === 0 ? (
               <p className="text-sm text-muted-foreground">No active projects yet.</p>
             ) : projects.slice(0, 5).map((p) => (
-              <Link key={p.id} to={`/client-portal/projects/${p.id}`} className="block">
+              <Link key={p.id} to={`/client-portal/projects/${p.id}`} className="block group">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-sm font-medium">{p.title}</span>
-                  <Badge className={statusColor[p.status] || ""}>{p.status}</Badge>
+                  <span className="text-sm font-medium group-hover:text-primary transition-colors">{p.title}</span>
+                  <Badge className={statusBadge[p.status] || ""}>{p.status}</Badge>
                 </div>
                 <div className="flex items-center gap-2">
                   <Progress value={p.progress} className="h-1.5 flex-1" />
-                  <span className="text-xs text-muted-foreground">{p.progress}%</span>
+                  <span className="text-xs text-muted-foreground w-8 text-right">{p.progress}%</span>
                 </div>
               </Link>
             ))}
@@ -228,7 +247,9 @@ const Dashboard = () => {
             ) : milestones.map((m) => (
               <div key={m.id} className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  {m.status === "review" ? <CheckCircle size={16} className="text-accent" /> : <Clock size={16} className="text-muted-foreground" />}
+                  {m.status === "review"
+                    ? <CheckCircle size={16} className="text-accent" />
+                    : <Clock size={16} className="text-muted-foreground" />}
                   <span className="text-sm">{m.title}</span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -248,18 +269,20 @@ const Dashboard = () => {
           <Button variant="ghost" size="sm" asChild><Link to="/client-portal/invoices">View All</Link></Button>
         </CardHeader>
         <CardContent>
-          {invoices.filter((i) => i.status !== "paid").length === 0 ? (
+          {unpaidInvoices.length === 0 ? (
             <p className="text-sm text-muted-foreground">All invoices are paid. 🎉</p>
           ) : (
             <div className="space-y-2">
-              {invoices.filter((i) => i.status !== "paid").map((inv) => (
-                <div key={inv.id} className="flex items-center justify-between py-2 border-b border-border/50 last:border-0">
+              {unpaidInvoices.map((inv) => (
+                <div key={inv.id} className={`flex items-center justify-between py-2 border-b border-border/50 last:border-0 pl-2 ${inv.status === "overdue" ? "border-l-2 border-l-destructive" : ""}`}>
                   <div>
                     <p className="text-sm font-medium">{inv.invoice_number}</p>
-                    <p className="text-xs text-muted-foreground">{inv.currency} {Number(inv.amount).toLocaleString()}</p>
+                    <p className="text-xs text-muted-foreground">{formatCurrency(Number(inv.amount), inv.currency)}</p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Badge className="bg-yellow-500/20 text-yellow-400">{inv.status}</Badge>
+                    <Badge className={inv.status === "overdue" ? "bg-destructive/20 text-destructive" : "bg-yellow-500/20 text-yellow-400"}>
+                      {inv.status}
+                    </Badge>
                     {inv.pdf_url && (
                       <Button variant="ghost" size="icon" asChild>
                         <a href={inv.pdf_url} target="_blank" rel="noopener noreferrer"><Download size={14} /></a>

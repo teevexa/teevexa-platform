@@ -2,9 +2,10 @@ import { useState } from "react";
 import { useNavigate, Outlet, Link, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { LayoutDashboard, FolderKanban, FolderOpen, MessageSquare, Receipt, Settings, LogOut, Menu, X, Activity, CalendarDays, FileCheck, LifeBuoy } from "lucide-react";
+import { LayoutDashboard, FolderKanban, FolderOpen, MessageSquare, Receipt, Settings, LogOut, Menu, X, Activity, CalendarDays, FileCheck, LifeBuoy, ArrowUpLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import NotificationCenter from "@/components/NotificationCenter";
+import logo from "@/assets/teevexa-logo.jpeg";
 
 const navItems = [
   { path: "/client-portal", label: "Dashboard", icon: LayoutDashboard },
@@ -56,13 +57,24 @@ const PortalLayout = () => {
 
       <aside className={`fixed lg:static inset-y-0 left-0 z-40 w-64 bg-sidebar-background border-r border-sidebar-border transition-transform lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
         <div className="flex flex-col h-full p-4">
-          <Link to="/" className="font-display font-bold text-xl gradient-text mb-8 mt-2 block">
-            TEEVEXA
-          </Link>
+          {/* Workspace identity */}
+          <div className="mb-8 mt-2">
+            <div className="flex items-center gap-2.5 mb-2">
+              <img src={logo} alt="Teevexa" className="h-8 w-8 rounded-md object-cover shrink-0" />
+              <span className="font-display font-bold text-lg gradient-text tracking-tight">TEEVEXA</span>
+            </div>
+            <div className="ml-0.5 flex items-center gap-1.5">
+              <span className="inline-block w-1.5 h-1.5 rounded-full bg-primary/70" />
+              <span className="text-[11px] font-medium text-muted-foreground tracking-wide uppercase">Project Workspace</span>
+            </div>
+          </div>
 
           <nav className="flex-1 space-y-1">
             {navItems.map((item) => {
-              const active = location.pathname === item.path;
+              const active =
+                item.path === "/client-portal"
+                  ? location.pathname === "/client-portal" || location.pathname === "/client-portal/"
+                  : location.pathname.startsWith(item.path);
               return (
                 <Link
                   key={item.path}
@@ -81,9 +93,16 @@ const PortalLayout = () => {
             })}
           </nav>
 
-          <div className="border-t border-sidebar-border pt-4 space-y-2">
-            <p className="text-xs text-muted-foreground truncate px-3">{user.email}</p>
-            <Button variant="ghost" size="sm" onClick={logout} className="w-full justify-start gap-2">
+          <div className="border-t border-sidebar-border pt-4 space-y-1">
+            <p className="text-xs text-muted-foreground truncate px-3 mb-2">{user.email}</p>
+            <Link
+              to="/"
+              className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-sidebar-accent/50 transition-colors"
+            >
+              <ArrowUpLeft size={16} />
+              Back to website
+            </Link>
+            <Button variant="ghost" size="sm" onClick={logout} className="w-full justify-start gap-2 text-muted-foreground hover:text-foreground">
               <LogOut size={16} /> Sign Out
             </Button>
           </div>
