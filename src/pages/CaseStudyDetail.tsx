@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, Calendar, Building2, Layers, BarChart3, Target, Lightbulb, TrendingUp } from "lucide-react";
+import SEO from "@/components/SEO";
 
 interface CaseStudy {
   id: string;
@@ -73,6 +74,23 @@ const CaseStudyDetail = () => {
 
   return (
     <>
+      <SEO
+        title={`${study.title}${study.client_name ? ` — ${study.client_name}` : ""} | Case Study`}
+        description={study.description}
+        canonical={`/portfolio/${study.slug}`}
+        ogImage={study.cover_image_url || undefined}
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "Article",
+          headline: study.title,
+          description: study.description,
+          image: study.cover_image_url || undefined,
+          datePublished: study.published_at || undefined,
+          author: { "@type": "Organization", name: "Teevexa" },
+          publisher: { "@type": "Organization", name: "Teevexa", url: "https://teevexa.com" },
+          url: `https://teevexa.com/portfolio/${study.slug}`,
+        }}
+      />
       {/* ── Hero ── */}
       <section className="relative pt-32 pb-20 px-4 gradient-hero network-bg overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">

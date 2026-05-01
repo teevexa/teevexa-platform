@@ -13,14 +13,14 @@
     <meta name="twitter:title" content="Teevexa">
     <meta name="twitter:description" content="Tech Evolution for Exceptional Applications. Building digital infrastructure for Africa's future.">
 
-    <!-- Prevent flash of wrong theme: apply saved or default (dark) before React renders -->
+    <!-- Prevent flash of wrong theme: apply saved preference; default is light -->
     <script>
       (function () {
         var saved = localStorage.getItem("teevexa_theme");
-        if (saved === "light") {
-          document.documentElement.classList.remove("dark");
-        } else {
+        if (saved === "dark") {
           document.documentElement.classList.add("dark");
+        } else {
+          document.documentElement.classList.remove("dark");
         }
       })();
     </script>

@@ -5,6 +5,7 @@ import SectionHeading from "@/components/SectionHeading";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, FileText, Clock, Tag, Sparkles } from "lucide-react";
+import SEO from "@/components/SEO";
 
 interface Post {
   id: string;
@@ -44,6 +45,11 @@ const Insights = () => {
 
   return (
     <>
+      <SEO
+        title="Insights | Engineering Blog & Articles | Teevexa"
+        description="Read Teevexa's engineering blog — articles on software architecture, mobile development, cloud, and Africa's tech ecosystem."
+        canonical="/insights"
+      />
       {/* ── Hero ── */}
       <section className="relative py-32 px-4 gradient-hero network-bg overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">

@@ -7,6 +7,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useNavigate } from "react-router-dom";
 import { timeAgo } from "@/lib/format";
+import { Helmet } from "react-helmet-async";
 
 interface Notification {
   id: string; title: string; message: string; type: string; read: boolean; link: string | null; created_at: string;
@@ -29,7 +30,7 @@ const groupByDate = (notifications: Notification[]): { label: string; items: Not
   return Object.entries(groups).filter(([, items]) => items.length > 0).map(([label, items]) => ({ label, items }));
 };
 
-const NotificationCenter = () => {
+const NotificationCenter = ({ appTitle = "Teevexa" }: { appTitle?: string }) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
@@ -51,12 +52,6 @@ const NotificationCenter = () => {
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 
-  // Update browser tab title with unread count
-  useEffect(() => {
-    const baseTitle = "Client Portal — Teevexa";
-    document.title = unreadCount > 0 ? `(${unreadCount}) ${baseTitle}` : baseTitle;
-    return () => { document.title = baseTitle; };
-  }, [unreadCount]);
 
   const markAsRead = async (id: string) => {
     await supabase.from("notifications").update({ read: true }).eq("id", id);
@@ -77,7 +72,11 @@ const NotificationCenter = () => {
 
   const groups = groupByDate(notifications);
 
+  const tabTitle = unreadCount > 0 ? `(${unreadCount}) ${appTitle}` : appTitle;
+
   return (
+    <>
+    <Helmet><title>{tabTitle}</title></Helmet>
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button variant="ghost" size="icon" className="relative" aria-label={`Notifications${unreadCount > 0 ? `, ${unreadCount} unread` : ""}`}>
@@ -141,6 +140,7 @@ const NotificationCenter = () => {
         </ScrollArea>
       </PopoverContent>
     </Popover>
+    </>
   );
 };
 

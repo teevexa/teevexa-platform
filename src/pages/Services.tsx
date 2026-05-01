@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import SectionHeading from "@/components/SectionHeading";
+import SEO from "@/components/SEO";
 import {
   Globe, Smartphone, ShoppingCart, Building2, Palette, Sparkles,
   ArrowRight, CheckCircle2, Search, Lightbulb, PenTool, Code2,
@@ -66,6 +67,11 @@ const process = [
 
 const Services = () => (
   <>
+    <SEO
+      title="Software Development Services | Teevexa"
+      description="Custom web apps, mobile apps, e-commerce, enterprise software, and UI/UX design — Teevexa delivers end-to-end digital products for modern African businesses."
+      canonical="/services"
+    />
     {/* ── Hero ── */}
     <section className="relative py-32 px-4 gradient-hero network-bg overflow-hidden">
       <div className="absolute inset-0 pointer-events-none">

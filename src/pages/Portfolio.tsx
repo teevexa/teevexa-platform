@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import SectionHeading from "@/components/SectionHeading";
+import SEO from "@/components/SEO";
 import { BarChart3, ArrowRight, CheckCircle2, Filter } from "lucide-react";
 
 interface CaseStudy {
@@ -46,6 +47,11 @@ const Portfolio = () => {
 
   return (
     <>
+      <SEO
+        title="Portfolio | Our Work & Case Studies | Teevexa"
+        description="Explore Teevexa's portfolio of digital products, mobile apps, and platforms built for clients across Africa and beyond."
+        canonical="/portfolio"
+      />
       {/* ── Hero ── */}
       <section className="relative py-32 px-4 gradient-hero network-bg overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">

@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import SectionHeading from "@/components/SectionHeading";
+import SEO from "@/components/SEO";
 import {
   Shield, Sparkles, Layers, Leaf, Eye,
   Target, ArrowRight, Globe, Linkedin,
@@ -48,6 +49,18 @@ const values = [
 
 const About = () => (
   <>
+    <SEO
+      title="About Teevexa | Our Mission, Story & Team"
+      description="Learn about Teevexa — a Nairobi-born software company building world-class digital products for Africa's most ambitious businesses."
+      canonical="/about"
+      structuredData={{
+        "@context": "https://schema.org",
+        "@type": "AboutPage",
+        name: "About Teevexa",
+        url: "https://teevexa.com/about",
+        description: "Learn about Teevexa — who we are, what drives us, and the team building Africa's digital future.",
+      }}
+    />
     {/* ── Hero ── */}
     <section className="relative min-h-[70vh] flex items-center gradient-hero network-bg overflow-hidden">
       <div className="absolute inset-0 pointer-events-none">

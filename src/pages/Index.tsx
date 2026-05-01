@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import SectionHeading from "@/components/SectionHeading";
+import SEO from "@/components/SEO";
 import {
   Globe, Smartphone, ShoppingCart, Building2, Palette, Sparkles,
   Shield, Layers, MapPin, Lock, Leaf, Wheat, Ship, Heart, Store,
@@ -79,6 +80,30 @@ const Index = () => {
 
   return (
     <>
+      <SEO
+        title="Teevexa — Building Digital Infrastructure for Africa's Future"
+        description="Teevexa designs and builds world-class software, mobile apps, and cloud platforms for startups and enterprises across Africa and beyond."
+        canonical="/"
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "Teevexa",
+          url: "https://teevexa.com",
+          logo: "https://teevexa.com/og-image.png",
+          sameAs: [
+            "https://www.linkedin.com/company/teevexa",
+            "https://x.com/teevexa",
+            "https://www.instagram.com/teevexa",
+          ],
+          contactPoint: {
+            "@type": "ContactPoint",
+            telephone: "+254783797132",
+            contactType: "customer support",
+            areaServed: "Africa",
+            availableLanguage: "English",
+          },
+        }}
+      />
       {/* ── Hero ── */}
       <section className="relative min-h-screen flex flex-col items-center justify-center gradient-hero network-bg overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">

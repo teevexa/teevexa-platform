@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -143,6 +144,11 @@ const CareerDetail = () => {
 
   return (
     <>
+      <SEO
+        title={`${job.title} — ${job.department} | Teevexa Careers`}
+        description={`${job.title} (${job.employment_type}) in ${job.location}. Join Teevexa and help build Africa's digital future.`}
+        canonical={`/careers/${job.slug}`}
+      />
       {/* ── Hero ── */}
       <section className="relative pt-32 pb-16 px-4 gradient-hero network-bg overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">

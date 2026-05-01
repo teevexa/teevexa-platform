@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import SEO from "@/components/SEO";
 import { z } from "zod";
 import SectionHeading from "@/components/SectionHeading";
 import { Button } from "@/components/ui/button";
@@ -210,6 +211,11 @@ const StartProject = () => {
 
   return (
     <>
+      <SEO
+        title="Start a Project | Work with Teevexa"
+        description="Tell us about your project. Fill in our brief and we'll get back with a detailed proposal within 48 hours — no commitment required."
+        canonical="/start-project"
+      />
       {/* ── Hero ── */}
       <section className="relative py-28 px-4 gradient-hero network-bg overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">

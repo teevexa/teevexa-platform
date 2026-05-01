@@ -1,4 +1,5 @@
 import { LegalLayout, LegalSection, LegalSubSection, LegalList, LegalContactBox, Em } from "@/components/legal/LegalLayout";
+import SEO from "@/components/SEO";
 
 const LAST_UPDATED = "February 26, 2026";
 
@@ -23,6 +24,13 @@ const SECTIONS = [
 ];
 
 const TermsOfService = () => (
+  <>
+  <SEO
+    title="Terms of Service | Teevexa"
+    description="Read Teevexa's terms of service governing the use of our website, products, and services."
+    canonical="/legal/terms-of-service"
+    noindex
+  />
   <LegalLayout
     title="Terms of Service"
     subtitle="Please read these terms carefully before accessing or using any of our services."
@@ -278,6 +286,7 @@ const TermsOfService = () => (
       </LegalContactBox>
     </LegalSection>
   </LegalLayout>
+  </>
 );
 
 export default TermsOfService;

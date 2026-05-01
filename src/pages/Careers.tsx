@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import SectionHeading from "@/components/SectionHeading";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import SEO from "@/components/SEO";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Briefcase, MapPin, Clock, ArrowRight, Users, Heart, Zap,
@@ -56,6 +57,11 @@ const Careers = () => {
 
   return (
     <>
+      <SEO
+        title="Careers at Teevexa | Join Our Engineering Team"
+        description="Explore open roles at Teevexa. We're building Africa's digital future and looking for talented engineers, designers, and product people."
+        canonical="/careers"
+      />
       {/* ── Hero ── */}
       <section className="relative py-32 px-4 gradient-hero network-bg overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">

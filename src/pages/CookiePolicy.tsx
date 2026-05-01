@@ -1,4 +1,5 @@
 import { LegalLayout, LegalSection, LegalSubSection, LegalList, LegalContactBox, Em } from "@/components/legal/LegalLayout";
+import SEO from "@/components/SEO";
 
 const LAST_UPDATED = "February 26, 2026";
 
@@ -15,6 +16,13 @@ const SECTIONS = [
 ];
 
 const CookiePolicy = () => (
+  <>
+  <SEO
+    title="Cookie Policy | Teevexa"
+    description="Learn how Teevexa uses cookies and similar tracking technologies on our website."
+    canonical="/legal/cookies"
+    noindex
+  />
   <LegalLayout
     title="Cookie Policy"
     subtitle="This policy explains what cookies are, how we use them, and how you can control them."
@@ -190,6 +198,7 @@ const CookiePolicy = () => (
       </LegalContactBox>
     </LegalSection>
   </LegalLayout>
+  </>
 );
 
 export default CookiePolicy;

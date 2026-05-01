@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -66,6 +67,11 @@ const TeevexaTrace = () => {
 
   return (
     <>
+      <SEO
+        title="Teevexa Trace | Supply Chain Provenance Platform"
+        description="Teevexa Trace is a blockchain-powered supply chain provenance SaaS that lets businesses track, verify, and certify their products from source to shelf."
+        canonical="/teevexa-trace"
+      />
       {/* Hero */}
       <section className="relative min-h-[80vh] flex items-center justify-center gradient-hero network-bg overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">

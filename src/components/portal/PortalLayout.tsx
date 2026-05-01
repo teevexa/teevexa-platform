@@ -115,7 +115,7 @@ const PortalLayout = () => {
 
       <main className="flex-1 overflow-auto">
         <div className="flex justify-end px-6 pt-4 lg:px-8">
-          <NotificationCenter />
+          <NotificationCenter appTitle="Client Portal — Teevexa" />
         </div>
         <div className="p-6 lg:p-8 pt-2 max-w-6xl mx-auto">
           <Outlet />

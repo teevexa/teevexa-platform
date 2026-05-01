@@ -4,31 +4,64 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import {
   Mail, MapPin, Phone, Linkedin, Twitter, Instagram, Facebook,
   CheckCircle, Clock, ArrowRight, MessageSquare,
-  CalendarDays, Zap,
+  CalendarDays, Zap, HelpCircle,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
+import SEO from "@/components/SEO";
 
-const faqs = [
+const faqGroups = [
   {
-    q: "How quickly do you respond?",
-    a: "We respond to all inquiries within 24 hours on business days. For urgent matters, call us directly.",
+    group: "Working with us",
+    items: [
+      {
+        q: "How quickly do you respond to enquiries?",
+        a: "We respond to all messages within 24 hours on business days (Mon–Fri, 8 AM–6 PM EAT). For time-sensitive matters, call us directly at +254 783 797 132.",
+      },
+      {
+        q: "Do you work with startups or only enterprises?",
+        a: "Both. We've built MVPs for early-stage startups and scaled platforms for large enterprises. Our approach adapts to your stage — lean and fast for startups, structured and compliant for enterprises.",
+      },
+      {
+        q: "What does a typical engagement look like?",
+        a: "Most projects follow a Discovery → Design → Build → Launch cycle. We kick off with a scoping call, align on requirements and milestones, then move into iterative sprints. You'll have a dedicated project manager and access to your own client portal throughout.",
+      },
+    ],
   },
   {
-    q: "Do you work with startups or only enterprises?",
-    a: "Both. We've built MVPs for early-stage startups and complex platforms for large enterprises. We tailor our approach to your stage.",
+    group: "Scope & Pricing",
+    items: [
+      {
+        q: "How do I get a project quote?",
+        a: "Fill in our Start a Project brief — it takes about 5 minutes and covers your goals, timeline, and budget range. We use this to prepare a detailed proposal within 48 hours, no strings attached.",
+      },
+      {
+        q: "What is your minimum project size?",
+        a: "We don't publish a hard minimum, but most of our engagements start from KES 150,000 (≈ $1,000) for a focused scope. Smaller retainers or advisory arrangements are also available — just ask.",
+      },
+      {
+        q: "Do you offer ongoing maintenance after launch?",
+        a: "Yes. We offer flexible retainer packages covering bug fixes, feature iterations, security patches, hosting management, and performance monitoring — so your product keeps improving after go-live.",
+      },
+    ],
   },
   {
-    q: "What countries do you serve?",
-    a: "We're headquartered in Nairobi but work remotely across Africa and with international clients. No geography is off-limits.",
-  },
-  {
-    q: "How do I get a project quote?",
-    a: "Fill in our Start a Project form — it takes 5 minutes and gives us everything we need to prepare an accurate proposal.",
+    group: "Geography & Logistics",
+    items: [
+      {
+        q: "What countries do you serve?",
+        a: "We're headquartered in Nairobi, Kenya, and work remotely across Africa and with international clients in Europe and North America. No geography is off-limits — we operate entirely remote-first.",
+      },
+      {
+        q: "Can I visit your office or meet in person?",
+        a: "Absolutely. Our team is based in Nairobi and we welcome in-person meetings for local clients. For international clients, we use video calls and async tools — most clients never need to travel.",
+      },
+    ],
   },
 ];
 
@@ -84,6 +117,12 @@ const Contact = () => {
 
   return (
     <>
+      <SEO
+        title="Contact Teevexa | Talk to Our Team"
+        description="Get in touch with Teevexa. Send a message, book a free 30-minute consultation, or start a project — we respond within 24 hours."
+        canonical="/contact"
+      />
+
       {/* ── Hero ── */}
       <section className="relative py-32 px-4 gradient-hero network-bg overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
@@ -267,19 +306,60 @@ const Contact = () => {
 
       {/* ── FAQ ── */}
       <section className="section-card py-24 px-4">
-        <div className="container mx-auto max-w-3xl">
-          <SectionHeading
-            label="FAQ"
-            title="Common Questions"
-            description="Quick answers to what most people ask before reaching out."
-          />
-          <div className="mt-12 space-y-4">
-            {faqs.map((faq) => (
-              <div key={faq.q} className="rounded-2xl border border-border p-6 hover:border-primary/30 transition-colors">
-                <h4 className="font-display font-bold mb-2 text-base">{faq.q}</h4>
-                <p className="text-sm text-muted-foreground leading-relaxed">{faq.a}</p>
+        <div className="container mx-auto max-w-5xl">
+          <div className="grid lg:grid-cols-5 gap-12 items-start">
+
+            {/* Left: heading + CTA */}
+            <div className="lg:col-span-2 lg:sticky lg:top-24">
+              <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary block mb-3">FAQ</span>
+              <h2 className="text-3xl font-display font-bold leading-tight mb-4">
+                Questions people ask before reaching out
+              </h2>
+              <p className="text-muted-foreground text-sm leading-relaxed mb-8">
+                If you don't see what you're looking for, just send us a message — we're happy to help.
+              </p>
+              <div className="glass rounded-2xl p-5 space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <HelpCircle className="text-primary" size={16} />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold">Still have questions?</p>
+                    <p className="text-xs text-muted-foreground">We reply within 24 hours.</p>
+                  </div>
+                </div>
+                <Button size="sm" className="w-full glow-primary" asChild>
+                  <a href="#contact-form">Send Us a Message</a>
+                </Button>
+                <Button size="sm" variant="outline" className="w-full" asChild>
+                  <Link to="/book-consultation">Book a Free Call</Link>
+                </Button>
               </div>
-            ))}
+            </div>
+
+            {/* Right: grouped accordion */}
+            <div className="lg:col-span-3 space-y-8">
+              {faqGroups.map((group) => (
+                <div key={group.group}>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-primary mb-3">
+                    {group.group}
+                  </p>
+                  <Accordion type="single" collapsible className="glass rounded-2xl overflow-hidden divide-y divide-border">
+                    {group.items.map((faq, i) => (
+                      <AccordionItem key={i} value={`${group.group}-${i}`} className="border-0 px-6">
+                        <AccordionTrigger className="text-sm font-semibold text-left hover:no-underline hover:text-primary py-5 gap-4">
+                          {faq.q}
+                        </AccordionTrigger>
+                        <AccordionContent className="text-sm text-muted-foreground leading-relaxed pb-5">
+                          {faq.a}
+                        </AccordionContent>
+                      </AccordionItem>
+                    ))}
+                  </Accordion>
+                </div>
+              ))}
+            </div>
+
           </div>
         </div>
       </section>

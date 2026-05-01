@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, Clock, FileText } from "lucide-react";
+import SEO from "@/components/SEO";
 
 interface Post {
   id: string;
@@ -67,6 +68,26 @@ const InsightDetail = () => {
 
   return (
     <>
+      <SEO
+        title={post.title}
+        description={post.excerpt || `Read ${post.title} on the Teevexa engineering blog.`}
+        canonical={`/insights/${post.slug}`}
+        ogImage={post.cover_image_url || undefined}
+        ogType="article"
+        publishedAt={post.published_at || undefined}
+        author="Teevexa"
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "Article",
+          headline: post.title,
+          description: post.excerpt || "",
+          image: post.cover_image_url || undefined,
+          datePublished: post.published_at || undefined,
+          author: { "@type": "Organization", name: "Teevexa" },
+          publisher: { "@type": "Organization", name: "Teevexa", url: "https://teevexa.com" },
+          url: `https://teevexa.com/insights/${post.slug}`,
+        }}
+      />
       {/* ── Hero ── */}
       <section className="relative pt-32 pb-16 px-4 gradient-hero network-bg overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">

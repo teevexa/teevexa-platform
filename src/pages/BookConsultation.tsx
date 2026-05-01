@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
+import SEO from "@/components/SEO";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -154,6 +155,11 @@ const BookConsultation = () => {
 
   return (
     <>
+      <SEO
+        title="Book a Free Consultation | Teevexa"
+        description="Schedule a free 30-minute consultation with Teevexa's team. Let's talk about your goals, challenges, and how we can help you build something great."
+        canonical="/book-consultation"
+      />
       {/* ── Hero ── */}
       <section className="relative py-28 px-4 gradient-hero network-bg overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">

@@ -1,6 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import SectionHeading from "@/components/SectionHeading";
 import { Button } from "@/components/ui/button";
+import SEO from "@/components/SEO";
 import { ArrowRight, ArrowLeft, CheckCircle2, Search, Lightbulb, PenTool, Code2, Shield, Rocket, HeadphonesIcon } from "lucide-react";
 
 const serviceData: Record<string, {
@@ -79,6 +80,11 @@ const ServiceDetail = () => {
 
   return (
     <>
+      <SEO
+        title={`${service.title} | Teevexa`}
+        description={`${service.tagline} ${service.approach}`}
+        canonical={`/services/${slug}`}
+      />
       {/* ── Hero ── */}
       <section className="relative py-32 px-4 gradient-hero network-bg overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">

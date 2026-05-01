@@ -1,4 +1,5 @@
 import { LegalLayout, LegalSection, LegalSubSection, LegalList, LegalContactBox, Em } from "@/components/legal/LegalLayout";
+import SEO from "@/components/SEO";
 
 const LAST_UPDATED = "February 26, 2026";
 
@@ -20,6 +21,13 @@ const SECTIONS = [
 ];
 
 const PrivacyPolicy = () => (
+  <>
+  <SEO
+    title="Privacy Policy | Teevexa"
+    description="Read Teevexa's privacy policy to understand how we collect, use, and protect your personal data."
+    canonical="/legal/privacy-policy"
+    noindex
+  />
   <LegalLayout
     title="Privacy Policy"
     subtitle="We are committed to protecting your privacy and handling your personal data with transparency and care."
@@ -215,6 +223,7 @@ const PrivacyPolicy = () => (
       </LegalContactBox>
     </LegalSection>
   </LegalLayout>
+  </>
 );
 
 export default PrivacyPolicy;
