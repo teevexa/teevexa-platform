@@ -62,6 +62,7 @@ import CookiePolicy from "@/pages/CookiePolicy";
 import { CookieBanner } from "@/components/CookieBanner";
 import NotFound from "@/pages/NotFound";
 import TeevexaTrace from "@/pages/TeevexaTrace";
+import AccountDeletion from "@/pages/AccountDeletion";
 import Portfolio from "@/pages/Portfolio";
 import CaseStudyDetail from "@/pages/CaseStudyDetail";
 import ScrollToTop from "@/components/ScrollToTop";
@@ -105,6 +106,7 @@ const App = () => (
             <Route path="/legal/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/legal/terms-of-service" element={<TermsOfService />} />
             <Route path="/legal/cookies" element={<CookiePolicy />} />
+            <Route path="/account/delete" element={<AccountDeletion />} />
           </Route>
 
           {/* Auth */}
