@@ -13,6 +13,7 @@ const navLinks = [
   { label: "Insights", path: "/insights" },
   { label: "Careers", path: "/careers" },
   { label: "Contact", path: "/contact" },
+  { label: "Verify", path: "/verify" },
 ];
 
 function useTheme() {

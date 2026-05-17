@@ -48,8 +48,8 @@ Deno.serve(async (req) => {
     //    and removing the DB row would break the supply chain timeline for clients.
     await admin
       .from("trace_events")
-      .update({ recorder: null })
-      .eq("recorder", userId);
+      .update({ recorded_by: null })
+      .eq("recorded_by", userId);
 
     // 2. Delete this user's notifications
     await admin

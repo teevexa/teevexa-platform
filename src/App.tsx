@@ -63,6 +63,8 @@ import { CookieBanner } from "@/components/CookieBanner";
 import NotFound from "@/pages/NotFound";
 import TeevexaTrace from "@/pages/TeevexaTrace";
 import AccountDeletion from "@/pages/AccountDeletion";
+import TraceBatch from "@/pages/TraceBatch";
+import VerifyBatch from "@/pages/VerifyBatch";
 import Portfolio from "@/pages/Portfolio";
 import CaseStudyDetail from "@/pages/CaseStudyDetail";
 import ScrollToTop from "@/components/ScrollToTop";
@@ -107,6 +109,8 @@ const App = () => (
             <Route path="/legal/terms-of-service" element={<TermsOfService />} />
             <Route path="/legal/cookies" element={<CookiePolicy />} />
             <Route path="/account/delete" element={<AccountDeletion />} />
+          <Route path="/verify" element={<VerifyBatch />} />
+          <Route path="/trace/:batchId" element={<TraceBatch />} />
           </Route>
 
           {/* Auth */}
