@@ -81,7 +81,7 @@ const Index = () => {
   return (
     <>
       <SEO
-        title="Teevexa — Building Digital Infrastructure for Africa's Future"
+        title="Teevexa - Tech Evolution for Exceptional Applications"
         description="Teevexa designs and builds world-class software, mobile apps, and cloud platforms for startups and enterprises across Africa and beyond."
         canonical="/"
         structuredData={{
