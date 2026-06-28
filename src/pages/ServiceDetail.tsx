@@ -52,6 +52,23 @@ const serviceData: Record<string, {
     approach: "We conduct real user research, build comprehensive design systems, and prototype everything in Figma — tested and approved before a line of code is written.",
     features: ["User research & usability testing", "Design systems in Figma", "Interactive & animated prototyping", "Accessibility (WCAG 2.1 compliance)", "Responsive design for all screen sizes", "Multi-language & RTL layout support", "Brand identity & visual language", "Developer handoff & style guides"],
   },
+  "ai-agents": {
+    title: "AI Agent Development",
+    tagline: "Custom AI agents that automate your most repetitive, high-volume business processes.",
+    problem: "Businesses across Africa are drowning in manual, repetitive work — processing documents, responding to customers, qualifying leads, routing requests — tasks that consume staff time but add little strategic value.",
+    gap: "Most automation tools are either too rigid (they break when anything changes) or too expensive (they rely on costly cloud AI APIs billed per use). There are very few partners who can build production-grade AI agents tailored to your specific workflows.",
+    approach: "We design and build custom AI agents using open-source language models that run on your own infrastructure — no per-query API costs, no data leaving your servers. Each agent is integrated directly into your existing systems via APIs and webhooks.",
+    features: [
+      "Customer support agents (24/7, multi-channel)",
+      "Document processing & data extraction",
+      "Lead qualification & CRM enrichment",
+      "Invoice & purchase order automation",
+      "Internal HR & onboarding workflows",
+      "Inventory & supply chain monitoring",
+      "WhatsApp, email & SMS integrations",
+      "Self-hosted — your data stays on your servers",
+    ],
+  },
 };
 
 const processSteps = [

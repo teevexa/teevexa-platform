@@ -62,11 +62,15 @@ import CookiePolicy from "@/pages/CookiePolicy";
 import { CookieBanner } from "@/components/CookieBanner";
 import NotFound from "@/pages/NotFound";
 import TeevexaTrace from "@/pages/TeevexaTrace";
+import TeevexaDesk from "@/pages/TeevexaDesk";
+import TeevexaBase from "@/pages/TeevexaBase";
+import TeevexaField from "@/pages/TeevexaField";
 import AccountDeletion from "@/pages/AccountDeletion";
 import TraceBatch from "@/pages/TraceBatch";
 import VerifyBatch from "@/pages/VerifyBatch";
-import Portfolio from "@/pages/Portfolio";
-import CaseStudyDetail from "@/pages/CaseStudyDetail";
+import Pricing from "@/pages/Pricing";
+import ApiDocs from "@/pages/ApiDocs";
+import ApiKeys from "@/pages/portal/ApiKeys";
 import ScrollToTop from "@/components/ScrollToTop";
 
 const queryClient = new QueryClient({
@@ -98,11 +102,15 @@ const App = () => (
             <Route path="/contact" element={<Contact />} />
             <Route path="/careers" element={<Careers />} />
             <Route path="/careers/:slug" element={<CareerDetail />} />
-            <Route path="/portfolio" element={<Portfolio />} />
-            <Route path="/portfolio/:slug" element={<CaseStudyDetail />} />
+
             <Route path="/insights" element={<Insights />} />
             <Route path="/insights/:slug" element={<InsightDetail />} />
             <Route path="/teevexa-trace" element={<TeevexaTrace />} />
+            <Route path="/teevexa-desk" element={<TeevexaDesk />} />
+            <Route path="/teevexa-base" element={<TeevexaBase />} />
+            <Route path="/teevexa-field" element={<TeevexaField />} />
+            <Route path="/pricing" element={<Pricing />} />
+            <Route path="/api-docs" element={<ApiDocs />} />
             <Route path="/start-project" element={<StartProject />} />
             <Route path="/book-consultation" element={<BookConsultation />} />
             <Route path="/legal/privacy-policy" element={<PrivacyPolicy />} />
@@ -131,6 +139,7 @@ const App = () => (
             <Route path="messages" element={<Messages />} />
             <Route path="invoices" element={<Invoices />} />
             <Route path="settings" element={<PortalSettings />} />
+            <Route path="api-keys" element={<ApiKeys />} />
           </Route>
 
           {/* Admin Portal */}

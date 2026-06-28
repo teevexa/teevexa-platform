@@ -3,13 +3,20 @@ import { Button } from "@/components/ui/button";
 import SectionHeading from "@/components/SectionHeading";
 import SEO from "@/components/SEO";
 import {
-  Globe, Smartphone, ShoppingCart, Building2, Palette, Sparkles,
+  Globe, Smartphone, ShoppingCart, Building2, Palette, BrainCircuit,
   ArrowRight, CheckCircle2, Search, Lightbulb, PenTool, Code2,
   Rocket, HeadphonesIcon, BarChart2, Shield, Cpu, Cloud,
   Wheat, Ship, MapPin, Heart, Store, TrendingUp, GraduationCap, Factory,
 } from "lucide-react";
 
 const services = [
+  {
+    icon: BrainCircuit,
+    title: "AI Agent Development",
+    desc: "Custom AI agents that automate repetitive business processes — from customer support to document processing and internal workflows.",
+    highlights: ["Fully autonomous, multi-step automation", "Integrates with your existing systems", "On-premise or cloud deployment", "No ongoing AI API costs with open-source models"],
+    path: "/services/ai-agents",
+  },
   {
     icon: Globe,
     title: "Web Development",
@@ -44,13 +51,6 @@ const services = [
     desc: "Research-driven, user-centered design that works across devices, languages, and digital literacy levels.",
     highlights: ["User research & testing", "Design systems & brand guidelines", "Interactive prototyping", "Accessibility (WCAG 2.1)"],
     path: "/services/ui-ux-design",
-  },
-  {
-    icon: Sparkles,
-    title: "Digital Transformation",
-    desc: "End-to-end digitization of business processes — from auditing legacy systems to full cloud migration.",
-    highlights: ["Process audit & mapping", "Multi-cloud migration", "Legacy system modernization", "Change management & training"],
-    path: "/services",
   },
 ];
 

@@ -6,7 +6,7 @@ const Footer = () => {
   return (
     <footer className="nav-dark-surface border-t">
       <div className="container mx-auto px-4 lg:px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
           {/* Brand */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">
@@ -31,9 +31,26 @@ const Footer = () => {
               {[
                 { label: "About Us", path: "/about" },
                 { label: "Services", path: "/services" },
-                { label: "Portfolio", path: "/portfolio" },
                 { label: "Insights", path: "/insights" },
+                { label: "Careers", path: "/careers" },
+                { label: "Contact", path: "/contact" },
+              ].map((l) => (
+                <Link key={l.path} to={l.path} className="text-sm text-muted-foreground hover:text-primary transition-colors">
+                  {l.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Products */}
+          <div className="space-y-4">
+            <h4 className="font-display font-semibold text-foreground">Products</h4>
+            <div className="flex flex-col gap-2">
+              {[
                 { label: "Teevexa Trace", path: "/teevexa-trace" },
+                { label: "Teevexa Field", path: "/teevexa-field" },
+                { label: "Teevexa Desk", path: "/teevexa-desk" },
+                { label: "Teevexa Base", path: "/teevexa-base" },
               ].map((l) => (
                 <Link key={l.path} to={l.path} className="text-sm text-muted-foreground hover:text-primary transition-colors">
                   {l.label}
@@ -47,9 +64,10 @@ const Footer = () => {
             <h4 className="font-display font-semibold text-foreground">Services</h4>
             <div className="flex flex-col gap-2">
               {[
+                { label: "AI Agent Development", path: "/services/ai-agents" },
                 { label: "Web Development", path: "/services/web-development" },
                 { label: "Mobile Development", path: "/services/mobile-development" },
-                { label: "E-Commerce", path: "/services/e-commerce-systems" },
+                { label: "E-Commerce Systems", path: "/services/e-commerce-systems" },
                 { label: "Enterprise Software", path: "/services/enterprise-software" },
                 { label: "UI/UX Design", path: "/services/ui-ux-design" },
               ].map((l) => (

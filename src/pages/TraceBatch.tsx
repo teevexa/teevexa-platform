@@ -6,7 +6,7 @@ import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import {
   Shield, MapPin, Copy, Check, Share2, ExternalLink,
-  ChevronRight, AlertCircle, Clock,
+  ChevronRight, AlertCircle, Clock, Download,
 } from "lucide-react";
 
 interface TraceProduct {
@@ -212,6 +212,7 @@ export default function TraceBatch() {
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [certDownloading, setCertDownloading] = useState(false);
   const [ringAnimated, setRingAnimated] = useState(false);
 
   useEffect(() => {
@@ -278,6 +279,32 @@ export default function TraceBatch() {
     }
     handleCopy();
   }, [product, batchId, handleCopy]);
+
+  const handleDownloadCertificate = useCallback(async () => {
+    if (!batchId) return;
+    setCertDownloading(true);
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData?.session?.access_token;
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL ?? "";
+      const fnUrl = `${supabaseUrl}/functions/v1/generate-certificate?batchId=${encodeURIComponent(batchId)}`;
+      const res = await fetch(fnUrl, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+      if (!res.ok) throw new Error("Certificate generation failed");
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `Teevexa-Certificate-${batchId}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch {
+      alert("Could not generate certificate. Please try again.");
+    } finally {
+      setCertDownloading(false);
+    }
+  }, [batchId]);
 
   const trustScore = calcTrustScore(events);
   const onChainEvents = events.filter((e) => e.blockchain_tx_hash);
@@ -562,7 +589,7 @@ export default function TraceBatch() {
             </div>
           )}
 
-          {/* Share section */}
+          {/* Share + Certificate section */}
           <div className="glass rounded-2xl p-5 mb-4 border border-white/8">
             <h2 className="text-sm font-semibold mb-1 flex items-center gap-2">
               <Share2 size={14} />
@@ -571,7 +598,7 @@ export default function TraceBatch() {
             <p className="text-xs text-muted-foreground mb-4">
               Share with buyers, auditors, retailers, or certification bodies to verify this product's provenance.
             </p>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2 mb-3">
               <div className="flex-1 flex items-center px-3 py-2 rounded-lg bg-muted/20 border border-white/8 min-w-0">
                 <span className="text-xs font-mono text-muted-foreground truncate">{window.location.href}</span>
               </div>
@@ -584,6 +611,16 @@ export default function TraceBatch() {
                 <span className="text-xs">Share</span>
               </Button>
             </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleDownloadCertificate}
+              disabled={certDownloading}
+              className="w-full gap-2 border-primary/30 text-primary hover:bg-primary/10"
+            >
+              <Download size={14} />
+              {certDownloading ? "Generating Certificate…" : "Download Certificate of Provenance (PDF)"}
+            </Button>
           </div>
 
           {/* Footer CTA */}

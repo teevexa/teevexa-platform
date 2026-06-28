@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { FolderKanban, Receipt, MessageSquare, Download, CheckCircle, Clock, AlertCircle } from "lucide-react";
+import { FolderKanban, Receipt, MessageSquare, Download, CheckCircle, Clock, AlertCircle, FileText, Loader2 } from "lucide-react";
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { DashboardSkeleton } from "@/components/portal/PortalSkeleton";
 import PortalError from "@/components/portal/PortalError";
@@ -104,6 +104,36 @@ const Dashboard = () => {
   if (!data) return null;
 
   const { profile, projects, milestones, invoices, unpaidInvoices, unpaidCount, messageCount } = data;
+
+  const [reportDownloading, setReportDownloading] = useState(false);
+
+  const handleDownloadComplianceReport = async () => {
+    setReportDownloading(true);
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData?.session?.access_token;
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL ?? "";
+      const now = new Date();
+      const from = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().slice(0, 10);
+      const to = now.toISOString().slice(0, 10);
+      const fnUrl = `${supabaseUrl}/functions/v1/generate-compliance-report?from=${from}&to=${to}`;
+      const res = await fetch(fnUrl, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+      if (!res.ok) throw new Error("Report generation failed");
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `Teevexa-Compliance-Report-${from}_${to}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch {
+      alert("Could not generate the compliance report. Please try again.");
+    } finally {
+      setReportDownloading(false);
+    }
+  };
 
   const widgets = [
     { label: "Active Projects", value: projects.length, icon: FolderKanban, color: "text-primary", href: "/client-portal/projects" },
@@ -293,6 +323,29 @@ const Dashboard = () => {
               ))}
             </div>
           )}
+        </CardContent>
+      </Card>
+
+      {/* Trace Compliance Report */}
+      <Card className="glass border-border">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-sm font-semibold flex items-center gap-2">
+            <FileText size={16} className="text-primary" />
+            Supply Chain Compliance Report
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-xs text-muted-foreground mb-4">
+            Download a PDF compliance report for this billing period covering all supply chain events, blockchain verification status, and GPS-tagged locations. Suitable for EUDR, ISO 22005, and customs documentation.
+          </p>
+          <Button
+            onClick={handleDownloadComplianceReport}
+            disabled={reportDownloading}
+            className="w-full gap-2 glow-primary"
+          >
+            {reportDownloading ? <Loader2 size={14} className="animate-spin" /> : <Download size={14} />}
+            {reportDownloading ? "Generating Report…" : "Download Compliance Report (PDF)"}
+          </Button>
         </CardContent>
       </Card>
     </div>

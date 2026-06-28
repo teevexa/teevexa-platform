@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
@@ -331,6 +332,38 @@ const TeevexaTrace = () => {
           <p className="text-center text-xs text-muted-foreground mt-6">
             Prices shown in USD. African local currency billing (NGN, KES, GHS, ZAR) available at launch.
           </p>
+        </div>
+      </section>
+
+      {/* Developer & Verify tools */}
+      <section className="section-card py-16 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="glass rounded-2xl p-7 hover:border-primary/40 transition-colors">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+                <QrCode className="text-primary" size={20} />
+              </div>
+              <h3 className="font-display font-bold text-lg mb-2">Verify a Product</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed mb-5">
+                Have a batch ID or QR code? Enter it to view the complete supply chain journey, GPS events, and blockchain-anchored provenance record.
+              </p>
+              <Button variant="outline" size="sm" asChild>
+                <Link to="/verify">Open Verifier <ArrowRight className="ml-2" size={14} /></Link>
+              </Button>
+            </div>
+            <div className="glass rounded-2xl p-7 hover:border-primary/40 transition-colors">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+                <Zap className="text-primary" size={20} />
+              </div>
+              <h3 className="font-display font-bold text-lg mb-2">Developer API</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed mb-5">
+                Integrate Teevexa Trace into your existing systems. REST API with endpoints for batch creation, event logging, and provenance queries.
+              </p>
+              <Button variant="outline" size="sm" asChild>
+                <Link to="/api-docs">View API Docs <ArrowRight className="ml-2" size={14} /></Link>
+              </Button>
+            </div>
+          </div>
         </div>
       </section>
 

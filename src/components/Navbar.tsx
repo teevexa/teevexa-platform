@@ -9,11 +9,9 @@ const navLinks = [
   { label: "Home", path: "/" },
   { label: "About", path: "/about" },
   { label: "Services", path: "/services" },
-  { label: "Portfolio", path: "/portfolio" },
   { label: "Insights", path: "/insights" },
   { label: "Careers", path: "/careers" },
   { label: "Contact", path: "/contact" },
-  { label: "Verify", path: "/verify" },
 ];
 
 function useTheme() {

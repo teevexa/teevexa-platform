@@ -215,39 +215,39 @@
    * section-navy → full inverted dark section (hero-in-page moments)
    */
   .section-card {
-    background-color: hsl(0 0% 100%);
+    background-color: hsl(220 25% 95%);
   }
   .dark .section-card {
-    background-color: hsl(var(--card));
+    background-color: hsl(222 40% 12%);
   }
 
   .section-teal {
     background: linear-gradient(
       135deg,
-      hsl(186 50% 94%) 0%,
-      hsl(213 30% 96%) 100%
+      hsl(186 65% 88%) 0%,
+      hsl(213 45% 91%) 100%
     );
   }
   .dark .section-teal {
     background: linear-gradient(
       135deg,
-      hsl(186 35% 9%)  0%,
-      hsl(222 47% 8%)  100%
+      hsl(186 40% 14%) 0%,
+      hsl(222 44% 12%) 100%
     );
   }
 
   .section-amber {
     background: linear-gradient(
       135deg,
-      hsl(38 60% 96%) 0%,
-      hsl(213 30% 97%) 100%
+      hsl(38 75% 90%) 0%,
+      hsl(213 40% 92%) 100%
     );
   }
   .dark .section-amber {
     background: linear-gradient(
       135deg,
-      hsl(38 30% 8%)  0%,
-      hsl(222 47% 7%) 100%
+      hsl(38 40% 13%) 0%,
+      hsl(222 44% 11%) 100%
     );
   }
 
