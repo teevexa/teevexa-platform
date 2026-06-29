@@ -45,9 +45,11 @@ const STATUS_STYLES: Record<ProposalStatus, string> = {
   rejected: "bg-red-500/20 text-red-400",
 };
 
+const NO_PROJECT = "__none__";
+
 const emptyForm = {
   client_id: "",
-  project_id: "",
+  project_id: NO_PROJECT,
   title: "",
   summary: "",
   scope: "",
@@ -70,7 +72,7 @@ const AdminProposals = () => {
   const { data: proposals = [], isLoading } = useQuery({
     queryKey: ["admin-proposals"],
     queryFn: async () => {
-      const { data } = await (supabase as any).from("proposals").select("*").order("created_at", { ascending: false });
+      const { data } = await supabase.from("proposals").select("*").order("created_at", { ascending: false });
       return (data || []) as Proposal[];
     },
   });
@@ -105,7 +107,7 @@ const AdminProposals = () => {
     mutationFn: async () => {
       const payload = {
         client_id: form.client_id,
-        project_id: form.project_id || null,
+        project_id: form.project_id === NO_PROJECT ? null : form.project_id || null,
         title: form.title,
         summary: form.summary || null,
         scope: form.scope || null,
@@ -116,9 +118,9 @@ const AdminProposals = () => {
         created_by: user?.id,
       };
       if (editId) {
-        await (supabase as any).from("proposals").update({ ...payload, updated_at: new Date().toISOString() }).eq("id", editId);
+        await supabase.from("proposals").update({ ...payload, updated_at: new Date().toISOString() }).eq("id", editId);
       } else {
-        await (supabase as any).from("proposals").insert([{ ...payload, status: "draft" }]);
+        await supabase.from("proposals").insert([{ ...payload, status: "draft" }]);
       }
     },
     onSuccess: () => {
@@ -133,7 +135,7 @@ const AdminProposals = () => {
 
   const sendProposal = async (id: string) => {
     setSending(id);
-    await (supabase as any).from("proposals").update({ status: "sent", sent_at: new Date().toISOString(), updated_at: new Date().toISOString() }).eq("id", id);
+    await supabase.from("proposals").update({ status: "sent", sent_at: new Date().toISOString(), updated_at: new Date().toISOString() }).eq("id", id);
     queryClient.invalidateQueries({ queryKey: ["admin-proposals"] });
     setSending(null);
     toast({ title: "Proposal sent to client" });
@@ -143,7 +145,7 @@ const AdminProposals = () => {
     setEditId(p.id);
     setForm({
       client_id: p.client_id,
-      project_id: p.project_id || "",
+      project_id: p.project_id || NO_PROJECT,
       title: p.title,
       summary: p.summary || "",
       scope: p.scope || "",
@@ -247,7 +249,7 @@ const AdminProposals = () => {
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-1.5">
                 <Label>Client *</Label>
-                <Select value={form.client_id} onValueChange={(v) => setForm((f) => ({ ...f, client_id: v, project_id: "" }))}>
+                <Select value={form.client_id} onValueChange={(v) => setForm((f) => ({ ...f, client_id: v, project_id: NO_PROJECT }))}>
                   <SelectTrigger><SelectValue placeholder="Select client" /></SelectTrigger>
                   <SelectContent>
                     {clients.map((c) => <SelectItem key={c.id} value={c.id}>{c.email}</SelectItem>)}
@@ -259,7 +261,7 @@ const AdminProposals = () => {
                 <Select value={form.project_id} onValueChange={(v) => setForm((f) => ({ ...f, project_id: v }))}>
                   <SelectTrigger><SelectValue placeholder="Select project" /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">None</SelectItem>
+                    <SelectItem value={NO_PROJECT}>None</SelectItem>
                     {clientProjects.map((p) => <SelectItem key={p.id} value={p.id}>{p.title}</SelectItem>)}
                   </SelectContent>
                 </Select>

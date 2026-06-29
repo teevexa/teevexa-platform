@@ -106,7 +106,7 @@ const Consultations = () => {
     setUpdatingStatus(true);
     const { error } = await supabase
       .from("consultation_bookings")
-      .update({ status } as never)
+      .update({ status })
       .eq("id", booking.id);
 
     if (error) {
@@ -135,7 +135,7 @@ const Consultations = () => {
       additional_details: details,
       status:             "contacted",
       user_id:            null,
-    } as never);
+    });
 
     if (error) {
       toast({ title: "Failed to create lead", description: error.message, variant: "destructive" });

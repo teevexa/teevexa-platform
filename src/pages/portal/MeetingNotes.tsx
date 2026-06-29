@@ -47,7 +47,7 @@ const MeetingNotes = () => {
         ? projects.map((p) => p.id)
         : [projectFilter];
       if (projectIds.length === 0) return [] as MeetingNote[];
-      const { data } = await (supabase as any)
+      const { data } = await supabase
         .from("meeting_notes")
         .select("*")
         .in("project_id", projectIds)

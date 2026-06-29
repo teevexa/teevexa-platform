@@ -49,7 +49,7 @@ const Proposals = () => {
     queryKey: ["portal-proposals", user?.id],
     enabled: !!user?.id,
     queryFn: async () => {
-      const { data } = await (supabase as any)
+      const { data } = await supabase
         .from("proposals")
         .select("id, title, summary, scope, amount, currency, status, valid_until, sent_at, created_at")
         .eq("client_id", user!.id)
@@ -61,7 +61,7 @@ const Proposals = () => {
 
   const respondMutation = useMutation({
     mutationFn: async (status: "approved" | "rejected") => {
-      await (supabase as any)
+      await supabase
         .from("proposals")
         .update({ status, responded_at: new Date().toISOString(), updated_at: new Date().toISOString() })
         .eq("id", selected!.id)

@@ -206,9 +206,10 @@ export type Database = {
           phone: string | null
           selected_date: string
           selected_time: string
+          status: string
           timezone: string
-          zoom_meeting_id: string | null
           zoom_join_url: string | null
+          zoom_meeting_id: string | null
           zoom_start_url: string | null
         }
         Insert: {
@@ -222,9 +223,10 @@ export type Database = {
           phone?: string | null
           selected_date: string
           selected_time: string
+          status?: string
           timezone?: string
-          zoom_meeting_id?: string | null
           zoom_join_url?: string | null
+          zoom_meeting_id?: string | null
           zoom_start_url?: string | null
         }
         Update: {
@@ -238,9 +240,10 @@ export type Database = {
           phone?: string | null
           selected_date?: string
           selected_time?: string
+          status?: string
           timezone?: string
-          zoom_meeting_id?: string | null
           zoom_join_url?: string | null
+          zoom_meeting_id?: string | null
           zoom_start_url?: string | null
         }
         Relationships: []
@@ -521,6 +524,53 @@ export type Database = {
         }
         Relationships: []
       }
+      meeting_notes: {
+        Row: {
+          action_items: string[]
+          attendees: string[]
+          created_at: string
+          created_by: string | null
+          id: string
+          meeting_date: string
+          project_id: string
+          summary: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          action_items?: string[]
+          attendees?: string[]
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          meeting_date: string
+          project_id: string
+          summary: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          action_items?: string[]
+          attendees?: string[]
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          meeting_date?: string
+          project_id?: string
+          summary?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "meeting_notes_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "client_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       messages: {
         Row: {
           attachment_url: string | null
@@ -754,8 +804,10 @@ export type Database = {
           id: string
           phone: string | null
           project_type: string
+          status: string
           timeline: string | null
           urgency: string | null
+          user_id: string | null
         }
         Insert: {
           additional_details?: string | null
@@ -770,8 +822,10 @@ export type Database = {
           id?: string
           phone?: string | null
           project_type: string
+          status?: string
           timeline?: string | null
           urgency?: string | null
+          user_id?: string | null
         }
         Update: {
           additional_details?: string | null
@@ -786,8 +840,10 @@ export type Database = {
           id?: string
           phone?: string | null
           project_type?: string
+          status?: string
           timeline?: string | null
           urgency?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -917,6 +973,71 @@ export type Database = {
           },
         ]
       }
+      proposals: {
+        Row: {
+          amount: number | null
+          client_id: string
+          created_at: string
+          created_by: string | null
+          currency: string
+          id: string
+          notes: string | null
+          project_id: string | null
+          responded_at: string | null
+          scope: string | null
+          sent_at: string | null
+          status: string
+          summary: string | null
+          title: string
+          updated_at: string
+          valid_until: string | null
+        }
+        Insert: {
+          amount?: number | null
+          client_id: string
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          id?: string
+          notes?: string | null
+          project_id?: string | null
+          responded_at?: string | null
+          scope?: string | null
+          sent_at?: string | null
+          status?: string
+          summary?: string | null
+          title: string
+          updated_at?: string
+          valid_until?: string | null
+        }
+        Update: {
+          amount?: number | null
+          client_id?: string
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          id?: string
+          notes?: string | null
+          project_id?: string | null
+          responded_at?: string | null
+          scope?: string | null
+          sent_at?: string | null
+          status?: string
+          summary?: string | null
+          title?: string
+          updated_at?: string
+          valid_until?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "proposals_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "client_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       support_tickets: {
         Row: {
           assigned_to: string | null
@@ -1039,6 +1160,198 @@ export type Database = {
           },
         ]
       }
+      trace_api_keys: {
+        Row: {
+          created_at: string
+          id: string
+          key_hash: string
+          last_used_at: string | null
+          name: string
+          prefix: string
+          rate_limit_rpm: number | null
+          revoked: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          key_hash: string
+          last_used_at?: string | null
+          name: string
+          prefix: string
+          rate_limit_rpm?: number | null
+          revoked?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          key_hash?: string
+          last_used_at?: string | null
+          name?: string
+          prefix?: string
+          rate_limit_rpm?: number | null
+          revoked?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      trace_events: {
+        Row: {
+          blockchain_tx_hash: string | null
+          created_at: string
+          event_type: string
+          id: string
+          latitude: number | null
+          location: string | null
+          longitude: number | null
+          notes: string | null
+          photo_url: string | null
+          product_id: string
+          recorded_at: string
+          recorded_by: string
+          synced: boolean
+        }
+        Insert: {
+          blockchain_tx_hash?: string | null
+          created_at?: string
+          event_type: string
+          id?: string
+          latitude?: number | null
+          location?: string | null
+          longitude?: number | null
+          notes?: string | null
+          photo_url?: string | null
+          product_id: string
+          recorded_at?: string
+          recorded_by: string
+          synced?: boolean
+        }
+        Update: {
+          blockchain_tx_hash?: string | null
+          created_at?: string
+          event_type?: string
+          id?: string
+          latitude?: number | null
+          location?: string | null
+          longitude?: number | null
+          notes?: string | null
+          photo_url?: string | null
+          product_id?: string
+          recorded_at?: string
+          recorded_by?: string
+          synced?: boolean
+        }
+        Relationships: []
+      }
+      trace_notifications: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          read: boolean
+          title: string
+          user_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          read?: boolean
+          title: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          read?: boolean
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      trace_products: {
+        Row: {
+          batch_id: string
+          created_at: string
+          id: string
+          origin: string | null
+          producer_id: string
+          product_name: string
+          updated_at: string
+        }
+        Insert: {
+          batch_id: string
+          created_at?: string
+          id?: string
+          origin?: string | null
+          producer_id: string
+          product_name: string
+          updated_at?: string
+        }
+        Update: {
+          batch_id?: string
+          created_at?: string
+          id?: string
+          origin?: string | null
+          producer_id?: string
+          product_name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      trace_subscriptions: {
+        Row: {
+          agent_limit: number | null
+          batch_limit: number | null
+          beta_expires_at: string | null
+          created_at: string
+          current_period_end: string | null
+          current_period_start: string | null
+          flutterwave_customer_id: string | null
+          flutterwave_subscription_id: string | null
+          id: string
+          status: string
+          tier: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          agent_limit?: number | null
+          batch_limit?: number | null
+          beta_expires_at?: string | null
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          flutterwave_customer_id?: string | null
+          flutterwave_subscription_id?: string | null
+          id?: string
+          status?: string
+          tier?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          agent_limit?: number | null
+          batch_limit?: number | null
+          beta_expires_at?: string | null
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          flutterwave_customer_id?: string | null
+          flutterwave_subscription_id?: string | null
+          id?: string
+          status?: string
+          tier?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
@@ -1086,7 +1399,24 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      trace_usage_stats: {
+        Row: {
+          agent_limit: number | null
+          batch_limit: number | null
+          batches_this_period: number | null
+          batches_total: number | null
+          beta_days_remaining: number | null
+          beta_expires_at: string | null
+          current_period_end: string | null
+          current_period_start: string | null
+          events_this_period: number | null
+          events_total: number | null
+          status: string | null
+          tier: string | null
+          user_id: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       has_role: {
@@ -1096,6 +1426,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      within_batch_limit: { Args: { p_user_id: string }; Returns: boolean }
     }
     Enums: {
       app_role:
@@ -1104,6 +1435,8 @@ export type Database = {
         | "developer"
         | "client"
         | "super_admin"
+        | "trace_client"
+        | "field_agent"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1237,6 +1570,8 @@ export const Constants = {
         "developer",
         "client",
         "super_admin",
+        "trace_client",
+        "field_agent",
       ],
     },
   },

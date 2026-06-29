@@ -55,7 +55,7 @@ const AdminMeetingNotes = () => {
   const { data: notes = [], isLoading } = useQuery({
     queryKey: ["admin-meeting-notes", projectFilter],
     queryFn: async () => {
-      let q = (supabase as any).from("meeting_notes").select("*").order("meeting_date", { ascending: false });
+      let q = supabase.from("meeting_notes").select("*").order("meeting_date", { ascending: false });
       if (projectFilter !== "all") q = q.eq("project_id", projectFilter);
       const { data } = await q;
       return (data || []) as MeetingNote[];
@@ -74,9 +74,9 @@ const AdminMeetingNotes = () => {
         created_by: user?.id,
       };
       if (editId) {
-        await (supabase as any).from("meeting_notes").update({ ...payload, updated_at: new Date().toISOString() }).eq("id", editId);
+        await supabase.from("meeting_notes").update({ ...payload, updated_at: new Date().toISOString() }).eq("id", editId);
       } else {
-        await (supabase as any).from("meeting_notes").insert([payload]);
+        await supabase.from("meeting_notes").insert([payload]);
       }
     },
     onSuccess: () => {
@@ -91,7 +91,7 @@ const AdminMeetingNotes = () => {
 
   const deleteNote = async (id: string) => {
     setDeleting(id);
-    await (supabase as any).from("meeting_notes").delete().eq("id", id);
+    await supabase.from("meeting_notes").delete().eq("id", id);
     queryClient.invalidateQueries({ queryKey: ["admin-meeting-notes"] });
     setDeleting(null);
     toast({ title: "Meeting note deleted" });
