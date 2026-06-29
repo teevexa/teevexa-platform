@@ -8,8 +8,8 @@ import { useState } from "react";
 import NotificationCenter from "@/components/NotificationCenter";
 import {
   LayoutDashboard, Users, FolderKanban, Milestone, Receipt, MessageSquare,
-  FileText, Briefcase, Image, Clock, ScrollText, Settings, LogOut, Menu, X,
-  Target, CalendarDays, ListTodo, Columns3, FileCheck, LifeBuoy,
+  FileText, Briefcase, Clock, ScrollText, Settings, LogOut, Menu, X,
+  Target, CalendarDays, ListTodo, Columns3, FileCheck, LifeBuoy, ClipboardList, NotebookText,
 } from "lucide-react";
 
 const navSections = [
@@ -19,6 +19,8 @@ const navSections = [
   { label: "Business", items: [
     { path: "/admin/leads", label: "Leads", icon: Target },
     { path: "/admin/consultations", label: "Consultations", icon: CalendarDays },
+    { path: "/admin/contacts", label: "Contact Messages", icon: MessageSquare },
+    { path: "/admin/proposals", label: "Proposals & Quotes", icon: ClipboardList },
   ], roles: ["super_admin", "admin", "project_manager"] as AppRole[] },
   { label: "Projects", items: [
     { path: "/admin/projects", label: "Projects", icon: FolderKanban },
@@ -28,6 +30,7 @@ const navSections = [
     { path: "/admin/deliverables", label: "Deliverables", icon: FileCheck },
     { path: "/admin/time-tracking", label: "Time Tracking", icon: Clock },
     { path: "/admin/messages", label: "Messages", icon: MessageSquare },
+    { path: "/admin/meeting-notes", label: "Meeting Notes", icon: NotebookText },
     { path: "/admin/support-tickets", label: "Support Tickets", icon: LifeBuoy },
   ], roles: ["super_admin", "admin", "project_manager", "developer"] as AppRole[] },
   { label: "People", items: [
@@ -39,10 +42,9 @@ const navSections = [
     { path: "/admin/reports", label: "Reports", icon: FileText },
   ], roles: ["super_admin", "admin"] as AppRole[] },
   { label: "Content", items: [
-    { path: "/admin/blog", label: "Blog", icon: FileText },
-    { path: "/admin/portfolio", label: "Portfolio", icon: Image },
+    { path: "/admin/blog", label: "Blog / Insights", icon: FileText },
     { path: "/admin/careers", label: "Careers", icon: Briefcase },
-    { path: "/admin/waitlist", label: "Waitlist", icon: Clock },
+    { path: "/admin/waitlist", label: "Trace Waitlist", icon: Clock },
   ], roles: ["super_admin", "admin"] as AppRole[] },
   { label: "System", items: [
     { path: "/admin/audit-logs", label: "Audit Logs", icon: ScrollText },

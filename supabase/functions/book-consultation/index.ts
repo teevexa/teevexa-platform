@@ -63,8 +63,56 @@ async function createZoomMeeting(opts: {
 }
 // ─────────────────────────────────────────────────────────────────────────────
 
+// ── .ics calendar invite generator ───────────────────────────────────────────
+function generateIcs(opts: {
+  full_name: string;
+  selected_date: string;  // "2026-07-01"
+  selected_time: string;  // "09:00"
+  timezone: string;       // IANA, e.g. "America/Toronto"
+  zoom_join_url: string;
+}): string {
+  const now = new Date();
+  const dtstamp = now.toISOString().replace(/[-:.]/g, "").slice(0, 15) + "Z";
+
+  const dateStr = opts.selected_date.replace(/-/g, "");
+  const timeStr = opts.selected_time.replace(":", "") + "00";
+  const dtstart = `${dateStr}T${timeStr}`;
+
+  const [hours, mins] = opts.selected_time.split(":").map(Number);
+  const endTotal = hours * 60 + mins + 30;
+  const dtend = `${dateStr}T${String(Math.floor(endTotal / 60)).padStart(2, "0")}${String(endTotal % 60).padStart(2, "0")}00`;
+
+  const uid = `${Date.now()}-${opts.full_name.replace(/\W+/g, "")}@teevexa.com`;
+
+  return [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//Teevexa//Consultation//EN",
+    "CALSCALE:GREGORIAN",
+    "METHOD:REQUEST",
+    "BEGIN:VEVENT",
+    `UID:${uid}`,
+    `DTSTAMP:${dtstamp}`,
+    `DTSTART;TZID=${opts.timezone}:${dtstart}`,
+    `DTEND;TZID=${opts.timezone}:${dtend}`,
+    `SUMMARY:Teevexa Discovery Call — ${opts.full_name}`,
+    `DESCRIPTION:Join Zoom: ${opts.zoom_join_url}\\nDuration: 30 minutes`,
+    `LOCATION:${opts.zoom_join_url}`,
+    "STATUS:CONFIRMED",
+    "SEQUENCE:0",
+    "END:VEVENT",
+    "END:VCALENDAR",
+  ].join("\r\n");
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
 // ── Resend email helper ───────────────────────────────────────────────────────
-async function sendEmail(opts: { to: string; subject: string; html: string }) {
+async function sendEmail(opts: {
+  to: string;
+  subject: string;
+  html: string;
+  attachments?: { filename: string; content: string }[];
+}) {
   const key = Deno.env.get("RESEND_API_KEY");
   if (!key) return;
 
@@ -79,6 +127,7 @@ async function sendEmail(opts: { to: string; subject: string; html: string }) {
       to: [opts.to],
       subject: opts.subject,
       html: opts.html,
+      ...(opts.attachments ? { attachments: opts.attachments } : {}),
     }),
   });
 
@@ -287,7 +336,16 @@ Deno.serve(async (req) => {
 
     if (dbError) throw new Error(`DB insert failed: ${dbError.message}`);
 
-    // ── Send user confirmation email ──────────────────────────────────────────
+    // ── Send user confirmation email with .ics calendar attachment ───────────
+    const icsContent = generateIcs({
+      full_name,
+      selected_date,
+      selected_time,
+      timezone,
+      zoom_join_url: zoomData.join_url || "https://teevexa.com/book-consultation",
+    });
+    const icsBase64 = btoa(unescape(encodeURIComponent(icsContent)));
+
     await sendEmail({
       to: email,
       subject: `Your Teevexa Consultation is Confirmed — ${selected_date} at ${selected_time}`,
@@ -298,6 +356,7 @@ Deno.serve(async (req) => {
         timezone,
         zoom_join_url: zoomData.join_url || "https://teevexa.com/book-consultation",
       }),
+      attachments: [{ filename: "teevexa-consultation.ics", content: icsBase64 }],
     });
 
     // ── Send admin notification email ─────────────────────────────────────────

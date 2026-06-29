@@ -177,6 +177,7 @@ const StartProject = () => {
     }
 
     const { error } = await supabase.from("project_inquiries").insert({
+      user_id: user!.id,
       full_name: form.fullName.trim(), email: form.email.trim(),
       phone: form.phone?.trim() || null, company: form.company?.trim() || null,
       country: form.country?.trim() || null, project_type: form.projectType,
@@ -278,7 +279,7 @@ const StartProject = () => {
                   <div className="space-y-2"><Label>Email *</Label><Input type="email" value={form.email} onChange={(e) => set("email", e.target.value)} placeholder="john@example.com" />{errors.email && <p className="text-sm text-destructive">{errors.email}</p>}</div>
                 </div>
                 <div className="grid sm:grid-cols-3 gap-4">
-                  <div className="space-y-2"><Label>Phone</Label><Input value={form.phone} onChange={(e) => set("phone", e.target.value)} placeholder="+254 ..." /></div>
+                  <div className="space-y-2"><Label>Phone</Label><Input value={form.phone} onChange={(e) => set("phone", e.target.value)} placeholder="+1 555 000 0000" /></div>
                   <div className="space-y-2"><Label>Company</Label><Input value={form.company} onChange={(e) => set("company", e.target.value)} placeholder="Acme Inc." /></div>
                   <div className="space-y-2"><Label>Country</Label><Input value={form.country} onChange={(e) => set("country", e.target.value)} placeholder="Kenya" /></div>
                 </div>

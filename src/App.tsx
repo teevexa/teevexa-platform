@@ -40,10 +40,14 @@ import AdminInvoices from "@/pages/admin/AdminInvoices";
 import AdminBlog from "@/pages/admin/AdminBlog";
 import AdminCareers from "@/pages/admin/AdminCareers";
 import Waitlist from "@/pages/admin/Waitlist";
+import AdminContacts from "@/pages/admin/AdminContacts";
+import AdminProposals from "@/pages/admin/AdminProposals";
+import AdminMeetingNotes from "@/pages/admin/AdminMeetingNotes";
+import Proposals from "@/pages/portal/Proposals";
+import MeetingNotes from "@/pages/portal/MeetingNotes";
 import AuditLogs from "@/pages/admin/AuditLogs";
 import AdminSettings from "@/pages/admin/AdminSettings";
 import AdminPlaceholder from "@/pages/admin/AdminPlaceholder";
-import AdminPortfolio from "@/pages/admin/AdminPortfolio";
 import AdminMessages from "@/pages/admin/AdminMessages";
 import AdminKanban from "@/pages/admin/AdminKanban";
 import ActivityFeed from "@/pages/portal/ActivityFeed";
@@ -70,7 +74,6 @@ import TraceBatch from "@/pages/TraceBatch";
 import VerifyBatch from "@/pages/VerifyBatch";
 import Pricing from "@/pages/Pricing";
 import ApiDocs from "@/pages/ApiDocs";
-import ApiKeys from "@/pages/portal/ApiKeys";
 import ScrollToTop from "@/components/ScrollToTop";
 
 const queryClient = new QueryClient({
@@ -138,8 +141,9 @@ const App = () => (
             <Route path="files" element={<Files />} />
             <Route path="messages" element={<Messages />} />
             <Route path="invoices" element={<Invoices />} />
+            <Route path="proposals" element={<Proposals />} />
+            <Route path="meeting-notes" element={<MeetingNotes />} />
             <Route path="settings" element={<PortalSettings />} />
-            <Route path="api-keys" element={<ApiKeys />} />
           </Route>
 
           {/* Admin Portal */}
@@ -147,6 +151,8 @@ const App = () => (
             <Route index element={<AdminDashboard />} />
             <Route path="leads" element={<Leads />} />
             <Route path="consultations" element={<Consultations />} />
+            <Route path="contacts" element={<AdminContacts />} />
+            <Route path="proposals" element={<AdminProposals />} />
             <Route path="projects" element={<AdminProjects />} />
             <Route path="projects/:id" element={<AdminProjectDetail />} />
             <Route path="tasks" element={<AdminTasks />} />
@@ -160,8 +166,8 @@ const App = () => (
             <Route path="reports" element={<AdminReports />} />
             <Route path="users" element={<AdminUsers />} />
             <Route path="invoices" element={<AdminInvoices />} />
+            <Route path="meeting-notes" element={<AdminMeetingNotes />} />
             <Route path="blog" element={<AdminBlog />} />
-            <Route path="portfolio" element={<AdminPortfolio />} />
             <Route path="careers" element={<AdminCareers />} />
             <Route path="waitlist" element={<Waitlist />} />
             <Route path="audit-logs" element={<AuditLogs />} />

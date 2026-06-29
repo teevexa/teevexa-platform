@@ -2,23 +2,23 @@ import { useState } from "react";
 import { useNavigate, Outlet, Link, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { LayoutDashboard, FolderKanban, FolderOpen, MessageSquare, Receipt, Settings, LogOut, Menu, X, Activity, CalendarDays, FileCheck, LifeBuoy, ArrowUpLeft, Zap, KeyRound } from "lucide-react";
+import { LayoutDashboard, FolderKanban, FolderOpen, MessageSquare, Receipt, Settings, LogOut, Menu, X, Activity, CalendarDays, FileCheck, LifeBuoy, ArrowUpLeft, ClipboardList, NotebookText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import NotificationCenter from "@/components/NotificationCenter";
-import { BetaBanner } from "@/components/portal/BetaBanner";
 import logo from "@/assets/teevexa-logo.jpeg";
 
 const navItems = [
   { path: "/client-portal", label: "Dashboard", icon: LayoutDashboard },
+  { path: "/client-portal/proposals", label: "Proposals", icon: ClipboardList },
   { path: "/client-portal/projects", label: "My Projects", icon: FolderKanban },
   { path: "/client-portal/timeline", label: "Timeline", icon: CalendarDays },
   { path: "/client-portal/activity", label: "Activity", icon: Activity },
   { path: "/client-portal/deliverables", label: "Deliverables", icon: FileCheck },
   { path: "/client-portal/files", label: "Files", icon: FolderOpen },
   { path: "/client-portal/messages", label: "Messages", icon: MessageSquare },
+  { path: "/client-portal/meeting-notes", label: "Meeting Notes", icon: NotebookText },
   { path: "/client-portal/invoices", label: "Invoices", icon: Receipt },
   { path: "/client-portal/support", label: "Support", icon: LifeBuoy },
-  { path: "/client-portal/api-keys", label: "API Keys", icon: KeyRound },
   { path: "/client-portal/settings", label: "Settings", icon: Settings },
 ];
 
@@ -98,13 +98,6 @@ const PortalLayout = () => {
           <div className="border-t border-sidebar-border pt-4 space-y-1">
             <p className="text-xs text-muted-foreground truncate px-3 mb-2">{user.email}</p>
             <Link
-              to="/pricing"
-              className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-amber-400 hover:text-amber-300 hover:bg-sidebar-accent/50 transition-colors"
-            >
-              <Zap size={16} />
-              Upgrade Plan
-            </Link>
-            <Link
               to="/"
               className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-sidebar-accent/50 transition-colors"
             >
@@ -126,7 +119,6 @@ const PortalLayout = () => {
         <div className="flex justify-end px-6 pt-4 lg:px-8">
           <NotificationCenter appTitle="Client Portal — Teevexa" />
         </div>
-        <BetaBanner />
         <div className="p-6 lg:p-8 pt-2 max-w-6xl mx-auto">
           <Outlet />
         </div>

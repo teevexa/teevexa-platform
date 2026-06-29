@@ -55,7 +55,7 @@ const AdminDashboard = () => {
 
       let leads = 0, consultations = 0, users = 0, invoices = 0;
       let revenueByKES = 0, revenueByUSD = 0;
-      let revenueData: { month: string; revenue: number }[] = [];
+      let revenueData: { month: string; kes: number; usd: number }[] = [];
       let leadTrend: { month: string; leads: number; consultations: number }[] = [];
       let recentLeads: { id: string; full_name: string; project_type: string; created_at: string }[] = [];
       let overdueInvoices = 0;
@@ -86,15 +86,22 @@ const AdminDashboard = () => {
           (i) => i.status !== "paid" && i.due_date && i.due_date < today
         ).length;
 
-        // Revenue trend by month (KES only for chart simplicity)
-        const monthlyRev: Record<string, number> = {};
+        // Revenue trend by month — track KES and USD separately
+        const monthlyKES: Record<string, number> = {};
+        const monthlyUSD: Record<string, number> = {};
         (paidInvoices.data || []).forEach((inv) => {
-          if (inv.paid_at && (inv.currency || "KES").toUpperCase() === "KES") {
-            const m = new Date(inv.paid_at).toLocaleDateString("en-US", { month: "short", year: "2-digit" });
-            monthlyRev[m] = (monthlyRev[m] || 0) + Number(inv.amount);
+          if (!inv.paid_at) return;
+          const m = new Date(inv.paid_at).toLocaleDateString("en-US", { month: "short", year: "2-digit" });
+          if ((inv.currency || "KES").toUpperCase() === "USD") {
+            monthlyUSD[m] = (monthlyUSD[m] || 0) + Number(inv.amount);
+          } else {
+            monthlyKES[m] = (monthlyKES[m] || 0) + Number(inv.amount);
           }
         });
-        revenueData = Object.entries(monthlyRev).map(([month, revenue]) => ({ month, revenue })).slice(-6);
+        const allMonths = Array.from(new Set([...Object.keys(monthlyKES), ...Object.keys(monthlyUSD)])).sort();
+        revenueData = allMonths.slice(-6).map((month) => ({
+          month, kes: monthlyKES[month] || 0, usd: monthlyUSD[month] || 0,
+        }));
 
         // Lead trend
         const leadMonths: Record<string, { leads: number; consultations: number }> = {};
@@ -252,7 +259,7 @@ const AdminDashboard = () => {
       {(isFullAdmin || isPM) && (
         <div className="grid lg:grid-cols-2 gap-6">
           <Card className="glass">
-            <CardHeader><CardTitle className="text-lg">Revenue Trend (KES)</CardTitle></CardHeader>
+            <CardHeader><CardTitle className="text-lg">Revenue Trend</CardTitle></CardHeader>
             <CardContent>
               {revenueData.length === 0 ? (
                 <p className="text-sm text-muted-foreground text-center py-8">No revenue data yet</p>
@@ -260,15 +267,25 @@ const AdminDashboard = () => {
                 <ResponsiveContainer width="100%" height={240}>
                   <AreaChart data={revenueData}>
                     <XAxis dataKey="month" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
-                    <YAxis tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} tickFormatter={(v) => `KSh ${(v / 1000).toFixed(0)}k`} />
-                    <Tooltip contentStyle={chartTooltipStyle} formatter={(v: number) => [`KSh ${v.toLocaleString()}`, "Revenue"]} />
+                    <YAxis yAxisId="kes" tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
+                    <YAxis yAxisId="usd" orientation="right" tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} />
+                    <Tooltip contentStyle={chartTooltipStyle} formatter={(v: number, name: string) => [
+                      name === "kes" ? `KSh ${v.toLocaleString()}` : `$${v.toLocaleString()}`,
+                      name === "kes" ? "KES Revenue" : "USD Revenue",
+                    ]} />
+                    <Legend formatter={(val) => <span className="text-xs">{val === "kes" ? "KES" : "USD"}</span>} />
                     <defs>
-                      <linearGradient id="revGrad" x1="0" y1="0" x2="0" y2="1">
+                      <linearGradient id="kesGrad" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor={COLORS.green} stopOpacity={0.3} />
                         <stop offset="95%" stopColor={COLORS.green} stopOpacity={0} />
                       </linearGradient>
+                      <linearGradient id="usdGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor={COLORS.primary} stopOpacity={0.3} />
+                        <stop offset="95%" stopColor={COLORS.primary} stopOpacity={0} />
+                      </linearGradient>
                     </defs>
-                    <Area type="monotone" dataKey="revenue" stroke={COLORS.green} fill="url(#revGrad)" strokeWidth={2} />
+                    <Area yAxisId="kes" type="monotone" dataKey="kes" stroke={COLORS.green} fill="url(#kesGrad)" strokeWidth={2} />
+                    <Area yAxisId="usd" type="monotone" dataKey="usd" stroke={COLORS.primary} fill="url(#usdGrad)" strokeWidth={2} />
                   </AreaChart>
                 </ResponsiveContainer>
               )}

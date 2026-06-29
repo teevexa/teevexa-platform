@@ -64,8 +64,31 @@ Deno.serve(async (req) => {
           <p style="font-family:sans-serif;font-size:14px;white-space:pre-wrap;">${data?.message || "—"}</p>
           <hr/>
           <p style="font-family:sans-serif;font-size:12px;color:#64748b;">
-            View in admin panel: <a href="https://teevexa.com/admin/messages">teevexa.com/admin/messages</a>
+            View in admin panel: <a href="https://teevexa.com/admin/contacts">teevexa.com/admin/contacts</a>
           </p>
+        `,
+      });
+    }
+
+    // Client onboarding — send welcome email to the client
+    if (type === "client_onboarded" && data?.client_email) {
+      await sendEmail({
+        to: data.client_email,
+        subject: `Your project "${data?.project_title || "New Project"}" is ready — Teevexa`,
+        html: `
+          <div style="font-family:sans-serif;font-size:15px;color:#1e293b;max-width:560px;margin:auto;">
+            <h2 style="color:#0e7490;">Welcome to your project workspace!</h2>
+            <p>Hi ${data?.client_name || "there"},</p>
+            <p>Your project <strong>${data?.project_title || "New Project"}</strong> has been set up and is ready for you in the Teevexa client portal. You can track progress, view milestones, download deliverables, and message the team — all in one place.</p>
+            <p style="margin:24px 0;">
+              <a href="https://teevexa.com/client-portal" style="background:#0e7490;color:#fff;text-decoration:none;padding:12px 24px;border-radius:8px;font-weight:600;display:inline-block;">
+                Open Your Project Portal
+              </a>
+            </p>
+            <p style="color:#64748b;font-size:13px;">If you have any questions before your kickoff, reply to this email or reach out via the portal.</p>
+            <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;"/>
+            <p style="color:#94a3b8;font-size:12px;">Teevexa · teevexa.com</p>
+          </div>
         `,
       });
     }
@@ -115,7 +138,7 @@ Deno.serve(async (req) => {
         title: "New Contact Message",
         message: `${data?.full_name || "Someone"} sent a message: "${data?.subject || "No subject"}".`,
         notifyType: "message",
-        link: "/admin/messages",
+        link: "/admin/contacts",
         targetRole: ["super_admin", "admin"],
       },
       milestone_completed: {

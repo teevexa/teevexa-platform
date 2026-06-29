@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { FolderKanban, Receipt, MessageSquare, Download, CheckCircle, Clock, AlertCircle, FileText, Loader2 } from "lucide-react";
+import { FolderKanban, Receipt, MessageSquare, Download, CheckCircle, Clock, AlertCircle, FileText, Loader2, Users } from "lucide-react";
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { DashboardSkeleton } from "@/components/portal/PortalSkeleton";
 import PortalError from "@/components/portal/PortalError";
@@ -62,7 +62,7 @@ const Dashboard = () => {
       const invoices = invoicesRes.data || [];
       const projectIds = projects.map((p) => p.id);
 
-      const [milestonesRes, msgCount] = await Promise.all([
+      const [milestonesRes, msgCount, assignmentsRes] = await Promise.all([
         projectIds.length > 0
           ? supabase.from("project_milestones").select("id, title, status, due_date, project_id")
               .in("status", ["review", "pending", "in-progress"])
@@ -71,7 +71,18 @@ const Dashboard = () => {
         projectIds.length > 0
           ? supabase.from("messages").select("id", { count: "exact", head: true }).in("project_id", projectIds)
           : { count: 0 },
+        projectIds.length > 0
+          ? supabase.from("project_assignments").select("user_id, role").in("project_id", projectIds)
+          : { data: [] },
       ]);
+
+      // Deduplicate assigned team members and fetch their profiles
+      const teamUserIds = [...new Set((assignmentsRes.data || []).map((a: { user_id: string; role: string }) => a.user_id))];
+      const teamRoles = Object.fromEntries((assignmentsRes.data || []).map((a: { user_id: string; role: string }) => [a.user_id, a.role]));
+      const profilesRes = teamUserIds.length > 0
+        ? await supabase.from("profiles").select("user_id, display_name, avatar_url").in("user_id", teamUserIds)
+        : { data: [] };
+      const team = (profilesRes.data || []).map((p) => ({ ...p, role: teamRoles[p.user_id] || "team" }));
 
       const unpaidInvoices = invoices.filter((i) => i.status !== "paid");
       return {
@@ -82,6 +93,7 @@ const Dashboard = () => {
         unpaidInvoices,
         unpaidCount: unpaidInvoices.length,
         messageCount: msgCount.count || 0,
+        team,
       };
     },
   });
@@ -103,7 +115,7 @@ const Dashboard = () => {
   if (error) return <PortalError onRetry={refetch} />;
   if (!data) return null;
 
-  const { profile, projects, milestones, invoices, unpaidInvoices, unpaidCount, messageCount } = data;
+  const { profile, projects, milestones, invoices, unpaidInvoices, unpaidCount, messageCount, team = [] } = data;
 
   const [reportDownloading, setReportDownloading] = useState(false);
 
@@ -325,6 +337,38 @@ const Dashboard = () => {
           )}
         </CardContent>
       </Card>
+
+      {/* Your Team */}
+      {team.length > 0 && (
+        <Card className="glass">
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Users size={18} className="text-primary" /> Your Team
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {team.map((member) => (
+                <div key={member.user_id} className="flex items-center gap-3 p-3 rounded-xl bg-muted/30 border border-border/50">
+                  <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                    {member.avatar_url ? (
+                      <img src={member.avatar_url} alt={member.display_name || ""} className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-sm font-semibold text-primary">
+                        {(member.display_name || "?")[0].toUpperCase()}
+                      </span>
+                    )}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium truncate">{member.display_name || "Team Member"}</p>
+                    <p className="text-xs text-muted-foreground capitalize">{member.role.replace(/_/g, " ")}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Trace Compliance Report */}
       <Card className="glass border-border">
