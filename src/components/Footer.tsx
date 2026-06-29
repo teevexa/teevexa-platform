@@ -1,5 +1,11 @@
 import { Link } from "react-router-dom";
-import { Mail, MapPin, Phone, Linkedin, Twitter, Instagram, Facebook } from "lucide-react";
+import { Mail, MapPin, Phone, Linkedin, Twitter, Instagram, Facebook, Youtube } from "lucide-react";
+
+const TikTokIcon = ({ size = 18 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.3 6.3 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.28 8.28 0 0 0 4.84 1.54V6.79a4.85 4.85 0 0 1-1.07-.1z" />
+  </svg>
+);
 import logo from "@/assets/teevexa-logo.jpeg";
 
 const Footer = () => {
@@ -21,6 +27,8 @@ const Footer = () => {
               <a href="https://www.instagram.com/teevexa" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label="Instagram"><Instagram size={18} /></a>
               <a href="https://x.com/teevexa" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label="X (Twitter)"><Twitter size={18} /></a>
               <a href="https://www.facebook.com/teevexa" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label="Facebook"><Facebook size={18} /></a>
+              <a href="https://www.tiktok.com/@teevexa" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label="TikTok"><TikTokIcon size={18} /></a>
+              <a href="https://www.youtube.com/@teevexa" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label="YouTube"><Youtube size={18} /></a>
             </div>
           </div>
 
@@ -90,7 +98,7 @@ const Footer = () => {
         </div>
 
         <div className="mt-12 pt-8 border-t border-border/40 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
-          <p>© {new Date().getFullYear()} TEEVEXA. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} TEEVEXA LTD. All rights reserved.</p>
           <div className="flex gap-4">
             <Link to="/legal/privacy-policy" className="hover:text-primary transition-colors">Privacy Policy</Link>
             <Link to="/legal/terms-of-service" className="hover:text-primary transition-colors">Terms of Service</Link>
