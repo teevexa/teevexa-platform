@@ -47,7 +47,7 @@ const Insights = () => {
     <>
       <SEO
         title="Insights | Engineering Blog & Articles | Teevexa"
-        description="Read Teevexa's engineering blog — articles on software architecture, mobile development, cloud, and Africa's tech ecosystem."
+        description="Read Teevexa's engineering blog — articles on software architecture, mobile development, AI, cloud, and building software that lasts."
         canonical="/insights"
       />
       {/* ── Hero ── */}
@@ -62,7 +62,7 @@ const Insights = () => {
             Ideas, <span className="gradient-text">Perspectives</span> &amp; Craft
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Practical insights from our engineers, designers, and strategists — on technology, product, and building for Africa.
+            Practical insights from our engineers, designers, and strategists — on technology, product, and building software that lasts.
           </p>
         </div>
       </section>

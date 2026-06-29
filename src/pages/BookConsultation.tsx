@@ -46,6 +46,17 @@ const BookConsultation = () => {
 
   const timezone = useMemo(() => Intl.DateTimeFormat().resolvedOptions().timeZone, []);
 
+  const timezoneLabel = useMemo(() => {
+    try {
+      const now = new Date();
+      const long  = Intl.DateTimeFormat(undefined, { timeZoneName: "long"  }).formatToParts(now).find((p) => p.type === "timeZoneName")?.value ?? timezone;
+      const short = Intl.DateTimeFormat(undefined, { timeZoneName: "short" }).formatToParts(now).find((p) => p.type === "timeZoneName")?.value ?? "";
+      return short ? `${long} (${short})` : long;
+    } catch {
+      return timezone;
+    }
+  }, [timezone]);
+
   const disabledDays = (date: Date) => {
     return date < new Date() || isWeekend(date) || date > addDays(new Date(), 60);
   };
@@ -131,7 +142,7 @@ const BookConsultation = () => {
           <p className="text-muted-foreground mb-1">
             {selectedDate && format(selectedDate, "EEEE, MMMM d, yyyy")} at {selectedTime}
           </p>
-          <p className="text-sm text-muted-foreground mb-6">via Zoom · {timezone}</p>
+          <p className="text-sm text-muted-foreground mb-6">via Zoom · {timezoneLabel}</p>
 
           {zoomJoinUrl && (
             <a
@@ -175,7 +186,7 @@ const BookConsultation = () => {
             A focused discovery call with our team. No sales pitch — just honest advice on whether and how we can help.
           </p>
           <div className="flex flex-wrap justify-center gap-6 mt-8 text-sm text-muted-foreground">
-            {["Free of charge", "No commitment required", "Zoom video call", "Monday – Friday"].map((p) => (
+            {["Free of charge", "No commitment required", "Zoom video call", "Monday – Friday", "All time zones welcome"].map((p) => (
               <span key={p} className="flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
                 {p}
@@ -234,8 +245,9 @@ const BookConsultation = () => {
                     );
                   })}
                 </div>
-                <div className="flex items-center gap-2 mt-4 text-xs text-muted-foreground">
-                  <GlobeIcon size={12} /> {timezone}
+                <div className="flex items-center gap-2 mt-4 text-xs text-muted-foreground bg-primary/5 border border-primary/15 rounded-lg px-3 py-2">
+                  <GlobeIcon size={12} className="text-primary flex-shrink-0" />
+                  <span>Times shown in your timezone: <span className="font-semibold text-foreground">{timezoneLabel}</span></span>
                 </div>
               </div>
 
@@ -267,7 +279,7 @@ const BookConsultation = () => {
                 </div>
                 <div className="space-y-2">
                   <Label>Phone</Label>
-                  <Input value={contact.phone} onChange={(e) => setContact((c) => ({ ...c, phone: e.target.value }))} placeholder="+254 ..." />
+                  <Input value={contact.phone} onChange={(e) => setContact((c) => ({ ...c, phone: e.target.value }))} placeholder="+1 555 000 0000" />
                 </div>
                 <div className="space-y-2">
                   <Label>Company</Label>
@@ -291,7 +303,7 @@ const BookConsultation = () => {
                   <h3 className="font-display font-semibold mb-3">Booking Summary</h3>
                   <div className="space-y-1 text-sm text-muted-foreground">
                     <p><span className="text-foreground font-medium">Date:</span> {format(selectedDate, "EEEE, MMMM d, yyyy")}</p>
-                    <p><span className="text-foreground font-medium">Time:</span> {selectedTime} ({timezone})</p>
+                    <p><span className="text-foreground font-medium">Time:</span> {selectedTime} ({timezoneLabel})</p>
                     <p><span className="text-foreground font-medium">Platform:</span> Zoom</p>
                     <p><span className="text-foreground font-medium">Duration:</span> 30 minutes</p>
                   </div>

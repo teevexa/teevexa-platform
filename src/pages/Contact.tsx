@@ -21,7 +21,7 @@ const faqGroups = [
     items: [
       {
         q: "How quickly do you respond to enquiries?",
-        a: "We respond to all messages within 24 hours on business days (Mon–Fri, 8 AM–6 PM EAT). For time-sensitive matters, call us directly at +254 783 797 132.",
+        a: "We respond to all messages within 24 hours on business days. Our core team operates on EAT (UTC+3), but we accommodate EST, CET, and PST consultations — just mention your preferred time zone when you reach out.",
       },
       {
         q: "Do you work with startups or only enterprises?",
@@ -42,7 +42,7 @@ const faqGroups = [
       },
       {
         q: "What is your minimum project size?",
-        a: "We don't publish a hard minimum, but most of our engagements start from KES 150,000 (≈ $1,000) for a focused scope. Smaller retainers or advisory arrangements are also available — just ask.",
+        a: "We don't publish a hard minimum, but most of our engagements start from $1,000 USD (≈ KES 150,000) for a focused scope. Smaller retainers or advisory arrangements are also available — just ask.",
       },
       {
         q: "Do you offer ongoing maintenance after launch?",
@@ -268,11 +268,15 @@ const Contact = () => {
                       <p>Nairobi, Kenya</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                    <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <div className="flex items-start gap-3 text-sm text-muted-foreground">
+                    <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
                       <Clock size={16} className="text-primary" />
                     </div>
-                    Mon – Fri, 8:00 AM – 6:00 PM EAT
+                    <div>
+                      <p className="font-medium text-foreground">Mon – Fri</p>
+                      <p>8 AM – 6 PM EAT (UTC+3)</p>
+                      <p className="text-xs mt-1 text-primary/80">EST · CET · PST calls accommodated on request</p>
+                    </div>
                   </div>
                 </div>
               </div>

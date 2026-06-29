@@ -7,6 +7,7 @@ import {
   ArrowRight, CheckCircle2, Search, Lightbulb, PenTool, Code2,
   Rocket, HeadphonesIcon, BarChart2, Shield, Cpu, Cloud,
   Wheat, Ship, MapPin, Heart, Store, TrendingUp, GraduationCap, Factory,
+  Landmark, HeartPulse,
 } from "lucide-react";
 
 const services = [
@@ -41,7 +42,7 @@ const services = [
   {
     icon: Building2,
     title: "Enterprise Software",
-    desc: "Custom ERP, CRM, and workflow automation solutions engineered for the complexity of large African enterprises.",
+    desc: "Custom ERP, CRM, and workflow automation solutions engineered for the complexity of large enterprises.",
     highlights: ["ERP & CRM development", "Workflow & process automation", "Data pipelines & BI", "Multi-tenancy & RBAC"],
     path: "/services/enterprise-software",
   },
@@ -49,7 +50,7 @@ const services = [
     icon: Palette,
     title: "UI/UX Design",
     desc: "Research-driven, user-centered design that works across devices, languages, and digital literacy levels.",
-    highlights: ["User research & testing", "Design systems & brand guidelines", "Interactive prototyping", "Accessibility (WCAG 2.1)"],
+    highlights: ["User research & testing", "Design systems & brand guidelines", "Interactive prototyping", "Accessibility (WCAG 2.2 AA)"],
     path: "/services/ui-ux-design",
   },
 ];
@@ -69,7 +70,7 @@ const Services = () => (
   <>
     <SEO
       title="Software Development Services | Teevexa"
-      description="Custom web apps, mobile apps, e-commerce, enterprise software, and UI/UX design — Teevexa delivers end-to-end digital products for modern African businesses."
+      description="Custom web apps, mobile apps, e-commerce, enterprise software, and UI/UX design — Teevexa delivers end-to-end digital products for ambitious businesses worldwide."
       canonical="/services"
     />
     {/* ── Hero ── */}
@@ -84,7 +85,7 @@ const Services = () => (
           What We <span className="gradient-text">Build</span>
         </h1>
         <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed mb-10">
-          End-to-end digital solutions tailored to African business realities. From MVP to enterprise scale.
+          End-to-end digital solutions tailored to real-world business needs. From MVP to enterprise scale.
         </p>
         <div className="flex flex-wrap justify-center gap-4">
           <Button size="lg" className="glow-primary px-8" asChild>
@@ -170,7 +171,7 @@ const Services = () => (
           title="We Build Across Sectors"
           description="Our engineering approach adapts to your domain — from agriculture to fintech, we've shipped production software in each."
         />
-        <div className="mt-12 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4">
+        <div className="mt-12 grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-5 gap-4">
           {[
             { icon: Wheat,        label: "Agriculture" },
             { icon: Ship,         label: "Export & Trade" },
@@ -180,6 +181,8 @@ const Services = () => (
             { icon: Factory,      label: "Manufacturing" },
             { icon: TrendingUp,   label: "Finance & Fintech" },
             { icon: GraduationCap,label: "Education" },
+            { icon: Landmark,     label: "Government & Public Sector" },
+            { icon: HeartPulse,   label: "Healthcare" },
           ].map((ind) => (
             <div key={ind.label} className="glass rounded-2xl p-5 text-center group hover:border-primary/40 hover:-translate-y-1 hover:shadow-sm transition-all duration-300">
               <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-2.5 group-hover:bg-primary/20 transition-colors">
@@ -248,7 +251,7 @@ const Services = () => (
           Not Sure Where to <span className="gradient-text">Start?</span>
         </h2>
         <p className="text-muted-foreground leading-relaxed mb-10">
-          Book a free 30-minute consultation. We'll assess your needs and recommend the right approach — no sales pitch.
+          Book a free 30-minute consultation. We'll assess your needs and recommend the right approach - no sales pitch.
         </p>
         <Button size="lg" className="glow-primary px-10" asChild>
           <Link to="/book-consultation">Book Free Consultation <ArrowRight className="ml-2" size={18} /></Link>

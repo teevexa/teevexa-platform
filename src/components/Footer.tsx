@@ -14,7 +14,7 @@ const Footer = () => {
               <span className="text-xl font-display font-bold gradient-text">TEEVEXA</span>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Tech Evolution for Exceptional Applications. Building digital infrastructure for Africa's future.
+              Tech Evolution for Exceptional Applications. Building digital infrastructure for businesses worldwide.
             </p>
             <div className="flex gap-3">
               <a href="https://www.linkedin.com/company/teevexa" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label="LinkedIn"><Linkedin size={18} /></a>
@@ -84,7 +84,7 @@ const Footer = () => {
             <div className="flex flex-col gap-3 text-sm text-muted-foreground">
               <div className="flex items-center gap-2"><Mail size={14} className="text-primary" /> info@teevexa.com</div>
               <div className="flex items-center gap-2"><Phone size={14} className="text-primary" /> +254 783 797 132</div>
-              <div className="flex items-start gap-2"><MapPin size={14} className="text-primary mt-0.5" /> Nairobi, Kenya</div>
+              <div className="flex items-start gap-2"><MapPin size={14} className="text-primary mt-0.5" /><span>Nairobi, Kenya<br /><span className="text-xs opacity-70">Serving clients globally</span></span></div>
             </div>
           </div>
         </div>

@@ -22,12 +22,12 @@ interface Job {
 }
 
 const benefits = [
-  { icon: Globe,         title: "Remote-First",          desc: "Work from anywhere across Africa. We've built async-first processes that keep every team member aligned." },
+  { icon: Globe,         title: "Remote-First",          desc: "Work from anywhere in the world. We've built async-first processes that keep every team member aligned." },
   { icon: TrendingUp,    title: "Annual Learning Budget", desc: "Every team member gets a personal budget for courses, conferences, books, and certifications." },
   { icon: Heart,         title: "Mental Health Days",     desc: "Generous leave policy plus dedicated mental health days — great work comes from energised people." },
   { icon: GraduationCap, title: "Mentorship Program",    desc: "Senior engineers mentor juniors. Every new hire gets a dedicated guide for their first 90 days." },
   { icon: DollarSign,    title: "Competitive Pay",        desc: "Market-leading salaries benchmarked against global standards, not just local norms." },
-  { icon: Coffee,        title: "Team Retreats",          desc: "Twice-yearly in-person retreats across African cities to bond, plan, and celebrate wins." },
+  { icon: Coffee,        title: "Team Retreats",          desc: "Twice-yearly in-person team gatherings — Nairobi and our global hubs — to bond, plan, and celebrate wins." },
 ];
 
 const Careers = () => {
@@ -59,7 +59,7 @@ const Careers = () => {
     <>
       <SEO
         title="Careers at Teevexa | Join Our Engineering Team"
-        description="Explore open roles at Teevexa. We're building Africa's digital future and looking for talented engineers, designers, and product people."
+        description="Explore open roles at Teevexa. We're building world-class digital products for businesses worldwide — come build with us."
         canonical="/careers"
       />
       {/* ── Hero ── */}
@@ -71,10 +71,10 @@ const Careers = () => {
         <div className="container mx-auto text-center relative z-10 animate-fade-in max-w-4xl">
           <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary block mb-4">Careers at Teevexa</span>
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-display font-bold leading-tight mb-6">
-            Build Africa's Digital <span className="gradient-text">Future</span>
+            Build Software That <span className="gradient-text">Matters</span>
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed mb-10">
-            Join a mission-driven team creating world-class digital infrastructure for the continent. Senior talent. Real problems. Real impact.
+            Join a mission-driven team creating world-class digital infrastructure for businesses worldwide. Senior talent. Real problems. Real impact.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Button

@@ -4,9 +4,9 @@ import SectionHeading from "@/components/SectionHeading";
 import SEO from "@/components/SEO";
 import {
   Globe, Smartphone, ShoppingCart, Building2, Palette, BrainCircuit,
-  Shield, Layers, MapPin, Lock, Leaf, Wheat, Ship, Heart, Store,
+  Shield, Layers, MapPin, Wheat, Ship, Heart, Store,
   ArrowRight, ChevronDown, CheckCircle2, Zap, TrendingUp,
-  MessageSquare, Kanban, Server, QrCode, Users,
+  MessageSquare, Kanban, Server, QrCode, Landmark, HeartPulse,
 } from "lucide-react";
 
 const stats = [
@@ -17,7 +17,7 @@ const stats = [
 ];
 
 const services = [
-  { icon: BrainCircuit, title: "AI Agent Development",  bullets: ["Fully autonomous, multi-step agents", "Open-source models — no per-query fees", "On-premise or cloud deployment"],     path: "/services/ai-agents" },
+  { icon: BrainCircuit, title: "AI Agent Development",  bullets: ["Fully autonomous, multi-step agents", "Open-source models - no per-query fees", "On-premise or cloud deployment"],     path: "/services/ai-agents" },
   { icon: Globe,        title: "Web Development",       bullets: ["Custom CMS & portals", "API integrations", "SEO-first architecture"],                                               path: "/services/web-development" },
   { icon: Smartphone,   title: "Mobile Development",    bullets: ["Cross-platform (iOS & Android)", "Offline-first capabilities", "Push notifications"],                               path: "/services/mobile-development" },
   { icon: ShoppingCart, title: "E-Commerce Systems",    bullets: ["M-Pesa, Paystack, Flutterwave", "Inventory & multi-vendor", "Analytics dashboards"],                               path: "/services/e-commerce-systems" },
@@ -31,7 +31,7 @@ const products = [
     title: "Teevexa Trace",
     type: "SaaS",
     typeColor: "bg-primary/15 text-primary",
-    tagline: "Blockchain-powered supply chain traceability for African producers accessing global markets.",
+    tagline: "Blockchain-powered supply chain traceability for producers that need to prove origin, quality, and compliance to global buyers.",
     bullets: [
       "Farm-to-export QR verification",
       "Tamper-proof blockchain audit trail",
@@ -44,7 +44,7 @@ const products = [
     title: "Teevexa Field",
     type: "Mobile App",
     typeColor: "bg-accent/15 text-accent",
-    tagline: "The offline-first mobile companion for supply chain field agents — works anywhere.",
+    tagline: "The offline-first mobile companion for supply chain field agents - works anywhere.",
     bullets: [
       "No internet needed to log events",
       "QR scanning, GPS tagging & photo evidence",
@@ -70,7 +70,7 @@ const products = [
     title: "Teevexa Base",
     type: "Self-hosted",
     typeColor: "bg-orange-500/15 text-orange-400",
-    tagline: "Project management software you buy once, own forever — no monthly fees.",
+    tagline: "Project management software you buy once, own forever - no monthly fees.",
     bullets: [
       "One-time license, unlimited projects & teams",
       "Deploy on your own servers in 24 hours",
@@ -89,14 +89,16 @@ const industries = [
   { icon: Building2,  title: "Manufacturing" },
   { icon: TrendingUp, title: "Finance & Fintech" },
   { icon: Globe,      title: "Education & EdTech" },
+  { icon: Landmark,   title: "Government & Public Sector" },
+  { icon: HeartPulse, title: "Healthcare" },
 ];
 
 const whyUs = [
-  { icon: BrainCircuit, title: "AI-Native",            desc: "We build with AI at the core — not bolted on. From AI agents to AI-powered products, intelligence is built into everything we ship." },
-  { icon: MapPin,       title: "African-First",         desc: "Built for African infrastructure realities — intermittent connectivity, local payment methods, and regional compliance requirements." },
+  { icon: BrainCircuit, title: "AI-Native",            desc: "We build with AI at the core - not bolted on. From AI agents to AI-powered products, intelligence is built into everything we ship." },
+  { icon: MapPin,       title: "Market-Fluent",        desc: "We engineer for real-world infrastructure - intermittent connectivity, local payment rails, multi-currency, and regional compliance. What we learned building for demanding markets, we apply everywhere." },
   { icon: Layers,       title: "Scalable Architecture", desc: "Cloud-native designs that scale from 100 to 1,000,000 users without rearchitecting." },
   { icon: Shield,       title: "Secure by Default",     desc: "Enterprise-grade security: end-to-end encryption, role-based access, and penetration-tested before every release." },
-  { icon: Server,       title: "Self-Hosted Options",   desc: "Where data sovereignty matters, we offer self-hosted deployments. Your data stays on your servers — full stop." },
+  { icon: Server,       title: "Self-Hosted Options",   desc: "Where data sovereignty matters, we offer self-hosted deployments. Your data stays on your servers - full stop." },
   { icon: Zap,          title: "Fast Delivery",         desc: "Agile sprints with bi-weekly demos mean you see working software from week one, not month three." },
 ];
 
@@ -104,7 +106,7 @@ const Index = () => (
   <>
     <SEO
       title="Teevexa - Tech Evolution for Exceptional Applications"
-      description="Teevexa designs and builds world-class software, AI agents, and enterprise products for businesses across Africa and beyond."
+      description="Teevexa designs and builds world-class software, AI agents, and enterprise products for ambitious businesses worldwide."
       canonical="/"
       structuredData={{
         "@context": "https://schema.org",
@@ -121,7 +123,7 @@ const Index = () => (
           "@type": "ContactPoint",
           telephone: "+254783797132",
           contactType: "customer support",
-          areaServed: "Africa",
+          areaServed: "Worldwide",
           availableLanguage: "English",
         },
       }}
@@ -144,11 +146,11 @@ const Index = () => (
         <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-display font-bold leading-[1.05] tracking-tight">
           Building Digital<br />
           Infrastructure for{" "}
-          <span className="gradient-text">Africa's Future</span>
+          <span className="gradient-text">Ambitious Businesses</span>
         </h1>
 
         <p className="mt-8 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-          Custom software and AI products that work the way African businesses actually operate — offline-first, local payments, data on your servers.
+          Custom software and AI products built for how modern businesses actually operate - offline-first, local payments, data on your servers.
         </p>
 
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -165,7 +167,7 @@ const Index = () => (
           <span className="w-px h-3 bg-border hidden sm:block" />
           <span className="flex items-center gap-1.5"><CheckCircle2 size={13} className="text-primary" /> Proposal within 48 hours</span>
           <span className="w-px h-3 bg-border hidden sm:block" />
-          <span className="flex items-center gap-1.5"><CheckCircle2 size={13} className="text-primary" /> African-first expertise</span>
+          <span className="flex items-center gap-1.5"><CheckCircle2 size={13} className="text-primary" /> Global engineering standards</span>
         </div>
       </div>
 
@@ -198,7 +200,7 @@ const Index = () => (
         <SectionHeading
           label="What We Build"
           title="End-to-End Digital Solutions"
-          description="From product conception to global deployment — we engineer technology that solves real business problems."
+          description="From product conception to global deployment - we engineer technology that solves real business problems."
         />
         <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {services.map((s) => (
@@ -239,7 +241,7 @@ const Index = () => (
         <SectionHeading
           label="Our Products"
           title="Software We've Built and Ship"
-          description="Beyond client work, Teevexa builds and sells its own products — solving real African business problems at scale."
+          description="Beyond client work, Teevexa builds and sells its own products - solving real business problems at scale."
         />
         <div className="mt-14 grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
           {products.map((p) => (
@@ -280,8 +282,8 @@ const Index = () => (
       <div className="container mx-auto">
         <SectionHeading
           label="Why Teevexa"
-          title="Built Different, Built for Africa"
-          description="We don't copy-paste Western solutions into African contexts. We engineer from the ground up for the continent's realities."
+          title="Built Different, Built to Last"
+          description="We don't copy-paste template solutions. We engineer from first principles for real infrastructure constraints - whether your users are in Nairobi, Toronto, or Amsterdam."
         />
         <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {whyUs.map((w) => (
@@ -303,9 +305,9 @@ const Index = () => (
         <SectionHeading
           label="Industries"
           title="Sectors We Transform"
-          description="Whatever the sector, we bring the same engineering rigour, African market expertise, and product mindset."
+          description="Whatever the sector, we bring the same engineering rigour, market insight, and product mindset."
         />
-        <div className="mt-14 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4">
+        <div className="mt-14 grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-5 gap-4">
           {industries.map((ind) => (
             <div
               key={ind.title}
@@ -319,7 +321,7 @@ const Index = () => (
           ))}
         </div>
         <p className="mt-8 text-center text-sm text-muted-foreground">
-          Don't see yours? <Link to="/contact" className="text-primary hover:underline font-medium">We likely serve it</Link> — get in touch.
+          Don't see yours? <Link to="/contact" className="text-primary hover:underline font-medium">We likely serve it</Link> - get in touch.
         </p>
       </div>
     </section>

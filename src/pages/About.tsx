@@ -25,17 +25,17 @@ const timeline = [
   {
     year: "Late 2025",
     title: "Teevexa Trace R&D",
-    desc: "The supply chain traceability problem crystallises into a product idea. R&D begins on Teevexa Trace — a blockchain-powered platform built to give African producers verifiable proof of provenance for global markets.",
+    desc: "The supply chain traceability problem crystallises into a product idea. R&D begins on Teevexa Trace - a blockchain-powered platform built to give African producers verifiable proof of provenance for global markets.",
   },
   {
     year: "Mar 2026",
     title: "TEEVEXA LTD Incorporated",
-    desc: "On 3rd March 2026, Teevexa Ltd is officially registered as a Private Limited Company in Kenya. A milestone — from a solo-founder mission to a recognised institution.",
+    desc: "On 3rd March 2026, Teevexa Ltd is officially registered as a Private Limited Company in Kenya. A milestone - from a solo-founder mission to a recognised institution.",
   },
   {
     year: "2026 →",
     title: "Building the Future",
-    desc: "Teevexa Trace enters active development. The client services business grows across East and West Africa. The dual mission — great software for clients, and a world-class product of our own — accelerates.",
+    desc: "Teevexa Trace enters active development. The client services business grows across East Africa and beyond - with engagements in Canada and internationally. The dual mission - great software for clients, and a world-class product of our own - accelerates.",
   },
 ];
 
@@ -43,7 +43,7 @@ const values = [
   { icon: Shield,   title: "Integrity",      desc: "We say what we'll do and do what we say. No surprises, no hidden costs, no excuses." },
   { icon: Sparkles, title: "Innovation",     desc: "We solve problems others haven't solved yet. First-principles thinking over template copying." },
   { icon: Layers,   title: "Empowerment",    desc: "We build tools that give businesses ownership of their digital future, not dependency on us." },
-  { icon: Leaf,     title: "Sustainability", desc: "Technology built to last — environmentally conscious, socially aware, and economically viable." },
+  { icon: Leaf,     title: "Sustainability", desc: "Technology built to last - environmentally conscious, socially aware, and economically viable." },
   { icon: Eye,      title: "Transparency",   desc: "Open communication at every stage. You always know the status of your project." },
 ];
 
@@ -51,14 +51,14 @@ const About = () => (
   <>
     <SEO
       title="About Teevexa | Our Mission, Story & Team"
-      description="Learn about Teevexa — a Nairobi-born software company building world-class digital products for Africa's most ambitious businesses."
+      description="Learn about Teevexa - a Nairobi-born, globally operating software company building world-class digital products for ambitious businesses worldwide."
       canonical="/about"
       structuredData={{
         "@context": "https://schema.org",
         "@type": "AboutPage",
         name: "About Teevexa",
         url: "https://teevexa.com/about",
-        description: "Learn about Teevexa — who we are, what drives us, and the team building Africa's digital future.",
+        description: "Learn about Teevexa - who we are, what drives us, and the team building digital infrastructure for businesses worldwide.",
       }}
     />
     {/* ── Hero ── */}
@@ -75,7 +75,7 @@ const About = () => (
             <span className="gradient-text">a Mark</span>
           </h1>
           <p className="text-lg text-muted-foreground max-w-xl leading-relaxed mb-8">
-            A Nairobi-born, Kenya-registered technology company with a dual purpose: delivering world-class software to African businesses, and building the traceability infrastructure the continent's supply chains have always needed.
+            A Nairobi-born, Kenya-registered technology company with a dual purpose: delivering world-class software to ambitious businesses globally, and building the traceability infrastructure global supply chains have always needed.
           </p>
           <div className="flex flex-wrap gap-4">
             <Button size="lg" className="glow-primary" asChild>
@@ -114,13 +114,13 @@ const About = () => (
                 Most technology companies are built by people who love technology. Teevexa was built by someone who loves <span className="text-foreground font-medium">process integrity</span>.
               </p>
               <p>
-                Benjamin Baya trained as both a Chemical Engineer and a Software Engineer — two disciplines that, on the surface, have nothing in common. But Chemical Engineering is fundamentally about traceability: every reaction, every transfer, every transformation must be documented, verified, and provable. You cannot produce a pharmaceutical, export a food product, or run a refinery without an unbroken chain of custody.
+                Benjamin Baya trained as both a Chemical Engineer and a Software Engineer - two disciplines that, on the surface, have nothing in common. But Chemical Engineering is fundamentally about traceability: every reaction, every transfer, every transformation must be documented, verified, and provable. You cannot produce a pharmaceutical, export a food product, or run a refinery without an unbroken chain of custody.
               </p>
               <p>
-                When Benjamin looked at Africa's agricultural sector, he saw brilliant farmers producing premium crops that deserved global markets — but couldn't prove their origins. Exporters were losing premium pricing, failing compliance audits, and being shut out of high-value supply chains not because their products were inferior, but because they had no credible trail to show for it.
+                When Benjamin looked at Africa's agricultural sector, he saw brilliant farmers producing premium crops that deserved global markets - but couldn't prove their origins. Exporters were losing premium pricing, failing compliance audits, and being shut out of high-value supply chains not because their products were inferior, but because they had no credible trail to show for it.
               </p>
               <p>
-                That became the obsession behind <span className="text-primary font-semibold">Teevexa Trace</span>. But to build Teevexa Trace properly — with enterprise-grade blockchain infrastructure and a mobile-first field app built for low-connectivity environments — he first needed to build the technology company that could do it.
+                That became the obsession behind <span className="text-primary font-semibold">Teevexa Trace</span>. But to build Teevexa Trace properly - with enterprise-grade blockchain infrastructure and a mobile-first field app built for low-connectivity environments - he first needed to build the technology company that could do it.
               </p>
               <p>
                 In July 2025, Teevexa was born. On 3rd March 2026, <span className="text-foreground font-semibold">TEEVEXA LTD</span> was officially incorporated in Kenya as a Private Limited Company.
@@ -128,7 +128,7 @@ const About = () => (
             </div>
             <div className="mt-8 grid grid-cols-2 gap-4">
               {[
-                "Engineered for African infrastructure",
+                "Built for real-world infrastructure constraints",
                 "Global engineering standards",
                 "Local payment integrations",
                 "Multi-language ready",
@@ -149,7 +149,7 @@ const About = () => (
               </div>
               <h3 className="font-display font-bold text-lg mb-2">Our Mission</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                To deliver innovative, secure, and scalable digital solutions that drive measurable growth for African businesses — without compromising on quality, speed, or integrity.
+                To deliver innovative, secure, and scalable digital solutions that drive measurable growth for businesses worldwide - without compromising on quality, speed, or integrity.
               </p>
             </div>
             <div className="rounded-2xl border border-border p-7 hover:border-accent/40 transition-colors">
@@ -158,7 +158,7 @@ const About = () => (
               </div>
               <h3 className="font-display font-bold text-lg mb-2">Our Vision</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                To be Africa's leading technology infrastructure partner — the company that powers the next generation of enterprise applications and gives African producers transparent access to global markets.
+                To be a globally trusted technology partner - the company that powers the next generation of enterprise applications and gives producers worldwide transparent, verifiable access to global markets.
               </p>
             </div>
             <div className="rounded-2xl border border-primary/20 bg-primary/5 p-7">
@@ -167,7 +167,7 @@ const About = () => (
               </div>
               <h3 className="font-display font-bold text-lg mb-2">Why It Matters</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Africa produces some of the world's finest commodities. The continent's producers deserve software and infrastructure that proves it — to buyers in Amsterdam, London, Tokyo, and everywhere in between.
+                Africa produces some of the world's finest commodities. The continent's producers deserve software and infrastructure that proves it - to buyers in Amsterdam, London, Tokyo, and everywhere in between.
               </p>
             </div>
           </div>
@@ -263,22 +263,22 @@ const About = () => (
 
             <div className="space-y-4 text-muted-foreground leading-relaxed">
               <p>
-                <span className="text-foreground font-semibold">Benjamin Baya</span> is not a typical tech founder. He holds degrees in both Chemical Engineering and Software Engineering — a combination that sounds unlikely until you understand what it produces: someone who thinks about technology not just in terms of what can be built, but in terms of process integrity, provenance, and proof.
+                <span className="text-foreground font-semibold">Benjamin Baya</span> is not a typical tech founder. He holds degrees in both Chemical Engineering and Software Engineering - a combination that sounds unlikely until you understand what it produces: someone who thinks about technology not just in terms of what can be built, but in terms of process integrity, provenance, and proof.
               </p>
               <p>
-                In Chemical Engineering, those principles are non-negotiable. Every reaction is logged. Every transfer is documented. Every batch has a paper trail that can be audited years later. It is a discipline that takes traceability seriously — because lives depend on it.
+                In Chemical Engineering, those principles are non-negotiable. Every reaction is logged. Every transfer is documented. Every batch has a paper trail that can be audited years later. It is a discipline that takes traceability seriously - because lives depend on it.
               </p>
               <p>
-                Benjamin carried that mindset into software. And when he observed Africa's agricultural and export sector — a sector filled with world-class producers who couldn't prove the quality of their own products to international buyers — he saw a solvable problem.
+                Benjamin carried that mindset into software. And when he observed Africa's agricultural and export sector - a sector filled with world-class producers who couldn't prove the quality of their own products to international buyers - he saw a solvable problem.
               </p>
               <p>
                 The answer was <span className="text-primary font-semibold">Teevexa Trace</span>: a blockchain-powered traceability platform that applies Chemical Engineering's rigour to supply chains at scale. Every farm batch recorded. Every handoff verified. Every export shipment provable to any buyer, anywhere in the world.
               </p>
               <p>
-                But building Teevexa Trace required a world-class technology foundation. So in July 2025, Benjamin launched <span className="text-foreground font-semibold">Teevexa Ltd</span> — a full-service software development house that builds the kind of infrastructure Teevexa Trace demands, while delivering that same calibre of engineering to clients across Africa and beyond.
+                But building Teevexa Trace required a world-class technology foundation. So in July 2025, Benjamin launched <span className="text-foreground font-semibold">Teevexa Ltd</span> - a full-service software development house that builds the kind of infrastructure Teevexa Trace demands, while delivering that same calibre of engineering to clients across Africa and beyond.
               </p>
               <p className="text-foreground/70 italic text-sm border-l-2 border-primary/40 pl-4">
-                "The problem with African supply chains isn't the quality of what's produced. It's the inability to prove it. That's a technology problem — and technology is exactly what we're here to fix."
+                "The problem with African supply chains isn't the quality of what's produced. It's the inability to prove it. That's a technology problem - and technology is exactly what we're here to fix."
                 <br /><span className="not-italic font-semibold text-foreground/80 text-xs mt-1 block">— Benjamin Baya</span>
               </p>
             </div>
