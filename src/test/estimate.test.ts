@@ -119,3 +119,11 @@ describe("integrations are global, not Kenya-only", () => {
     expect(b.integrations).toEqual(expect.arrayContaining(["cards", "local"]));
   });
 });
+
+describe("kind detection", () => {
+  it("treats a generic app description as a web app, not other", () => {
+    expect(heuristicBrief("Booking app for clinics with Stripe").kind).toBe("webapp");
+    expect(heuristicBrief("an online store").kind).toBe("ecommerce");
+    expect(heuristicBrief("a mobile app for delivery drivers").kind).toBe("mobile");
+  });
+});

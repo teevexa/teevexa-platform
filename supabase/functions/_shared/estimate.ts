@@ -244,7 +244,7 @@ const KIND_RULES: [ProjectKind, RegExp][] = [
   ["mobile", /\b(mobile app|android|ios|iphone|flutter|react native|app store|play store)\b/i],
   ["ai", /\b(ai agent|chatbot|assistant|rag|llm|gpt|automation|machine learning|nlp|copilot for)\b/i],
   ["enterprise", /\b(erp|crm|enterprise|hr system|inventory system|workflow|ministry|government|bank|hospital)\b/i],
-  ["webapp", /\b(saas|dashboard|portal|web app|platform|admin panel|internal tool|booking system|management system)\b/i],
+  ["webapp", /\b(saas|dashboard|portal|web app|platform|admin panel|internal tool|booking|reservation|appointment|scheduling|marketplace app|management system|crm|app)\b/i],
   ["website", /\b(website|landing page|blog|portfolio site|company site|web ?site)\b/i],
 ];
 const CAP_RULES: [string, RegExp][] = [
