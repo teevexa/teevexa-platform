@@ -7,10 +7,10 @@ import logo from "@/assets/teevexa-logo.jpeg";
 
 const navLinks = [
   { label: "Home", path: "/" },
-  { label: "About", path: "/about" },
   { label: "Services", path: "/services" },
+  { label: "Our Work", path: "/portfolio" },
   { label: "Insights", path: "/insights" },
-  { label: "Careers", path: "/careers" },
+  { label: "About", path: "/about" },
   { label: "Contact", path: "/contact" },
 ];
 
@@ -46,7 +46,7 @@ const Navbar = () => {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 nav-dark-surface border-b backdrop-blur-xl">
-      <div className="container mx-auto flex items-center justify-between h-16 px-4 lg:px-8">
+      <div className="container mx-auto flex items-center justify-between h-16">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2.5 group">
           <img src={logo} alt="Teevexa" className="h-9 w-9 rounded-md object-cover" />
@@ -54,12 +54,12 @@ const Navbar = () => {
         </Link>
 
         {/* Desktop nav links */}
-        <div className="hidden lg:flex items-center gap-0.5">
+        <div className="hidden xl:flex items-center gap-0.5">
           {navLinks.map((link) => (
             <Link
               key={link.path}
               to={link.path}
-              className={`relative px-3 py-2 text-sm font-medium transition-colors hover:text-primary group ${
+              className={`relative px-2.5 py-2 text-[13px] xl:text-sm font-medium transition-colors hover:text-primary group whitespace-nowrap ${
                 isActive(link.path) ? "text-primary" : "text-muted-foreground"
               }`}
             >
@@ -74,7 +74,7 @@ const Navbar = () => {
         </div>
 
         {/* Desktop actions */}
-        <div className="hidden lg:flex items-center gap-2">
+        <div className="hidden xl:flex items-center gap-2">
           {/* Theme toggle */}
           <button
             onClick={toggle}
@@ -88,7 +88,7 @@ const Navbar = () => {
             <Link to="/book-consultation">Book Consultation</Link>
           </Button>
           <Button size="sm" className="glow-primary" asChild>
-            <Link to="/start-project">Start a Project</Link>
+            <Link to="/start-project">Get a Quote</Link>
           </Button>
           {user && (
             <Button
@@ -106,7 +106,7 @@ const Navbar = () => {
         </div>
 
         {/* Mobile controls */}
-        <div className="lg:hidden flex items-center gap-2">
+        <div className="xl:hidden flex items-center gap-2">
           <button
             onClick={toggle}
             aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
@@ -126,8 +126,8 @@ const Navbar = () => {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="lg:hidden nav-dark-surface border-t backdrop-blur-xl animate-fade-in">
-          <div className="container mx-auto px-4 py-4 flex flex-col gap-1.5">
+        <div className="xl:hidden nav-dark-surface border-t backdrop-blur-xl animate-fade-in max-h-[calc(100vh-4rem)] overflow-y-auto">
+          <div className="container mx-auto py-4 flex flex-col gap-1.5">
             {navLinks.map((link) => (
               <Link
                 key={link.path}
@@ -147,7 +147,7 @@ const Navbar = () => {
                 <Link to="/book-consultation" onClick={() => setMobileOpen(false)}>Book Consultation</Link>
               </Button>
               <Button size="sm" className="glow-primary" asChild>
-                <Link to="/start-project" onClick={() => setMobileOpen(false)}>Start a Project</Link>
+                <Link to="/start-project" onClick={() => setMobileOpen(false)}>Get a Quote</Link>
               </Button>
               {user && (
                 <Button

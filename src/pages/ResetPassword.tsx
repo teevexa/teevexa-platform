@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +9,8 @@ import { Lock } from "lucide-react";
 
 const ResetPassword = () => {
   const navigate = useNavigate();
+  const [params] = useSearchParams();
+  const invited = params.get("invited") === "1" || window.location.hash.includes("type=invite");
   const { toast } = useToast();
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -18,7 +20,7 @@ const ResetPassword = () => {
   useEffect(() => {
     // Check if we have a recovery session
     const hash = window.location.hash;
-    if (hash.includes("type=recovery")) {
+    if (hash.includes("type=recovery") || hash.includes("type=invite")) {
       setValid(true);
     } else {
       supabase.auth.getSession().then(({ data: { session } }) => {
@@ -44,8 +46,9 @@ const ResetPassword = () => {
     if (error) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
     } else {
-      toast({ title: "Password updated successfully" });
-      navigate("/auth");
+      toast({ title: invited ? "Password set — welcome!" : "Password updated successfully" });
+      // An invited client is already signed in: take them straight to their workspace.
+      navigate(invited ? "/client-portal" : "/auth");
     }
   };
 
@@ -57,7 +60,7 @@ const ResetPassword = () => {
         <div className="glass rounded-2xl p-8 animate-fade-in">
           <div className="text-center mb-6">
             <Lock className="mx-auto text-primary mb-3" size={32} />
-            <h1 className="font-display font-bold text-2xl mb-1">Set New Password</h1>
+            <h1 className="font-display font-bold text-2xl mb-1">{invited ? "Set your password" : "Set New Password"}</h1>
           </div>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">

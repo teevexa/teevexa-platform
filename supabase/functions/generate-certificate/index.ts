@@ -241,6 +241,12 @@ function buildPdf(params: {
 
 // ── Main handler ──────────────────────────────────────────────────────────────
 
+const TX_HASH_RE = /^0x[0-9a-fA-F]{64}$/;
+// A row only counts as on-chain when it holds a real transaction hash (not a "pending:" claim marker).
+// deno-lint-ignore no-explicit-any
+const withValidHashes = (rows: any[]): any[] =>
+  rows.map((r) => ({ ...r, blockchain_tx_hash: r.blockchain_tx_hash && TX_HASH_RE.test(r.blockchain_tx_hash) ? r.blockchain_tx_hash : null }));
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -303,7 +309,7 @@ Deno.serve(async (req) => {
       .eq("product_id", batchId)
       .order("recorded_at", { ascending: true });
 
-    const evList = events || [];
+    const evList = withValidHashes(events || []);
 
     // Producer display name
     const { data: profile } = await adminClient

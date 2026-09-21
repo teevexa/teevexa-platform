@@ -32,9 +32,9 @@ const serviceData: Record<string, {
     title: "E-Commerce Systems",
     tagline: "Full-featured commerce platforms built for any market's payment landscape.",
     problem: "E-commerce adoption is accelerating globally, but businesses lack platforms that handle local payment methods, complex shipping logic, and high-traffic demand.",
-    gap: "Platforms that integrate M-Pesa, Paystack, and Flutterwave natively — not as afterthoughts — with intelligent inventory and multi-vendor capability.",
+    gap: "Platforms that integrate Stripe, PayPal, Pesapal, Paystack, Flutterwave, M-Pesa and other regional gateways natively — not as afterthoughts — with intelligent inventory and multi-vendor capability.",
     approach: "We build custom commerce platforms with local payment integration, multi-currency support, and intelligent inventory management as core features.",
-    features: ["Local payment gateways (M-Pesa, Paystack, Flutterwave)", "Multi-currency & international support", "Inventory & warehouse management", "Shipping logic & order tracking", "Coupon & discount engine", "Subscription & recurring orders", "Multi-vendor marketplace support", "Real-time analytics & reporting"],
+    features: ["Global & local payment gateways (Stripe, PayPal, Pesapal, Paystack, Flutterwave, M-Pesa…)", "Multi-currency & international support", "Inventory & warehouse management", "Shipping logic & order tracking", "Coupon & discount engine", "Subscription & recurring orders", "Multi-vendor marketplace support", "Real-time analytics & reporting"],
   },
   "enterprise-software": {
     title: "Enterprise Software",
@@ -88,6 +88,7 @@ const ServiceDetail = () => {
   if (!service) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center gap-5 px-4 text-center">
+        <SEO title="Service not found" description="This service page could not be found." noindex />
         <h2 className="text-2xl font-display font-bold">Service Not Found</h2>
         <p className="text-muted-foreground text-sm">Check the URL or browse all services below.</p>
         <Button asChild><Link to="/services">View All Services</Link></Button>
@@ -103,12 +104,12 @@ const ServiceDetail = () => {
         canonical={`/services/${slug}`}
       />
       {/* ── Hero ── */}
-      <section className="relative py-32 px-4 gradient-hero network-bg overflow-hidden">
+      <section className="relative py-32  gradient-hero network-bg overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-1/3 right-1/4 w-72 h-72 rounded-full bg-primary/8 blur-3xl animate-pulse-glow" />
           <div className="absolute bottom-1/4 left-1/3 w-60 h-60 rounded-full bg-accent/7 blur-3xl animate-pulse-glow" style={{ animationDelay: "2s" }} />
         </div>
-        <div className="container mx-auto max-w-4xl relative z-10 animate-fade-in">
+        <div className="container mx-auto relative z-10 animate-fade-in">
           <Link
             to="/services"
             className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors mb-8"
@@ -124,7 +125,7 @@ const ServiceDetail = () => {
           </p>
           <div className="flex flex-wrap gap-4">
             <Button size="lg" className="glow-primary px-8" asChild>
-              <Link to="/start-project">Start a Project <ArrowRight className="ml-2" size={18} /></Link>
+              <Link to="/start-project">Get a Quote <ArrowRight className="ml-2" size={18} /></Link>
             </Button>
             <Button variant="outline" size="lg" className="px-8" asChild>
               <Link to="/book-consultation">Book a Consultation</Link>
@@ -134,8 +135,8 @@ const ServiceDetail = () => {
       </section>
 
       {/* ── Problem / Gap / Approach ── */}
-      <section className="py-24 px-4">
-        <div className="container mx-auto max-w-5xl">
+      <section className="py-24">
+        <div className="container mx-auto">
           <div className="grid md:grid-cols-3 gap-6">
             {[
               { num: "01", label: "The Problem",   text: service.problem,  accent: "bg-destructive/10 text-destructive" },
@@ -154,8 +155,8 @@ const ServiceDetail = () => {
       </section>
 
       {/* ── Features ── */}
-      <section className="section-card py-24 px-4">
-        <div className="container mx-auto max-w-5xl">
+      <section className="section-card py-24">
+        <div className="container mx-auto">
           <SectionHeading label="What's Included" title="Everything You Need" description="A full-service offering — from architecture to launch and beyond." />
           <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {service.features.map((f) => (
@@ -169,8 +170,8 @@ const ServiceDetail = () => {
       </section>
 
       {/* ── Process ── */}
-      <section className="py-24 px-4">
-        <div className="container mx-auto max-w-5xl">
+      <section className="py-24">
+        <div className="container mx-auto">
           <SectionHeading
             label="How We Work"
             title="7-Step Delivery Process"
@@ -193,8 +194,8 @@ const ServiceDetail = () => {
       </section>
 
       {/* ── CTA ── */}
-      <section className="section-navy py-24 px-4">
-        <div className="container mx-auto text-center max-w-2xl">
+      <section className="section-navy py-24">
+        <div className="container mx-auto text-center">
           <h2 className="text-4xl font-display font-bold mb-4">
             Ready to Get <span className="gradient-text">Started?</span>
           </h2>
@@ -203,7 +204,7 @@ const ServiceDetail = () => {
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button size="lg" className="glow-primary px-10" asChild>
-              <Link to="/start-project">Start a Project <ArrowRight className="ml-2" size={18} /></Link>
+              <Link to="/start-project">Get a Quote <ArrowRight className="ml-2" size={18} /></Link>
             </Button>
             <Button variant="outline" size="lg" className="px-8 bg-transparent text-foreground border-foreground/30 hover:bg-foreground/10 hover:border-foreground/50" asChild>
               <Link to="/services"><ArrowLeft size={14} className="mr-1" /> All Services</Link>

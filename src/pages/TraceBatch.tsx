@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 import { format, formatDistanceToNow } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import SEO from "@/components/SEO";
@@ -204,9 +206,12 @@ function TraceSkeleton() {
 }
 
 const POLYGONSCAN_BASE = "https://polygonscan.com/tx/";
+const TX_HASH_RE = /^0x[0-9a-fA-F]{64}$/;
 
 export default function TraceBatch() {
   const { batchId } = useParams<{ batchId: string }>();
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const [product, setProduct] = useState<TraceProduct | null>(null);
   const [events, setEvents] = useState<TraceEvent[]>([]);
   const [loading, setLoading] = useState(true);
@@ -224,31 +229,26 @@ export default function TraceBatch() {
       setNotFound(false);
       setRingAnimated(false);
 
-      const { data: productData, error: productError } = await supabase
-        .from("trace_products")
-        .select("*")
-        .eq("batch_id", batchId)
-        .single();
+      // Single-batch public lookup (RPC). The tables themselves are not publicly readable.
+      const { data, error } = await supabase.rpc("get_public_trace", { p_batch_id: batchId });
 
       if (cancelled) return;
 
-      if (productError || !productData) {
+      const result = data as unknown as { product: TraceProduct; events: TraceEvent[] } | null;
+      if (error || !result?.product) {
         setNotFound(true);
         setLoading(false);
         return;
       }
 
-      setProduct(productData as TraceProduct);
-
-      const { data: eventsData } = await supabase
-        .from("trace_events")
-        .select("*")
-        .eq("product_id", batchId)
-        .order("recorded_at", { ascending: true });
-
-      if (cancelled) return;
-
-      setEvents((eventsData as TraceEvent[]) ?? []);
+      setProduct(result.product);
+      // Only real transaction hashes count as on-chain (defends against placeholder/pending values).
+      setEvents(
+        (result.events ?? []).map((e) => ({
+          ...e,
+          blockchain_tx_hash: e.blockchain_tx_hash && TX_HASH_RE.test(e.blockchain_tx_hash) ? e.blockchain_tx_hash : null,
+        })),
+      );
       setLoading(false);
 
       setTimeout(() => !cancelled && setRingAnimated(true), 120);
@@ -263,7 +263,7 @@ export default function TraceBatch() {
       await navigator.clipboard.writeText(window.location.href);
       setCopied(true);
       setTimeout(() => setCopied(false), 2200);
-    } catch {}
+    } catch { /* clipboard unavailable */ }
   }, []);
 
   const handleShare = useCallback(async () => {
@@ -275,7 +275,7 @@ export default function TraceBatch() {
           url: window.location.href,
         });
         return;
-      } catch {}
+      } catch { /* share dismissed */ }
     }
     handleCopy();
   }, [product, batchId, handleCopy]);
@@ -286,11 +286,21 @@ export default function TraceBatch() {
     try {
       const { data: sessionData } = await supabase.auth.getSession();
       const token = sessionData?.session?.access_token;
+      if (!token) {
+        toast({
+          title: "Sign in to download the certificate",
+          description: "Certificates are issued to Teevexa Trace account holders.",
+          action: (
+            <ToastAction altText="Sign in" onClick={() => navigate(`/auth?redirect=${encodeURIComponent(`/trace/${batchId}`)}`)}>
+              Sign in
+            </ToastAction>
+          ),
+        });
+        return;
+      }
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL ?? "";
       const fnUrl = `${supabaseUrl}/functions/v1/generate-certificate?batchId=${encodeURIComponent(batchId)}`;
-      const res = await fetch(fnUrl, {
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
-      });
+      const res = await fetch(fnUrl, { headers: { Authorization: `Bearer ${token}` } });
       if (!res.ok) throw new Error("Certificate generation failed");
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
@@ -300,11 +310,11 @@ export default function TraceBatch() {
       a.click();
       URL.revokeObjectURL(url);
     } catch {
-      alert("Could not generate certificate. Please try again.");
+      toast({ title: "Could not generate the certificate", description: "Please try again in a moment.", variant: "destructive" });
     } finally {
       setCertDownloading(false);
     }
-  }, [batchId]);
+  }, [batchId, toast, navigate]);
 
   const trustScore = calcTrustScore(events);
   const onChainEvents = events.filter((e) => e.blockchain_tx_hash);
@@ -314,7 +324,7 @@ export default function TraceBatch() {
   if (loading) {
     return (
       <div className="min-h-screen gradient-hero network-bg pt-8 pb-16">
-        <div className="container mx-auto px-4 max-w-2xl">
+        <div className="container mx-auto [&>*]:max-w-2xl [&>*]:mx-auto">
           <TraceSkeleton />
         </div>
       </div>
@@ -324,7 +334,7 @@ export default function TraceBatch() {
   if (notFound) {
     return (
       <>
-        <SEO title="Batch Not Found — Teevexa Trace" description="This product batch could not be found." />
+        <SEO title="Batch Not Found — Teevexa Trace" description="This product batch could not be found." noindex />
         <div className="min-h-screen gradient-hero network-bg flex items-center justify-center pt-16 pb-16 px-4">
           <div className="text-center max-w-md">
             <div className="w-20 h-20 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center mx-auto mb-6">
@@ -361,7 +371,7 @@ export default function TraceBatch() {
       />
 
       <div className="min-h-screen gradient-hero network-bg pt-8 pb-16">
-        <div className="container mx-auto px-4 max-w-2xl">
+        <div className="container mx-auto [&>*]:max-w-2xl [&>*]:mx-auto">
 
           {/* Verification badge */}
           <div className="flex items-center justify-center gap-2 mb-5 px-4 py-2 rounded-full bg-green-500/8 border border-green-500/20 w-fit mx-auto">
@@ -388,7 +398,12 @@ export default function TraceBatch() {
                   Registered {format(new Date(product.created_at), "MMMM d, yyyy")}
                 </p>
               </div>
-              <TrustRing score={trustScore} animated={ringAnimated} />
+              <div className="flex flex-col items-center gap-2 max-w-[190px]">
+                <TrustRing score={trustScore} animated={ringAnimated} />
+                <p className="text-[10px] text-muted-foreground text-center leading-snug">
+                  Score reflects how complete the record is (on-chain anchors, GPS, stages). Check each anchor on Polygonscan to verify it independently.
+                </p>
+              </div>
             </div>
           </div>
 

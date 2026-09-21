@@ -42,6 +42,8 @@ const NotificationPreferences = () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
+    // notification_preferences is not in the generated Supabase types yet
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data } = await (supabase.from("notification_preferences") as any)
       .select("email_messages, email_milestones, email_invoices, email_tasks, email_deliverables, email_system")
       .eq("user_id", user.id)
@@ -70,6 +72,7 @@ const NotificationPreferences = () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { error } = await (supabase.from("notification_preferences") as any)
       .upsert({ user_id: user.id, ...updated }, { onConflict: "user_id" });
 

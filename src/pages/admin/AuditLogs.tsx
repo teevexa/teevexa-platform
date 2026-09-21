@@ -51,7 +51,11 @@ const AuditLogs = () => {
 
     if (actionFilter !== "all") query = query.eq("action", actionFilter);
     if (entityFilter !== "all") query = query.eq("entity_type", entityFilter);
-    if (search.trim()) query = query.or(`action.ilike.%${search}%,entity_type.ilike.%${search}%,entity_id.ilike.%${search}%`);
+    if (search.trim()) {
+      // Strip characters that have meaning inside a PostgREST .or() filter (commas, parens, wildcards, quotes, backslashes)
+      const term = search.trim().replace(/[,()%*"\\]/g, " ").replace(/\s+/g, " ").trim();
+      if (term) query = query.or(`action.ilike.%${term}%,entity_type.ilike.%${term}%,entity_id.ilike.%${term}%`);
+    }
     if (dateFrom) query = query.gte("created_at", dateFrom);
     if (dateTo) query = query.lte("created_at", dateTo + "T23:59:59Z");
 

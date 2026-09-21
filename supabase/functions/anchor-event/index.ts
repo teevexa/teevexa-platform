@@ -37,7 +37,7 @@ async function signAndSendTransaction(
   rpcUrl: string,
   privateKeyHex: string,
   data: string
-): Promise<string> {
+): Promise<{ hash: string; confirm: () => Promise<void> }> {
   // Dynamically import ethers from esm.sh (works in Deno/Supabase edge runtime)
   const { ethers } = await import("https://esm.sh/ethers@6.13.0");
 
@@ -50,8 +50,9 @@ async function signAndSendTransaction(
     data: "0x" + data,
   });
 
-  await tx.wait(1);
-  return tx.hash;
+  // Return as soon as the tx is broadcast so the hash can be stored immediately;
+  // waiting for the block could outlive the edge-function time limit and lose the hash.
+  return { hash: tx.hash, confirm: async () => { await tx.wait(1); } };
 }
 
 Deno.serve(async (req) => {
@@ -139,6 +140,12 @@ Deno.serve(async (req) => {
       .select("blockchain_tx_hash")
       .eq("id", eventId)
       .single();
+    if (existing?.blockchain_tx_hash?.startsWith("pending:")) {
+      return new Response(
+        JSON.stringify({ anchored: false, reason: "already_in_progress_or_anchored" }),
+        { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
     if (existing?.blockchain_tx_hash) {
       return new Response(
         JSON.stringify({ anchored: true, tx_hash: existing.blockchain_tx_hash, reused: true }),
@@ -161,13 +168,45 @@ Deno.serve(async (req) => {
 
     const hashHex = await sha256Hex(canonical);
 
-    const txHash = await signAndSendTransaction(rpcUrl, privateKey, hashHex);
+    // Claim the event before spending gas so two concurrent calls can't both anchor it.
+    // A "pending:" marker is written only if no hash exists yet; the loser of the race stops here.
+    const claimMarker = `pending:${crypto.randomUUID()}`;
+    const { data: claimed } = await adminClient
+      .from("trace_events")
+      .update({ blockchain_tx_hash: claimMarker })
+      .eq("id", eventId)
+      .is("blockchain_tx_hash", null)
+      .select("id");
+    if (!claimed || claimed.length === 0) {
+      return new Response(
+        JSON.stringify({ anchored: false, reason: "already_in_progress_or_anchored" }),
+        { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
-    // Persist tx hash
-    await adminClient
+    let txHash: string;
+    let confirm: () => Promise<void>;
+    try {
+      ({ hash: txHash, confirm } = await signAndSendTransaction(rpcUrl, privateKey, hashHex));
+    } catch (sendErr) {
+      // Release the claim so the event can be retried
+      await adminClient.from("trace_events").update({ blockchain_tx_hash: null }).eq("id", eventId).eq("blockchain_tx_hash", claimMarker);
+      throw sendErr;
+    }
+
+    const { error: persistErr } = await adminClient
       .from("trace_events")
       .update({ blockchain_tx_hash: txHash })
-      .eq("id", eventId);
+      .eq("id", eventId)
+      .eq("blockchain_tx_hash", claimMarker);
+    if (persistErr) console.error("anchor-event: failed to persist tx hash", txHash, persistErr);
+
+    // Best-effort: wait for one confirmation, but never fail the request if it takes too long.
+    try {
+      await Promise.race([confirm(), new Promise((resolve) => setTimeout(resolve, 20_000))]);
+    } catch (confirmErr) {
+      console.warn("anchor-event: confirmation wait failed", confirmErr);
+    }
 
     return new Response(
       JSON.stringify({ anchored: true, tx_hash: txHash }),
@@ -176,7 +215,7 @@ Deno.serve(async (req) => {
   } catch (err) {
     console.error("anchor-event error:", err);
     return new Response(
-      JSON.stringify({ error: "Internal server error", detail: String(err) }),
+      JSON.stringify({ error: "Internal server error" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }

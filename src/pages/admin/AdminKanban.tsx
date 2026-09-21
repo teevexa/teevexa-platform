@@ -199,9 +199,9 @@ const AdminKanban = () => {
                     <Card
                       key={task.id}
                       draggable={!isMobile}
-                      onDragStart={() => !isMobile && handleDragStart(task.id)}
+                      onDragStart={() => { if (!isMobile) handleDragStart(task.id); }}
                       onDragEnd={handleDragEnd}
-                      onClick={(e) => { e.stopPropagation(); isMobile && handleMobileTap(task.id); }}
+                      onClick={(e) => { e.stopPropagation(); if (isMobile) handleMobileTap(task.id); }}
                       className={`border-l-4 ${priorityBorder[task.priority] || "border-l-border"} transition-all hover:shadow-md ${
                         isMobile ? "cursor-pointer" : "cursor-grab active:cursor-grabbing"
                       } ${

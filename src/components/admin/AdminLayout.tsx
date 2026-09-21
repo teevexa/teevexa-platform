@@ -1,7 +1,7 @@
-import { useNavigate, Outlet, Link, useLocation } from "react-router-dom";
+import { useNavigate, Outlet, Link, useLocation, Navigate } from "react-router-dom";
 import { ArrowUpLeft } from "lucide-react";
 import logo from "@/assets/teevexa-logo.jpeg";
-import { useAuth, AppRole } from "@/hooks/useAuth";
+import { useAuth, AppRole, isTeamRole, homeForRole } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -43,8 +43,8 @@ const navSections = [
   ], roles: ["super_admin", "admin"] as AppRole[] },
   { label: "Content", items: [
     { path: "/admin/blog", label: "Blog / Insights", icon: FileText },
+    { path: "/admin/portfolio", label: "Portfolio", icon: Briefcase },
     { path: "/admin/careers", label: "Careers", icon: Briefcase },
-    { path: "/admin/waitlist", label: "Trace Waitlist", icon: Clock },
   ], roles: ["super_admin", "admin"] as AppRole[] },
   { label: "System", items: [
     { path: "/admin/audit-logs", label: "Audit Logs", icon: ScrollText },
@@ -57,17 +57,6 @@ const AdminLayout = () => {
   const location = useLocation();
   const { user, role, loading } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  // Redirect logic after loading
-  if (!loading && !user) {
-    navigate("/auth");
-    return null;
-  }
-
-  if (!loading && role === "client") {
-    navigate("/client-portal");
-    return null;
-  }
 
   const logout = async () => {
     await supabase.auth.signOut();
@@ -82,15 +71,33 @@ const AdminLayout = () => {
     );
   }
 
-  if (!user || !role) return null;
+  if (!user) {
+    return <Navigate to={`/auth?redirect=${encodeURIComponent(location.pathname + location.search)}`} replace />;
+  }
+
+  // Non-staff (clients, field agents, trace clients) never see the admin shell.
+  if (!role || !isTeamRole(role)) {
+    return <Navigate to={homeForRole(role)} replace />;
+  }
 
   const filteredSections = navSections.filter((section) =>
     section.roles.includes(role)
   );
 
+  // Route-level gating: the sidebar hides sections, but URLs must be enforced too.
+  const allowedPaths = filteredSections.flatMap((s) => s.items.map((i) => i.path));
+  const matchesPath = (base: string) =>
+    base === "/admin" ? location.pathname === "/admin" || location.pathname === "/admin/" : location.pathname === base || location.pathname.startsWith(base + "/");
+  const routeAllowed = allowedPaths.some(matchesPath);
+  const knownPaths = navSections.flatMap((s) => s.items.map((i) => i.path));
+  const routeIsRestricted = knownPaths.some(matchesPath) && !routeAllowed;
+  if (routeIsRestricted) {
+    return <Navigate to="/admin" replace />;
+  }
+
   return (
     <div className="min-h-screen flex bg-background">
-      <button onClick={() => setSidebarOpen(!sidebarOpen)} className="lg:hidden fixed top-4 left-4 z-50 glass rounded-lg p-2">
+      <button onClick={() => setSidebarOpen(!sidebarOpen)} aria-label={sidebarOpen ? "Close menu" : "Open menu"} aria-expanded={sidebarOpen} className="lg:hidden fixed top-4 left-4 z-50 glass rounded-lg p-2">
         {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
       </button>
 
@@ -107,7 +114,7 @@ const AdminLayout = () => {
                 <p className="text-[10px] uppercase tracking-wider text-muted-foreground px-3 mb-1">{section.label}</p>
                 <div className="space-y-0.5">
                   {section.items.map((item) => {
-                    const active = location.pathname === item.path;
+                    const active = matchesPath(item.path);
                     return (
                       <Link key={item.path} to={item.path} onClick={() => setSidebarOpen(false)}
                         className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${active ? "bg-sidebar-accent text-sidebar-primary font-medium" : "text-sidebar-foreground hover:bg-sidebar-accent/50"}`}>

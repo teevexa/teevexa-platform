@@ -12,6 +12,13 @@ import {
 
 const services = [
   {
+    icon: Rocket,
+    title: "Prototype to Production",
+    desc: "Built an app with Lovable, Bolt, v0 or Cursor? We take AI-built prototypes live: hardened, integrated with real payments, deployed and supported.",
+    highlights: ["Code & security audit", "Payments: Stripe, PayPal, Pesapal, M-Pesa & more", "Production deployment, CI/CD & monitoring", "30 days of post-launch support"],
+    path: "/prototype-to-production",
+  },
+  {
     icon: BrainCircuit,
     title: "AI Agent Development",
     desc: "Custom AI agents that automate repetitive business processes — from customer support to document processing and internal workflows.",
@@ -36,7 +43,7 @@ const services = [
     icon: ShoppingCart,
     title: "E-Commerce Systems",
     desc: "Full-featured commerce platforms with local payment integration, inventory management, and multi-vendor support.",
-    highlights: ["M-Pesa, Flutterwave, Paystack", "Multi-vendor & B2B", "Inventory & logistics", "Real-time analytics"],
+    highlights: ["Stripe, PayPal, Pesapal, M-Pesa & more", "Multi-vendor & B2B", "Inventory & logistics", "Real-time analytics"],
     path: "/services/e-commerce-systems",
   },
   {
@@ -74,12 +81,12 @@ const Services = () => (
       canonical="/services"
     />
     {/* ── Hero ── */}
-    <section className="relative py-32 px-4 gradient-hero network-bg overflow-hidden">
+    <section className="relative py-32  gradient-hero network-bg overflow-hidden">
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/3 right-1/4 w-72 h-72 rounded-full bg-primary/8 blur-3xl animate-pulse-glow" />
         <div className="absolute bottom-1/4 left-1/3 w-60 h-60 rounded-full bg-accent/7 blur-3xl animate-pulse-glow" style={{ animationDelay: "2s" }} />
       </div>
-      <div className="container mx-auto text-center relative z-10 animate-fade-in max-w-4xl">
+      <div className="container mx-auto text-center relative z-10 animate-fade-in">
         <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary block mb-4">Our Services</span>
         <h1 className="text-5xl md:text-6xl lg:text-7xl font-display font-bold leading-tight mb-6">
           What We <span className="gradient-text">Build</span>
@@ -89,7 +96,7 @@ const Services = () => (
         </p>
         <div className="flex flex-wrap justify-center gap-4">
           <Button size="lg" className="glow-primary px-8" asChild>
-            <Link to="/start-project">Start a Project <ArrowRight className="ml-2" size={18} /></Link>
+            <Link to="/start-project">Get a Quote <ArrowRight className="ml-2" size={18} /></Link>
           </Button>
           <Button variant="outline" size="lg" className="px-8" asChild>
             <Link to="/book-consultation">Book a Consultation</Link>
@@ -99,9 +106,9 @@ const Services = () => (
     </section>
 
     {/* ── Services Grid ── */}
-    <section className="py-24 px-4">
+    <section className="py-24">
       <div className="container mx-auto">
-        <SectionHeading label="Services" title="Six Ways We Help You Win" description="Each service is delivered by specialists — not generalists — with deep experience in that domain." />
+        <SectionHeading label="Services" title="Seven Ways We Help You Win" description="Each service is delivered by specialists — not generalists — with deep experience in that domain." />
         <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {services.map((s) => (
             <Link
@@ -132,8 +139,8 @@ const Services = () => (
     </section>
 
     {/* ── Process ── */}
-    <section className="section-card py-24 px-4">
-      <div className="container mx-auto max-w-5xl">
+    <section className="section-card py-24">
+      <div className="container mx-auto">
         <SectionHeading label="How We Work" title="Our 7-Step Delivery Process" description="A structured, transparent process that eliminates surprises and maximises quality." />
         <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
           {process.slice(0, 6).map((p) => (
@@ -164,7 +171,7 @@ const Services = () => (
     </section>
 
     {/* ── Industries We Serve ── */}
-    <section className="section-teal py-20 px-4">
+    <section className="section-teal py-20">
       <div className="container mx-auto">
         <SectionHeading
           label="Industries"
@@ -199,7 +206,7 @@ const Services = () => (
     </section>
 
     {/* ── Engagement Models ── */}
-    <section className="py-24 px-4">
+    <section className="py-24">
       <div className="container mx-auto">
         <SectionHeading label="Engagement" title="How We Can Work Together" description="Choose the engagement model that fits your stage and how you like to work." />
         <div className="mt-14 grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
@@ -207,7 +214,7 @@ const Services = () => (
             {
               icon: Cpu,
               title: "Project-Based",
-              desc: "Fixed scope, fixed price. Ideal for MVPs, feature builds, and well-defined projects. You get a proposal and timeline before any commitment.",
+              desc: "Clearly defined scope. Ideal for MVPs, feature builds, and well-defined projects. You get a proposal and timeline before any commitment.",
               cta: "Get a Quote",
               link: "/start-project",
               accent: false,
@@ -245,8 +252,8 @@ const Services = () => (
     </section>
 
     {/* ── CTA ── */}
-    <section className="section-navy py-24 px-4">
-      <div className="container mx-auto text-center max-w-2xl">
+    <section className="section-navy py-24">
+      <div className="container mx-auto text-center">
         <h2 className="text-4xl font-display font-bold mb-4">
           Not Sure Where to <span className="gradient-text">Start?</span>
         </h2>

@@ -98,13 +98,11 @@ const CookiePolicy = () => (
           </thead>
           <tbody>
             {[
-              ["teevexa_session", "Strictly Necessary", "Maintains your authenticated session in the client portal", "Session"],
-              ["teevexa_csrf", "Strictly Necessary", "Cross-site request forgery protection token", "Session"],
-              ["teevexa_cookie_consent", "Strictly Necessary", "Stores your cookie consent preferences", "1 year"],
-              ["teevexa_lang", "Functional", "Remembers your preferred interface language", "1 year"],
-              ["teevexa_theme", "Functional", "Stores your display theme preference", "1 year"],
-              ["_analytics_id", "Analytical", "Assigns an anonymous visitor ID for usage analytics", "2 years"],
-              ["_analytics_session", "Analytical", "Groups page views within a single session", "30 minutes"],
+              ["sb-…-auth-token", "Strictly Necessary", "Keeps you signed in to the client portal (Supabase authentication session, stored in your browser)", "Until you sign out"],
+              ["teevexa_cookie_consent", "Strictly Necessary", "Stores your cookie consent preferences", "Until cleared"],
+              ["teevexa_theme", "Functional", "Stores your light/dark display preference", "Until cleared"],
+              ["teevexa_start_project_v1", "Functional", "Saves your progress on the quote request form so you can pick up where you left off", "Up to 7 days"],
+              ["Plausible Analytics", "Analytical", "Privacy-friendly, cookie-less page-view and conversion statistics. Loaded only if you accept analytics.", "No cookies set"],
             ].map(([name, cat, purpose, duration]) => (
               <tr key={name} className="odd:bg-muted/10">
                 <td className="px-3 py-2 border border-border/20 font-mono text-primary/80">{name}</td>
@@ -192,7 +190,7 @@ const CookiePolicy = () => (
       <p>If you have questions about our use of cookies or this Cookie Policy, please reach out:</p>
       <LegalContactBox>
         <p className="font-semibold text-foreground">TEEVEXA — Privacy Team</p>
-        <p>Email: <span className="text-primary font-medium">info@teevexa.com</span></p>
+        <p>Email: <span className="text-primary font-medium">hello@teevexa.com</span></p>
         <p>Phone: <span className="text-foreground/70">+254 783 797 132</span></p>
         <p>Address: <span className="text-foreground/70">Nairobi, Kenya</span></p>
       </LegalContactBox>

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -35,6 +36,8 @@ const statusBadge: Record<string, string> = {
 
 const Dashboard = () => {
   const queryClient = useQueryClient();
+  const { toast } = useToast();
+  const [reportDownloading, setReportDownloading] = useState(false);
 
   const { data: user } = useQuery({
     queryKey: ["currentUser"],
@@ -117,7 +120,6 @@ const Dashboard = () => {
 
   const { profile, projects, milestones, invoices, unpaidInvoices, unpaidCount, messageCount, team = [] } = data;
 
-  const [reportDownloading, setReportDownloading] = useState(false);
 
   const handleDownloadComplianceReport = async () => {
     setReportDownloading(true);
@@ -141,7 +143,7 @@ const Dashboard = () => {
       a.click();
       URL.revokeObjectURL(url);
     } catch {
-      alert("Could not generate the compliance report. Please try again.");
+      toast({ title: "Could not generate the report", description: "Please try again in a moment.", variant: "destructive" });
     } finally {
       setReportDownloading(false);
     }

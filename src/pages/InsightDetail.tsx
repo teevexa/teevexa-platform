@@ -1,3 +1,4 @@
+import { renderMarkdown } from "@/lib/markdown";
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -48,6 +49,7 @@ const InsightDetail = () => {
   if (!post) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-5 px-4 text-center">
+        <SEO title="Article not found" description="This article could not be found." noindex />
         <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center">
           <FileText className="text-muted-foreground" size={32} />
         </div>
@@ -89,11 +91,11 @@ const InsightDetail = () => {
         }}
       />
       {/* ── Hero ── */}
-      <section className="relative pt-32 pb-16 px-4 gradient-hero network-bg overflow-hidden">
+      <section className="relative pt-32 pb-16  gradient-hero network-bg overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-1/3 right-1/4 w-72 h-72 rounded-full bg-primary/8 blur-3xl animate-pulse-glow" />
         </div>
-        <div className="container mx-auto max-w-3xl relative z-10 animate-fade-in">
+        <div className="container mx-auto relative z-10 animate-fade-in [&>*]:max-w-3xl [&>*]:mx-auto">
           <Link
             to="/insights"
             className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors mb-8"
@@ -119,8 +121,8 @@ const InsightDetail = () => {
 
       {/* ── Cover Image ── */}
       {post.cover_image_url && (
-        <section className="px-4 -mt-4">
-          <div className="container mx-auto max-w-3xl">
+        <section className="-mt-4">
+          <div className="container mx-auto">
             <div className="rounded-2xl overflow-hidden border border-border shadow-lg">
               <img
                 src={post.cover_image_url}
@@ -133,11 +135,12 @@ const InsightDetail = () => {
       )}
 
       {/* ── Article body ── */}
-      <section className="py-16 px-4">
-        <div className="container mx-auto max-w-3xl">
-          <div className="prose prose-slate dark:prose-invert max-w-none leading-relaxed text-[15px]">
-            {post.content}
-          </div>
+      <section className="py-16">
+        <div className="container mx-auto [&>*]:max-w-3xl [&>*]:mx-auto">
+          <div
+            className="prose prose-slate dark:prose-invert max-w-none leading-relaxed text-[15px] prose-a:text-primary"
+            dangerouslySetInnerHTML={{ __html: renderMarkdown(post.content || "") }}
+          />
 
           {/* Tags + navigation */}
           <div className="mt-14 pt-8 border-t border-border">
@@ -156,8 +159,8 @@ const InsightDetail = () => {
       </section>
 
       {/* ── CTA ── */}
-      <section className="section-teal py-20 px-4">
-        <div className="container mx-auto max-w-2xl text-center">
+      <section className="section-teal py-20">
+        <div className="container mx-auto text-center">
           <h2 className="text-3xl font-display font-bold mb-3">
             Ready to Put This Into <span className="gradient-text">Practice?</span>
           </h2>

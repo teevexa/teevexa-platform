@@ -48,7 +48,7 @@ const PrivacyPolicy = () => (
         TEEVEXA, headquartered in Nairobi, Kenya, is the <Em>data controller</Em> responsible for your personal data collected through our website and services. We determine the purposes and means of processing your personal data as described in this policy.
       </p>
       <p>
-        For any questions or concerns regarding this policy or our data practices, please contact our <Em>Data Protection Officer (DPO)</Em> at <span className="text-primary font-medium">info@teevexa.com</span>.
+        For any questions or concerns regarding this policy or our data practices, please contact our <Em>Data Protection Officer (DPO)</Em> at <span className="text-primary font-medium">hello@teevexa.com</span>.
       </p>
     </LegalSection>
 
@@ -104,7 +104,7 @@ const PrivacyPolicy = () => (
         We do <Em>not sell, rent, or trade</Em> your personal data to third parties. We may share your information in the following limited circumstances:
       </p>
       <LegalList items={[
-        <><Em>Service Providers:</Em> Trusted third-party vendors who assist in operating our business, including cloud hosting, analytics platforms, payment processors, and email services. All processors are bound by data processing agreements and required to maintain equivalent privacy protections.</>,
+        <><Em>Service Providers:</Em> Trusted third-party vendors who assist in operating our business, including cloud hosting, analytics platforms, payment processors, email services. All processors are bound by data processing agreements and required to maintain equivalent privacy protections.</>,
         <><Em>Professional Advisors:</Em> Lawyers, accountants, auditors, and insurers as necessary to protect our legal and business interests.</>,
         <><Em>Legal Authorities:</Em> Law enforcement agencies, regulators, courts, or other authorities when required by applicable law, legal process, or to protect the rights and safety of TEEVEXA, our clients, or the public.</>,
         <><Em>Business Transfers:</Em> In connection with a merger, acquisition, restructuring, or sale of all or substantially all of our assets, with appropriate confidentiality protections in place prior to any transfer.</>,
@@ -157,7 +157,7 @@ const PrivacyPolicy = () => (
 
     <LegalSection id="your-rights" number="10" title="Your Rights">
       <p>
-        Depending on your jurisdiction, you have the following rights regarding your personal data. To exercise any of these rights, contact us at <span className="text-primary font-medium">info@teevexa.com</span>. We will respond within <Em>30 days</Em> (or within the timeframe required by applicable law).
+        Depending on your jurisdiction, you have the following rights regarding your personal data. To exercise any of these rights, contact us at <span className="text-primary font-medium">hello@teevexa.com</span>. We will respond within <Em>30 days</Em> (or within the timeframe required by applicable law).
       </p>
       <LegalList items={[
         <><Em>Right of Access:</Em> Request a copy of the personal data we hold about you (subject access request).</>,
@@ -195,7 +195,7 @@ const PrivacyPolicy = () => (
         Our Services are not directed to, and we do not knowingly collect personal data from, individuals under the age of <Em>18</Em>. If we become aware that personal data has been collected from a child without verifiable parental consent, we will take immediate steps to delete that information.
       </p>
       <p>
-        If you believe that a child has provided us with personal data, please contact us at <span className="text-primary font-medium">info@teevexa.com</span> so we can act promptly.
+        If you believe that a child has provided us with personal data, please contact us at <span className="text-primary font-medium">hello@teevexa.com</span> so we can act promptly.
       </p>
     </LegalSection>
 
@@ -217,7 +217,7 @@ const PrivacyPolicy = () => (
       <p>For questions, concerns, or requests regarding this Privacy Policy or your personal data, please contact our Data Protection Officer:</p>
       <LegalContactBox>
         <p className="font-semibold text-foreground">TEEVEXA — Data Protection Officer</p>
-        <p>Email: <span className="text-primary font-medium">info@teevexa.com</span></p>
+        <p>Email: <span className="text-primary font-medium">hello@teevexa.com</span></p>
         <p>Phone: <span className="text-foreground/70">+254 783 797 132</span></p>
         <p>Address: <span className="text-foreground/70">Nairobi, Kenya</span></p>
       </LegalContactBox>

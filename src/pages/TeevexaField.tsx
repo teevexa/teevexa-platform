@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import SectionHeading from "@/components/SectionHeading";
 import SEO from "@/components/SEO";
+import PlayStoreButton from "@/components/PlayStoreButton";
+import { FIELD_PLAY_URL } from "@/lib/links";
 import {
   QrCode, MapPin, Camera, Wifi, WifiOff, Smartphone,
   ClipboardList, History, GitCommitHorizontal, ArrowRight,
@@ -99,7 +101,7 @@ const TeevexaField = () => (
         <div className="absolute top-1/3 left-1/4 w-72 h-72 rounded-full bg-primary/8 blur-3xl animate-pulse-glow" />
         <div className="absolute bottom-1/4 right-1/3 w-80 h-80 rounded-full bg-accent/7 blur-3xl animate-pulse-glow" style={{ animationDelay: "1.5s" }} />
       </div>
-      <div className="container mx-auto px-4 text-center relative z-10 animate-fade-in max-w-4xl">
+      <div className="container mx-auto text-center relative z-10 animate-fade-in">
         <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-4 py-1.5 mb-6">
           <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
           <span className="text-xs font-bold uppercase tracking-widest text-primary">Teevexa Product</span>
@@ -112,22 +114,20 @@ const TeevexaField = () => (
         </p>
         <p className="text-sm text-muted-foreground mb-10">
           Part of the <Link to="/teevexa-trace" className="text-primary hover:underline font-medium">Teevexa Trace</Link> ecosystem ·
-          iOS & Android · Works in remote areas with zero connectivity
+          Now on Google Play · Works in remote areas with zero connectivity
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Button size="lg" className="glow-primary text-base px-8" asChild>
-            <Link to="/teevexa-trace">See Teevexa Trace Plans <ArrowRight className="ml-2" size={18} /></Link>
-          </Button>
+          <PlayStoreButton href={FIELD_PLAY_URL} app="Teevexa Field" />
           <Button variant="outline" size="lg" className="text-base px-8" asChild>
-            <Link to="/book-consultation">Book a Demo</Link>
+            <Link to="/teevexa-trace">Explore Teevexa Trace <ArrowRight className="ml-2" size={18} /></Link>
           </Button>
         </div>
       </div>
     </section>
 
     {/* ── Ecosystem callout ── */}
-    <section className="section-teal py-16 px-4">
-      <div className="container mx-auto max-w-4xl">
+    <section className="section-teal py-16">
+      <div className="container mx-auto">
         <div className="glass rounded-2xl p-8 md:p-10">
           <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
             <div className="w-14 h-14 rounded-2xl bg-primary/15 flex items-center justify-center shrink-0">
@@ -150,8 +150,8 @@ const TeevexaField = () => (
     </section>
 
     {/* ── Offline-first emphasis ── */}
-    <section className="py-24 px-4">
-      <div className="container mx-auto max-w-5xl">
+    <section className="py-24">
+      <div className="container mx-auto">
         <SectionHeading
           label="Built for Africa"
           title="Works Everywhere. Even Where There's No Signal."
@@ -203,7 +203,7 @@ const TeevexaField = () => (
     </section>
 
     {/* ── Features ── */}
-    <section className="section-card py-24 px-4">
+    <section className="section-card py-24">
       <div className="container mx-auto">
         <SectionHeading
           label="Features"
@@ -225,8 +225,8 @@ const TeevexaField = () => (
     </section>
 
     {/* ── Supply chain workflow ── */}
-    <section className="py-24 px-4">
-      <div className="container mx-auto max-w-4xl">
+    <section className="py-24">
+      <div className="container mx-auto">
         <SectionHeading
           label="The Field Workflow"
           title="Every Actor. Every Handoff. Recorded."
@@ -261,17 +261,17 @@ const TeevexaField = () => (
     </section>
 
     {/* ── Platform compatibility ── */}
-    <section className="section-card py-20 px-4">
-      <div className="container mx-auto max-w-3xl text-center">
+    <section className="section-card py-20">
+      <div className="container mx-auto text-center">
         <SectionHeading
           label="Platforms"
-          title="iOS and Android"
-          description="A single cross-platform codebase delivering native performance on both platforms."
+          title="Built for Android, iOS to follow"
+          description="Available now on Google Play. An iOS version is planned."
         />
         <div className="mt-10 grid sm:grid-cols-3 gap-5">
           {[
-            { icon: Smartphone, title: "iOS", desc: "iPhone and iPad. Minimum iOS 13. Available on the App Store." },
-            { icon: Smartphone, title: "Android", desc: "Android 8.0+. Available on Google Play and direct APK." },
+            { icon: Smartphone, title: "iOS", desc: "Planned. Get in touch if you need iPhone support for your field team." },
+            { icon: Smartphone, title: "Android", desc: "Available now on Google Play." },
             { icon: Users, title: "Team Management", desc: "Manage field agent accounts and permissions from the Teevexa Trace dashboard." },
           ].map((item) => (
             <div key={item.title} className="glass rounded-2xl p-6 group hover:border-primary/40 transition-all hover:-translate-y-1">
@@ -287,16 +287,16 @@ const TeevexaField = () => (
     </section>
 
     {/* ── What's included with Trace ── */}
-    <section className="py-24 px-4">
-      <div className="container mx-auto max-w-4xl">
+    <section className="py-24">
+      <div className="container mx-auto">
         <SectionHeading
-          label="Included in Teevexa Trace"
-          title="No Separate App Pricing"
-          description="Teevexa Field is included in every Teevexa Trace plan. You pay for Trace; your entire field team gets the app."
+          label="Free to use"
+          title="Free for Your Whole Field Team"
+          description="Teevexa Field and Teevexa Trace are free while we launch, so your entire field team can get started today."
         />
         <div className="mt-10 grid sm:grid-cols-2 gap-4">
           {[
-            "Unlimited field agent accounts on Growth and Enterprise plans",
+            "Add your field agents at no cost during launch",
             "Real-time sync between Field app and Trace dashboard",
             "All events logged in Field appear instantly in your audit trail",
             "Field-generated QR codes integrate with Trace verification flow",
@@ -313,18 +313,16 @@ const TeevexaField = () => (
     </section>
 
     {/* ── CTA ── */}
-    <section className="section-navy py-24 px-4 network-bg">
-      <div className="container mx-auto text-center max-w-2xl">
+    <section className="section-navy py-24  network-bg">
+      <div className="container mx-auto text-center">
         <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">
           Put Traceability in Every <span className="gradient-text">Field Agent's Pocket</span>
         </h2>
         <p className="text-muted-foreground leading-relaxed mb-10">
-          Teevexa Field is ready to deploy. Join the Teevexa Trace waitlist to get access — or book a demo to see the full ecosystem in action.
+          Teevexa Field is live on Google Play. Download it, or book a demo to see the full Teevexa ecosystem in action.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Button size="lg" className="glow-primary px-10 text-base" asChild>
-            <Link to="/teevexa-trace">Join Teevexa Trace Waitlist <ArrowRight className="ml-2" size={18} /></Link>
-          </Button>
+          <PlayStoreButton href={FIELD_PLAY_URL} app="Teevexa Field" className="px-10" />
           <Button variant="outline" size="lg" className="px-10 text-base bg-transparent text-foreground border-foreground/30 hover:bg-foreground/10" asChild>
             <Link to="/book-consultation">Book a Demo</Link>
           </Button>

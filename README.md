@@ -71,3 +71,32 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+
+---
+
+## Deploying the September 2026 changes
+
+**1. Rotate secrets first.** `.env` used to be committed (it held `SUPABASE_DB_PASSWORD`). It is now git-ignored; rotate the DB password in Supabase and use `.env.example` as the template.
+
+**2. Apply the migration:** `supabase db push` (file: `supabase/migrations/20260921000000_security_hardening_and_funnel.sql`).
+Watch the output for the two `NOTICE`s about unique indexes (`uq_consultation_slot`, `uq_waitlist_email`): if duplicates already exist the index is skipped — de-duplicate and re-run.
+
+**3. Deploy edge functions** (`supabase functions deploy <name>`):
+`intake-project`, `invite-client`, `send-first-response` (new) and `notify-admin`, `book-consultation`, `automated-reminders`, `anchor-event`, `delete-account`, `batch-verify`, `generate-certificate`, `generate-compliance-report` (changed).
+
+**4. Function secrets** (`supabase secrets set …`):
+
+| Secret | Needed for |
+| --- | --- |
+| `RESEND_API_KEY` | all emails (request confirmation, quote replies, booking, alerts). Without it emails are skipped; the page tells the visitor their quote will still arrive. |
+| `ANTHROPIC_API_KEY` | **Optional and NOT recommended unless you want to pay for it.** Leave unset: the funnel then uses free keyword matching and a template reply draft. If you ever set it, visitors' project text is sent to Anthropic — update the privacy policy first. |
+| `CRON_SECRET` | `automated-reminders` now rejects callers without `x-cron-secret`. Schedule it with pg_cron/`net.http_post` sending that header. |
+| `ZOOM_ACCOUNT_ID`, `ZOOM_CLIENT_ID`, `ZOOM_CLIENT_SECRET` | Zoom links (booking still works without; the team is told to send a link). |
+| `SITE_URL`, `ADMIN_NOTIFY_EMAIL` | optional overrides (defaults: https://teevexa.com, teevexa@gmail.com). |
+| `POLYGON_RPC_URL`, `POLYGON_PRIVATE_KEY` | blockchain anchoring (still disabled until set). |
+
+**5. Optional:** set `VITE_PLAUSIBLE_DOMAIN` to enable consent-gated analytics.
+
+**Pricing is internal only.** Visitors never see prices: they submit a request and you email the real quote within 24 hours. `supabase/functions/_shared/estimate.ts` only produces an *internal price guide* shown to your team in admin Leads (placeholder numbers — tune freely).
+
+`npm run build` regenerates `public/sitemap.xml` (static routes + published posts, case studies and jobs).

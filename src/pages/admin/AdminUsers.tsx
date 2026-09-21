@@ -1,3 +1,4 @@
+import { useAuth } from "@/hooks/useAuth";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
@@ -16,12 +17,17 @@ interface Profile {
 }
 interface UserRole { user_id: string; role: string; }
 
-const roleOptions = ["client", "developer", "project_manager", "admin", "super_admin"];
+const roleOptions = ["client", "developer", "project_manager", "admin", "super_admin", "trace_client", "field_agent"];
+// Highest privilege first; used to pick the single "primary" role a user is shown/edited with.
+const ROLE_RANK = ["super_admin", "admin", "project_manager", "developer", "trace_client", "field_agent", "client"];
+const primaryOf = (rs: string[] | undefined) => ROLE_RANK.find((r) => rs?.includes(r)) ?? "client";
 
 const AdminUsers = () => {
   const { toast } = useToast();
   const [profiles, setProfiles] = useState<Profile[]>([]);
-  const [roles, setRoles] = useState<Record<string, string>>({});
+  const [roles, setRoles] = useState<Record<string, string[]>>({});
+  const { user: me, role: myRole } = useAuth();
+  const iAmSuper = myRole === "super_admin";
   const [loading, setLoading] = useState(true);
   const [pending, setPending] = useState<{ userId: string; newRole: string; oldRole: string; displayName: string | null } | null>(null);
 
@@ -31,8 +37,8 @@ const AdminUsers = () => {
       supabase.from("user_roles").select("user_id, role"),
     ]);
     setProfiles(pRes.data || []);
-    const roleMap: Record<string, string> = {};
-    (rRes.data || []).forEach((r: UserRole) => { roleMap[r.user_id] = r.role; });
+    const roleMap: Record<string, string[]> = {};
+    (rRes.data || []).forEach((r: UserRole) => { (roleMap[r.user_id] ||= []).push(r.role); });
     setRoles(roleMap);
     setLoading(false);
   };
@@ -40,8 +46,12 @@ const AdminUsers = () => {
   useEffect(() => { load(); }, []);
 
   const requestRoleChange = (userId: string, newRole: string, displayName: string | null) => {
-    const oldRole = roles[userId] || "client";
+    const oldRole = primaryOf(roles[userId]);
     if (oldRole === newRole) return;
+    if (userId === me?.id) {
+      toast({ title: "You can't change your own role", description: "Ask another super admin.", variant: "destructive" });
+      return;
+    }
     setPending({ userId, newRole, oldRole, displayName });
   };
 
@@ -50,13 +60,18 @@ const AdminUsers = () => {
     const { userId, newRole, oldRole, displayName } = pending;
     setPending(null);
 
-    const { error } = await supabase
+    // Users can hold several roles: add the new one first, then remove the others, so nobody is ever left role-less.
+    type DbRole = "admin" | "client" | "developer" | "project_manager" | "super_admin" | "trace_client" | "field_agent";
+    const { error: addErr } = await supabase
       .from("user_roles")
-      .update({ role: newRole as "admin" | "client" | "developer" | "project_manager" | "super_admin" })
-      .eq("user_id", userId);
+      .upsert({ user_id: userId, role: newRole as DbRole }, { onConflict: "user_id,role", ignoreDuplicates: true });
+    const { error: delErr } = addErr
+      ? { error: null }
+      : await supabase.from("user_roles").delete().eq("user_id", userId).neq("role", newRole as DbRole);
+    const error = addErr || delErr;
 
     if (error) {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
+      toast({ title: "Couldn't change the role", description: error.message, variant: "destructive" });
       return;
     }
 
@@ -67,7 +82,7 @@ const AdminUsers = () => {
       details: { user_name: displayName, old_role: oldRole, new_role: newRole },
     });
 
-    setRoles((prev) => ({ ...prev, [userId]: newRole }));
+    setRoles((prev) => ({ ...prev, [userId]: [newRole] }));
     toast({ title: `Role updated to ${newRole}` });
   };
 
@@ -96,13 +111,13 @@ const AdminUsers = () => {
                 <TableRow key={p.id}>
                   <TableCell className="font-medium">{p.display_name || "—"}</TableCell>
                   <TableCell>{p.company || "—"}</TableCell>
-                  <TableCell><Badge className={roleColor[roles[p.user_id]] || roleColor.client}>{roles[p.user_id] || "client"}</Badge></TableCell>
+                  <TableCell><div className="flex flex-wrap gap-1">{(roles[p.user_id]?.length ? roles[p.user_id] : ["client"]).map((r) => <Badge key={r} className={roleColor[r] || roleColor.client}>{r.replace(/_/g, " ")}</Badge>)}</div></TableCell>
                   <TableCell>{new Date(p.created_at).toLocaleDateString()}</TableCell>
                   <TableCell>
-                    <Select value={roles[p.user_id] || "client"} onValueChange={(v) => requestRoleChange(p.user_id, v, p.display_name)}>
+                    <Select value={primaryOf(roles[p.user_id])} disabled={p.user_id === me?.id || (!iAmSuper && (roles[p.user_id] ?? []).some((r) => r === "admin" || r === "super_admin"))} onValueChange={(v) => requestRoleChange(p.user_id, v, p.display_name)}>
                       <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
                       <SelectContent>
-                        {roleOptions.map((r) => (
+                        {roleOptions.filter((r) => iAmSuper || (r !== "admin" && r !== "super_admin")).map((r) => (
                           <SelectItem key={r} value={r}>{r.replace(/_/g, " ")}</SelectItem>
                         ))}
                       </SelectContent>

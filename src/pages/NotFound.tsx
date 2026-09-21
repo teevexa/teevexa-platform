@@ -1,16 +1,12 @@
-import { Link, useLocation } from "react-router-dom";
-import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Home } from "lucide-react";
+import SEO from "@/components/SEO";
 
 const NotFound = () => {
-  const location = useLocation();
-
-  useEffect(() => {
-    console.error("404 Error: User attempted to access non-existent route:", location.pathname);
-  }, [location.pathname]);
-
   return (
+    <>
+    <SEO title="Page not found" description="The page you're looking for doesn't exist." noindex />
     <div className="min-h-screen gradient-hero network-bg flex items-center justify-center px-4">
       <div className="text-center animate-fade-in max-w-md">
         <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary mb-4">404 Error</p>
@@ -29,6 +25,7 @@ const NotFound = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

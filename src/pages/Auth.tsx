@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { z } from "zod";
+import { fetchPrimaryRole, homeForRole } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,14 +9,11 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Eye, EyeOff, FolderKanban, MessageSquare, FileCheck, Receipt, ArrowLeft } from "lucide-react";
 import logo from "@/assets/teevexa-logo.jpeg";
+import SEO from "@/components/SEO";
 
 const loginSchema = z.object({
   email: z.string().trim().email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
-});
-
-const signupSchema = loginSchema.extend({
-  fullName: z.string().trim().min(2, "Name is required").max(100),
 });
 
 const portalFeatures = [
@@ -29,28 +27,22 @@ const Auth = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
-  const defaultMode = searchParams.get("mode") === "signup" ? "signup" : "login";
-  const redirectTo = searchParams.get("redirect") || null;
+  // Only allow same-site relative paths (blocks "//evil.com" and absolute URLs).
+  const rawRedirect = searchParams.get("redirect");
+  const redirectTo = rawRedirect && rawRedirect.startsWith("/") && !rawRedirect.startsWith("//") ? rawRedirect : null;
 
-  const [mode, setMode] = useState<"login" | "signup">(defaultMode as "login" | "signup");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [form, setForm] = useState({ fullName: "", email: "", password: "" });
+  const [form, setForm] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user && redirectTo) navigate(redirectTo);
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (!session?.user) return;
+      if (redirectTo) navigate(redirectTo, { replace: true });
+      else navigate(homeForRole(await fetchPrimaryRole(session.user.id)), { replace: true });
     });
   }, [navigate, redirectTo]);
-
-  // Reset form on mode switch
-  const switchMode = (m: "login" | "signup") => {
-    setMode(m);
-    setErrors({});
-    setForm({ fullName: "", email: form.email, password: "" });
-    setShowPassword(false);
-  };
 
   const set = (key: string, value: string) => {
     setForm((f) => ({ ...f, [key]: value }));
@@ -59,15 +51,12 @@ const Auth = () => {
 
   const handleRedirect = async (userId: string) => {
     if (redirectTo) { navigate(redirectTo); return; }
-    const { data: roleData } = await supabase.from("user_roles").select("role").eq("user_id", userId).single();
-    const role = roleData?.role;
-    navigate(role && role !== "client" ? "/admin" : "/client-portal");
+    navigate(homeForRole(await fetchPrimaryRole(userId)));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const schema = mode === "signup" ? signupSchema : loginSchema;
-    const result = schema.safeParse(form);
+    const result = loginSchema.safeParse(form);
     if (!result.success) {
       const fieldErrors: Record<string, string> = {};
       result.error.issues.forEach((i) => { fieldErrors[i.path[0] as string] = i.message; });
@@ -76,35 +65,22 @@ const Auth = () => {
     }
 
     setLoading(true);
-    if (mode === "signup") {
-      const { error } = await supabase.auth.signUp({
-        email: form.email.trim(),
-        password: form.password,
-        options: {
-          data: { full_name: form.fullName.trim() },
-          emailRedirectTo: window.location.origin,
-        },
-      });
-      setLoading(false);
-      if (error) { toast({ title: "Sign up failed", description: error.message, variant: "destructive" }); return; }
-      toast({ title: "Check your email", description: "We sent you a confirmation link to activate your account." });
-    } else {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: form.email.trim(),
-        password: form.password,
-      });
-      setLoading(false);
-      if (error) {
-        toast({ title: "Sign in failed", description: "Incorrect email or password. Please try again.", variant: "destructive" });
-        setErrors({ password: "Incorrect email or password" });
-        return;
-      }
-      if (data.user) await handleRedirect(data.user.id);
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: form.email.trim(),
+      password: form.password,
+    });
+    setLoading(false);
+    if (error) {
+      toast({ title: "Sign in failed", description: "Incorrect email or password. Please try again.", variant: "destructive" });
+      setErrors({ password: "Incorrect email or password" });
+      return;
     }
+    if (data.user) await handleRedirect(data.user.id);
   };
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row">
+      <SEO title="Sign in" description="Sign in to your Teevexa client workspace." noindex />
       {/* ── Left panel — branding ── */}
       <div className="hidden lg:flex lg:w-[45%] xl:w-[42%] flex-col justify-between p-12 bg-gradient-to-br from-[hsl(222_47%_8%)] via-[hsl(215_50%_10%)] to-[hsl(186_60%_8%)] relative overflow-hidden">
         {/* Background glow orbs */}
@@ -163,63 +139,14 @@ const Auth = () => {
         </div>
 
         <div className="w-full max-w-sm">
-          {/* Mode tabs */}
-          <div className="flex rounded-xl border border-border bg-muted/50 p-1 mb-8">
-            <button
-              type="button"
-              onClick={() => switchMode("login")}
-              className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
-                mode === "login"
-                  ? "bg-background shadow-sm text-foreground"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              Sign In
-            </button>
-            <button
-              type="button"
-              onClick={() => switchMode("signup")}
-              className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
-                mode === "signup"
-                  ? "bg-background shadow-sm text-foreground"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              Create Account
-            </button>
-          </div>
-
           {/* Heading */}
           <div className="mb-6">
-            <h1 className="font-display font-bold text-2xl">
-              {mode === "login" ? "Welcome back" : "Get started"}
-            </h1>
-            <p className="text-sm text-muted-foreground mt-1">
-              {mode === "login"
-                ? "Sign in to access your project workspace."
-                : "Create your account to access your workspace."}
-            </p>
+            <h1 className="font-display font-bold text-2xl">Client sign in</h1>
+            <p className="text-sm text-muted-foreground mt-1">Sign in to access your project workspace.</p>
           </div>
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-            {mode === "signup" && (
-              <div className="space-y-1.5">
-                <Label htmlFor="fullName">Full Name</Label>
-                <Input
-                  id="fullName"
-                  value={form.fullName}
-                  onChange={(e) => set("fullName", e.target.value)}
-                  placeholder="Jane Mwangi"
-                  autoComplete="name"
-                  aria-describedby={errors.fullName ? "fullName-error" : undefined}
-                />
-                {errors.fullName && (
-                  <p id="fullName-error" className="text-xs text-destructive">{errors.fullName}</p>
-                )}
-              </div>
-            )}
-
             <div className="space-y-1.5">
               <Label htmlFor="email">Email address</Label>
               <Input
@@ -239,10 +166,10 @@ const Auth = () => {
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
                 <Label htmlFor="password">Password</Label>
-                {mode === "login" && (
-                  <a href="/forgot-password" className="text-xs text-primary hover:underline">
+                {(
+                  <Link to="/forgot-password" className="text-xs text-primary hover:underline">
                     Forgot password?
-                  </a>
+                  </Link>
                 )}
               </div>
               <div className="relative">
@@ -252,7 +179,7 @@ const Auth = () => {
                   value={form.password}
                   onChange={(e) => set("password", e.target.value)}
                   placeholder="••••••••"
-                  autoComplete={mode === "login" ? "current-password" : "new-password"}
+                  autoComplete="current-password"
                   className="pr-10"
                   aria-describedby={errors.password ? "password-error" : undefined}
                 />
@@ -271,11 +198,14 @@ const Auth = () => {
             </div>
 
             <Button type="submit" className="w-full glow-primary mt-2" disabled={loading} size="lg">
-              {loading
-                ? (mode === "login" ? "Signing in…" : "Creating account…")
-                : (mode === "login" ? "Sign In" : "Create Account")}
+              {loading ? "Signing in…" : "Sign In"}
             </Button>
           </form>
+
+          <p className="mt-6 text-xs text-muted-foreground text-center leading-relaxed">
+            Access is by invitation. Received an invite email? Use its link to set your password.
+            Need access? <Link to="/contact" className="text-primary hover:underline">Contact us</Link>.
+          </p>
 
           {/* Divider + Back to website */}
           <div className="mt-8 pt-6 border-t border-border text-center">

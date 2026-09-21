@@ -6,21 +6,21 @@ import {
   Globe, Smartphone, ShoppingCart, Building2, Palette, BrainCircuit,
   Shield, Layers, MapPin, Wheat, Ship, Heart, Store,
   ArrowRight, ChevronDown, CheckCircle2, Zap, TrendingUp,
-  MessageSquare, Kanban, Server, QrCode, Landmark, HeartPulse,
+  MessageSquare, Server, QrCode, Landmark, HeartPulse, Rocket, ShieldAlert,
 } from "lucide-react";
 
 const stats = [
-  { value: "50+", label: "Projects Delivered" },
-  { value: "8+",  label: "Countries Served" },
-  { value: "8+",  label: "Industries Served" },
-  { value: "4",   label: "Products Shipped" },
+  { value: "2025", label: "Founded" },
+  { value: "4", label: "Senior Engineers" },
+  { value: "2", label: "Apps Live on Google Play" },
+  { value: "24h", label: "Quote Turnaround" },
 ];
 
 const services = [
   { icon: BrainCircuit, title: "AI Agent Development",  bullets: ["Fully autonomous, multi-step agents", "Open-source models - no per-query fees", "On-premise or cloud deployment"],     path: "/services/ai-agents" },
   { icon: Globe,        title: "Web Development",       bullets: ["Custom CMS & portals", "API integrations", "SEO-first architecture"],                                               path: "/services/web-development" },
   { icon: Smartphone,   title: "Mobile Development",    bullets: ["Cross-platform (iOS & Android)", "Offline-first capabilities", "Push notifications"],                               path: "/services/mobile-development" },
-  { icon: ShoppingCart, title: "E-Commerce Systems",    bullets: ["M-Pesa, Paystack, Flutterwave", "Inventory & multi-vendor", "Analytics dashboards"],                               path: "/services/e-commerce-systems" },
+  { icon: ShoppingCart, title: "E-Commerce Systems",    bullets: ["Stripe, PayPal & local payments", "Inventory & multi-vendor", "Analytics dashboards"],                               path: "/services/e-commerce-systems" },
   { icon: Building2,    title: "Enterprise Software",   bullets: ["ERP & CRM platforms", "Workflow automation", "Real-time data pipelines"],                                          path: "/services/enterprise-software" },
   { icon: Palette,      title: "UI/UX Design",          bullets: ["User research & testing", "Design systems", "Interactive prototypes"],                                             path: "/services/ui-ux-design" },
 ];
@@ -29,54 +29,62 @@ const products = [
   {
     icon: QrCode,
     title: "Teevexa Trace",
-    type: "SaaS",
+    type: "Live on Google Play",
     typeColor: "bg-primary/15 text-primary",
-    tagline: "Blockchain-powered supply chain traceability for producers that need to prove origin, quality, and compliance to global buyers.",
+    tagline: "Supply chain traceability for producers that need to prove origin, quality, and compliance to global buyers.",
     bullets: [
       "Farm-to-export QR verification",
-      "Tamper-proof blockchain audit trail",
+      "Tamper-evident audit trail with blockchain anchoring",
       "EUDR & export compliance reports",
     ],
     path: "/teevexa-trace",
+    cta: "Explore Teevexa Trace",
+    external: false,
   },
   {
     icon: Smartphone,
     title: "Teevexa Field",
-    type: "Mobile App",
+    type: "Live on Google Play",
     typeColor: "bg-accent/15 text-accent",
     tagline: "The offline-first mobile companion for supply chain field agents - works anywhere.",
     bullets: [
       "No internet needed to log events",
       "QR scanning, GPS tagging & photo evidence",
-      "Included in every Teevexa Trace plan",
+      "Included with Teevexa Trace",
     ],
     path: "/teevexa-field",
+    cta: "Explore Teevexa Field",
+    external: false,
   },
   {
     icon: MessageSquare,
-    title: "Teevexa Desk",
-    type: "Cloud · Self-hosted",
+    title: "TeeDesk",
+    type: "Open source",
     typeColor: "bg-green-500/15 text-green-400",
-    tagline: "AI-powered customer support platform with zero per-conversation fees on self-hosted.",
+    tagline: "AI-powered customer support platform: chat widget, admin dashboard, knowledge base, ticket triage and WhatsApp.",
     bullets: [
-      "AI handles queries 24/7, escalates to humans",
-      "WhatsApp & web chat out of the box",
-      "Self-hosted: your data never leaves your servers",
+      "Local LLMs via Ollama, RAG knowledge base",
+      "Sentiment analysis & human handoff",
+      "Free to use and contribute to on GitHub",
     ],
-    path: "/teevexa-desk",
+    path: "/teedesk",
+    cta: "Explore TeeDesk",
+    external: false,
   },
   {
-    icon: Kanban,
-    title: "Teevexa Base",
-    type: "Self-hosted",
-    typeColor: "bg-orange-500/15 text-orange-400",
-    tagline: "Project management software you buy once, own forever - no monthly fees.",
+    icon: ShieldAlert,
+    title: "CyberGuard AI",
+    type: "Open source",
+    typeColor: "bg-green-500/15 text-green-400",
+    tagline: "AI-enhanced threat detection for teams too small for an enterprise SIEM.",
     bullets: [
-      "One-time license, unlimited projects & teams",
-      "Deploy on your own servers in 24 hours",
-      "Client portal, time tracking & reporting",
+      "Anomaly scoring with a real trained ML model",
+      "Slack, email & webhook alerts",
+      "Local AI assistant - no third-party API spend",
     ],
-    path: "/teevexa-base",
+    path: "/cyberguard-ai",
+    cta: "Explore CyberGuard AI",
+    external: false,
   },
 ];
 
@@ -106,7 +114,7 @@ const Index = () => (
   <>
     <SEO
       title="Teevexa - Tech Evolution for Exceptional Applications"
-      description="Teevexa designs and builds world-class software, AI agents, and enterprise products for ambitious businesses worldwide."
+      description="Teevexa is an AI-native product engineering company in Nairobi, serving ambitious businesses worldwide: custom software, AI agents, and taking AI-built prototypes to production."
       canonical="/"
       structuredData={{
         "@context": "https://schema.org",
@@ -137,7 +145,7 @@ const Index = () => (
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[40rem] h-[40rem] rounded-full bg-primary/4 blur-3xl" />
       </div>
 
-      <div className="container mx-auto px-4 text-center relative z-10 animate-fade-in max-w-5xl">
+      <div className="container mx-auto text-center relative z-10 animate-fade-in">
         <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-4 py-1.5 mb-8">
           <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
           <span className="text-xs font-semibold uppercase tracking-widest text-primary">Tech Evolution for Exceptional Applications</span>
@@ -150,12 +158,12 @@ const Index = () => (
         </h1>
 
         <p className="mt-8 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-          Custom software and AI products built for how modern businesses actually operate - offline-first, local payments, data on your servers.
+          An AI-native product engineering team. We build custom software and AI agents, take AI-built prototypes to production, and ship our own apps - with the payments, security and offline resilience real businesses need.
         </p>
 
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
           <Button size="lg" className="glow-primary text-base font-semibold h-14 px-10 rounded-xl" asChild>
-            <Link to="/start-project">Start a Project <ArrowRight className="ml-2" size={18} /></Link>
+            <Link to="/start-project">Get a Quote <ArrowRight className="ml-2" size={18} /></Link>
           </Button>
           <Button variant="outline" size="lg" className="text-base font-semibold h-14 px-10 rounded-xl border-2 border-border/60 hover:border-primary/60 hover:bg-primary/5" asChild>
             <Link to="/book-consultation">Book a Free Consultation</Link>
@@ -163,11 +171,11 @@ const Index = () => (
         </div>
 
         <div className="mt-16 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-xs text-muted-foreground">
-          <span className="flex items-center gap-1.5"><CheckCircle2 size={13} className="text-primary" /> No upfront commitment</span>
+          <span className="flex items-center gap-1.5"><CheckCircle2 size={13} className="text-primary" /> No account needed</span>
           <span className="w-px h-3 bg-border hidden sm:block" />
-          <span className="flex items-center gap-1.5"><CheckCircle2 size={13} className="text-primary" /> Proposal within 48 hours</span>
+          <span className="flex items-center gap-1.5"><CheckCircle2 size={13} className="text-primary" /> Quote within 24 hours</span>
           <span className="w-px h-3 bg-border hidden sm:block" />
-          <span className="flex items-center gap-1.5"><CheckCircle2 size={13} className="text-primary" /> Global engineering standards</span>
+          <span className="flex items-center gap-1.5"><CheckCircle2 size={13} className="text-primary" /> Tailored quote</span>
         </div>
       </div>
 
@@ -181,7 +189,7 @@ const Index = () => (
     </section>
 
     {/* ── Stats bar ── */}
-    <section className="section-teal py-16 px-4">
+    <section className="section-teal py-16">
       <div className="container mx-auto">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 max-w-3xl mx-auto text-center">
           {stats.map((s) => (
@@ -194,8 +202,36 @@ const Index = () => (
       </div>
     </section>
 
+    {/* ── Prototype to Production ── */}
+    <section className="py-24">
+      <div className="container mx-auto">
+        <div className="glass rounded-3xl p-8 md:p-12 border-2 border-primary/30 grid md:grid-cols-5 gap-8 items-center">
+          <div className="md:col-span-3">
+            <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-primary mb-3"><Rocket size={14} /> Prototype to production</span>
+            <h2 className="text-3xl md:text-4xl font-display font-bold leading-tight mb-4">Built it with AI? Let&apos;s take it to production.</h2>
+            <p className="text-muted-foreground leading-relaxed mb-5">
+              AI builders get you a working demo fast. We add what real users need: security hardening, live payments (Stripe, PayPal, Pesapal, M-Pesa and more), deployment, monitoring and 30 days of support.
+            </p>
+            <ul className="space-y-2 mb-6 text-sm text-muted-foreground">
+              {["Code & security audit", "Payments & integrations (Stripe, PayPal, Pesapal, M-Pesa…) wired to live accounts", "Production deployment, backups & monitoring"].map((b) => (
+                <li key={b} className="flex items-center gap-2"><CheckCircle2 size={14} className="text-primary shrink-0" />{b}</li>
+              ))}
+            </ul>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Button className="glow-primary" asChild><Link to="/start-project?type=prototype">Price my prototype <ArrowRight className="ml-2" size={16} /></Link></Button>
+              <Button variant="outline" asChild><Link to="/prototype-to-production">How it works</Link></Button>
+            </div>
+          </div>
+          <div className="md:col-span-2 text-center md:text-right">
+            <p className="font-display font-bold text-4xl gradient-text">Tailored quote</p>
+            <p className="text-sm text-muted-foreground mt-2">Tailored to your prototype and delivered by email within 24 hours.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     {/* ── Services ── */}
-    <section className="py-24 px-4">
+    <section className="py-24">
       <div className="container mx-auto">
         <SectionHeading
           label="What We Build"
@@ -236,49 +272,53 @@ const Index = () => (
     </section>
 
     {/* ── Our Products ── */}
-    <section className="section-card py-24 px-4">
+    <section className="section-card py-24">
       <div className="container mx-auto">
         <SectionHeading
           label="Our Products"
-          title="Software We've Built and Ship"
-          description="Beyond client work, Teevexa builds and sells its own products - solving real business problems at scale."
+          title="Products and Open-Source Projects"
+          description="Beyond client work, we build our own products and open-source tools - solving real problems and giving back to developers."
         />
         <div className="mt-14 grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
-          {products.map((p) => (
-            <Link
-              key={p.title}
-              to={p.path}
-              className="glass rounded-2xl p-8 group hover:border-primary/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col gap-5"
-            >
-              <div className="flex items-start justify-between">
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                  <p.icon className="text-primary group-hover:scale-110 transition-transform" size={24} />
+          {products.map((p) => {
+            const inner = (
+              <>
+                <div className="flex items-start justify-between">
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                    <p.icon className="text-primary group-hover:scale-110 transition-transform" size={24} />
+                  </div>
+                  <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${p.typeColor}`}>{p.type}</span>
                 </div>
-                <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${p.typeColor}`}>{p.type}</span>
-              </div>
-              <div>
-                <h3 className="font-display font-bold text-xl mb-1.5">{p.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{p.tagline}</p>
-              </div>
-              <ul className="space-y-2 flex-1">
-                {p.bullets.map((b) => (
-                  <li key={b} className="flex items-start gap-2 text-sm text-muted-foreground">
-                    <CheckCircle2 size={14} className="text-primary mt-0.5 shrink-0" />
-                    {b}
-                  </li>
-                ))}
-              </ul>
-              <span className="inline-flex items-center text-sm font-semibold text-primary gap-1 group-hover:gap-2 transition-all pt-1 border-t border-border/30">
-                Explore {p.title} <ArrowRight size={14} />
-              </span>
-            </Link>
-          ))}
+                <div>
+                  <h3 className="font-display font-bold text-xl mb-1.5">{p.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{p.tagline}</p>
+                </div>
+                <ul className="space-y-2 flex-1">
+                  {p.bullets.map((b) => (
+                    <li key={b} className="flex items-start gap-2 text-sm text-muted-foreground">
+                      <CheckCircle2 size={14} className="text-primary mt-0.5 shrink-0" />
+                      {b}
+                    </li>
+                  ))}
+                </ul>
+                <span className="inline-flex items-center text-sm font-semibold text-primary gap-1 group-hover:gap-2 transition-all pt-1 border-t border-border/30">
+                  {p.cta} <ArrowRight size={14} />
+                </span>
+              </>
+            );
+            const cls = "glass rounded-2xl p-8 group hover:border-primary/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col gap-5";
+            return p.external ? (
+              <a key={p.title} href={p.path} target="_blank" rel="noopener noreferrer" className={cls}>{inner}</a>
+            ) : (
+              <Link key={p.title} to={p.path} className={cls}>{inner}</Link>
+            );
+          })}
         </div>
       </div>
     </section>
 
     {/* ── Why Teevexa ── */}
-    <section className="py-24 px-4">
+    <section className="py-24">
       <div className="container mx-auto">
         <SectionHeading
           label="Why Teevexa"
@@ -300,7 +340,7 @@ const Index = () => (
     </section>
 
     {/* ── Industries ── */}
-    <section className="section-teal py-24 px-4">
+    <section className="section-teal py-24">
       <div className="container mx-auto">
         <SectionHeading
           label="Industries"
@@ -327,30 +367,30 @@ const Index = () => (
     </section>
 
     {/* ── Final CTA ── */}
-    <section className="section-card py-24 px-4">
-      <div className="container mx-auto text-center max-w-3xl">
+    <section className="section-card py-24">
+      <div className="container mx-auto text-center">
         <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary block mb-4">Ready to Build?</span>
         <h2 className="text-4xl md:text-5xl font-display font-bold mb-6">
           Turn Your Vision Into{" "}
           <span className="gradient-text">Reality</span>
         </h2>
         <p className="text-muted-foreground text-lg max-w-xl mx-auto mb-10 leading-relaxed">
-          Join 50+ companies that chose Teevexa to build the digital infrastructure powering their growth.
+          Describe your idea and get a tailored quote by email within 24 hours.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <Button size="lg" className="glow-primary font-semibold px-10 h-14 text-base rounded-xl" asChild>
-            <Link to="/start-project">Start a Project <ArrowRight className="ml-2" size={18} /></Link>
+            <Link to="/start-project">Get a Quote <ArrowRight className="ml-2" size={18} /></Link>
           </Button>
           <Button variant="outline" size="lg" className="font-semibold px-10 h-14 text-base rounded-xl border-2 border-border/60 hover:border-primary/60 hover:bg-primary/5" asChild>
             <Link to="/contact">Talk to Us First</Link>
           </Button>
         </div>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs text-muted-foreground">
-          <span className="flex items-center gap-1.5"><CheckCircle2 size={12} className="text-primary" /> No contracts required</span>
+          <span className="flex items-center gap-1.5"><CheckCircle2 size={12} className="text-primary" /> No account needed</span>
           <span className="w-px h-3 bg-border hidden sm:block" />
-          <span className="flex items-center gap-1.5"><CheckCircle2 size={12} className="text-primary" /> Proposal within 48 hours</span>
+          <span className="flex items-center gap-1.5"><CheckCircle2 size={12} className="text-primary" /> Quote within 24 hours</span>
           <span className="w-px h-3 bg-border hidden sm:block" />
-          <span className="flex items-center gap-1.5"><CheckCircle2 size={12} className="text-primary" /> Cancel anytime</span>
+          <span className="flex items-center gap-1.5"><CheckCircle2 size={12} className="text-primary" /> Tailored quote</span>
         </div>
       </div>
     </section>

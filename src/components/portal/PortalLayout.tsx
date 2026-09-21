@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { useNavigate, Outlet, Link, useLocation } from "react-router-dom";
+import { useNavigate, Outlet, Link, useLocation, Navigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { LayoutDashboard, FolderKanban, FolderOpen, MessageSquare, Receipt, Settings, LogOut, Menu, X, Activity, CalendarDays, FileCheck, LifeBuoy, ArrowUpLeft, ClipboardList, NotebookText } from "lucide-react";
+import { LayoutDashboard, FolderKanban, FolderOpen, MessageSquare, Receipt, Settings, LogOut, Menu, X, Activity, CalendarDays, FileCheck, LifeBuoy, ArrowUpLeft, ClipboardList, NotebookText, KeyRound, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import NotificationCenter from "@/components/NotificationCenter";
+import PlayStoreButton from "@/components/PlayStoreButton";
+import { FIELD_PLAY_URL } from "@/lib/links";
 import logo from "@/assets/teevexa-logo.jpeg";
 
 const navItems = [
@@ -19,24 +21,15 @@ const navItems = [
   { path: "/client-portal/meeting-notes", label: "Meeting Notes", icon: NotebookText },
   { path: "/client-portal/invoices", label: "Invoices", icon: Receipt },
   { path: "/client-portal/support", label: "Support", icon: LifeBuoy },
+  { path: "/client-portal/api-keys", label: "API Keys", icon: KeyRound },
   { path: "/client-portal/settings", label: "Settings", icon: Settings },
 ];
 
 const PortalLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, loading } = useAuth();
+  const { user, role, loading } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  if (!loading && !user) {
-    navigate("/auth");
-    return null;
-  }
-
-  const logout = async () => {
-    await supabase.auth.signOut();
-    navigate("/");
-  };
 
   if (loading) {
     return (
@@ -46,12 +39,36 @@ const PortalLayout = () => {
     );
   }
 
-  if (!user) return null;
+  if (!user) {
+    return <Navigate to={`/auth?redirect=${encodeURIComponent(location.pathname + location.search)}`} replace />;
+  }
+
+  const logout = async () => {
+    await supabase.auth.signOut();
+    navigate("/");
+  };
+
+  // Field agents work in the mobile app; the web portal has nothing for them.
+  if (role === "field_agent") {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background px-4">
+        <div className="glass rounded-2xl p-8 max-w-md text-center space-y-4">
+          <Smartphone className="mx-auto text-primary" size={36} />
+          <h1 className="font-display font-bold text-2xl">Use the Teevexa Field app</h1>
+          <p className="text-sm text-muted-foreground">Your account is for field work, which happens in the mobile app. The client portal on the website isn't needed for it.</p>
+          <div className="flex justify-center"><PlayStoreButton href={FIELD_PLAY_URL} app="Teevexa Field" /></div>
+          <Button variant="ghost" size="sm" onClick={logout}>Sign out</Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex bg-background">
       <button
         onClick={() => setSidebarOpen(!sidebarOpen)}
+        aria-label={sidebarOpen ? "Close menu" : "Open menu"}
+        aria-expanded={sidebarOpen}
         className="lg:hidden fixed top-4 left-4 z-50 glass rounded-lg p-2"
       >
         {sidebarOpen ? <X size={20} /> : <Menu size={20} />}

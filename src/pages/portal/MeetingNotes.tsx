@@ -30,7 +30,7 @@ const MeetingNotes = () => {
   const [projectFilter, setProjectFilter] = useState("all");
   const [selected, setSelected] = useState<MeetingNote | null>(null);
 
-  const { data: projects = [] } = useQuery({
+  const { data: projects = [], isSuccess: projectsLoaded } = useQuery({
     queryKey: ["portal-projects-select", user?.id],
     enabled: !!user?.id,
     queryFn: async () => {
@@ -40,8 +40,9 @@ const MeetingNotes = () => {
   });
 
   const { data: notes = [], isLoading } = useQuery({
-    queryKey: ["portal-meeting-notes", user?.id, projectFilter],
-    enabled: !!user?.id && projects.length >= 0,
+    // Key includes the project ids so the list refetches once projects arrive (was cached as [] before).
+    queryKey: ["portal-meeting-notes", user?.id, projectFilter, projects.map((p) => p.id).join(",")],
+    enabled: !!user?.id && projectsLoaded,
     queryFn: async () => {
       const projectIds = projectFilter === "all"
         ? projects.map((p) => p.id)
@@ -54,7 +55,6 @@ const MeetingNotes = () => {
         .order("meeting_date", { ascending: false });
       return (data || []) as MeetingNote[];
     },
-    enabled: !!user?.id && projects.length > 0,
   });
 
   const getProjectTitle = (id: string) => projects.find((p) => p.id === id)?.title || "—";

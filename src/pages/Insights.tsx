@@ -51,12 +51,12 @@ const Insights = () => {
         canonical="/insights"
       />
       {/* ── Hero ── */}
-      <section className="relative py-32 px-4 gradient-hero network-bg overflow-hidden">
+      <section className="relative py-32  gradient-hero network-bg overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-1/3 right-1/4 w-72 h-72 rounded-full bg-primary/8 blur-3xl animate-pulse-glow" />
           <div className="absolute bottom-1/4 left-1/3 w-60 h-60 rounded-full bg-accent/7 blur-3xl animate-pulse-glow" style={{ animationDelay: "2s" }} />
         </div>
-        <div className="container mx-auto text-center relative z-10 animate-fade-in max-w-4xl">
+        <div className="container mx-auto text-center relative z-10 animate-fade-in">
           <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary block mb-4">Insights</span>
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-display font-bold leading-tight mb-6">
             Ideas, <span className="gradient-text">Perspectives</span> &amp; Craft
@@ -68,8 +68,8 @@ const Insights = () => {
       </section>
 
       {/* ── Content ── */}
-      <section className="py-24 px-4">
-        <div className="container mx-auto max-w-6xl">
+      <section className="py-24">
+        <div className="container mx-auto">
           {/* Tag filters */}
           {!loading && allTags.length > 1 && (
             <div className="flex flex-wrap gap-2 mb-12 justify-center">
@@ -210,8 +210,8 @@ const Insights = () => {
       </section>
 
       {/* ── Newsletter CTA ── */}
-      <section className="section-teal py-24 px-4">
-        <div className="container mx-auto max-w-2xl text-center">
+      <section className="section-teal py-24">
+        <div className="container mx-auto text-center">
           <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary block mb-4">Stay Sharp</span>
           <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">
             Thinking About Building <span className="gradient-text">Something?</span>

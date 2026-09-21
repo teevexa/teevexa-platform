@@ -1,3 +1,4 @@
+import { renderMarkdown } from "@/lib/markdown";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
@@ -21,26 +22,6 @@ interface BlogPost {
 }
 
 const emptyForm = { title: "", slug: "", excerpt: "", content: "", cover_image_url: "", status: "draft", tags: "" };
-
-const renderMarkdown = (md: string): string => {
-  if (!md.trim()) return "<p class='text-muted-foreground italic'>Nothing to preview yet...</p>";
-  return md
-    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-    .replace(/^#### (.+)$/gm, "<h4 class='text-base font-semibold mt-4 mb-1'>$1</h4>")
-    .replace(/^### (.+)$/gm, "<h3 class='text-lg font-semibold mt-5 mb-2'>$1</h3>")
-    .replace(/^## (.+)$/gm, "<h2 class='text-xl font-bold mt-6 mb-2'>$1</h2>")
-    .replace(/^# (.+)$/gm, "<h1 class='text-2xl font-bold mt-6 mb-3'>$1</h1>")
-    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-    .replace(/\*(.+?)\*/g, "<em>$1</em>")
-    .replace(/`(.+?)`/g, "<code class='bg-muted px-1 rounded text-xs font-mono'>$1</code>")
-    .replace(/\[(.+?)\]\((.+?)\)/g, "<a href='$2' class='text-primary underline' target='_blank'>$1</a>")
-    .replace(/^---$/gm, "<hr class='border-border my-4' />")
-    .replace(/^- (.+)$/gm, "<li class='ml-4 list-disc'>$1</li>")
-    .replace(/^(\d+)\. (.+)$/gm, "<li class='ml-4 list-decimal'>$2</li>")
-    .split("\n\n")
-    .map((block) => block.startsWith("<") ? block : `<p class='mb-3 leading-relaxed'>${block.replace(/\n/g, "<br/>")}</p>`)
-    .join("");
-};
 
 const AdminBlog = () => {
   const { toast } = useToast();
@@ -228,7 +209,7 @@ const AdminBlog = () => {
                 <TabsContent value="preview" className="mt-0">
                   <div
                     className="min-h-[280px] rounded-md border border-input bg-muted/30 p-4 text-sm prose prose-slate dark:prose-invert max-w-none overflow-auto"
-                    dangerouslySetInnerHTML={{ __html: renderMarkdown(form.content) }}
+                    dangerouslySetInnerHTML={{ __html: form.content.trim() ? renderMarkdown(form.content) : "<p><em>Nothing to preview yet...</em></p>" }}
                   />
                 </TabsContent>
               </Tabs>

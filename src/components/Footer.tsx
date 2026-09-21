@@ -1,113 +1,161 @@
 import { Link } from "react-router-dom";
-import { Mail, MapPin, Phone, Linkedin, Twitter, Instagram, Facebook, Youtube } from "lucide-react";
+import { ArrowRight, CalendarDays, Facebook, Instagram, Linkedin, Mail, MapPin, Phone, Twitter, Youtube } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import logo from "@/assets/teevexa-logo.jpeg";
 
 const TikTokIcon = ({ size = 18 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
     <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.3 6.3 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.28 8.28 0 0 0 4.84 1.54V6.79a4.85 4.85 0 0 1-1.07-.1z" />
   </svg>
 );
-import logo from "@/assets/teevexa-logo.jpeg";
 
-const Footer = () => {
-  return (
-    <footer className="nav-dark-surface border-t">
-      <div className="container mx-auto px-4 lg:px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
-          {/* Brand */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <img src={logo} alt="Teevexa" className="h-9 w-9 rounded-md object-cover" />
-              <span className="text-xl font-display font-bold gradient-text">TEEVEXA</span>
-            </div>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Tech Evolution for Exceptional Applications. Building digital infrastructure for businesses worldwide.
-            </p>
-            <div className="flex gap-3">
-              <a href="https://www.linkedin.com/company/teevexa" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label="LinkedIn"><Linkedin size={18} /></a>
-              <a href="https://www.instagram.com/teevexa" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label="Instagram"><Instagram size={18} /></a>
-              <a href="https://x.com/teevexa" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label="X (Twitter)"><Twitter size={18} /></a>
-              <a href="https://www.facebook.com/teevexa" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label="Facebook"><Facebook size={18} /></a>
-              <a href="https://www.tiktok.com/@teevexa" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label="TikTok"><TikTokIcon size={18} /></a>
-              <a href="https://www.youtube.com/@teevexa" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label="YouTube"><Youtube size={18} /></a>
-            </div>
-          </div>
+const socials = [
+  { href: "https://www.linkedin.com/company/teevexa", label: "LinkedIn", icon: <Linkedin size={18} /> },
+  { href: "https://www.instagram.com/teevexa", label: "Instagram", icon: <Instagram size={18} /> },
+  { href: "https://x.com/teevexa", label: "X (Twitter)", icon: <Twitter size={18} /> },
+  { href: "https://www.facebook.com/teevexa", label: "Facebook", icon: <Facebook size={18} /> },
+  { href: "https://www.tiktok.com/@teevexa", label: "TikTok", icon: <TikTokIcon size={18} /> },
+  { href: "https://www.youtube.com/@teevexa", label: "YouTube", icon: <Youtube size={18} /> },
+];
 
-          {/* Quick Links */}
-          <div className="space-y-4">
-            <h4 className="font-display font-semibold text-foreground">Quick Links</h4>
-            <div className="flex flex-col gap-2">
-              {[
-                { label: "About Us", path: "/about" },
-                { label: "Services", path: "/services" },
-                { label: "Insights", path: "/insights" },
-                { label: "Careers", path: "/careers" },
-                { label: "Contact", path: "/contact" },
-              ].map((l) => (
-                <Link key={l.path} to={l.path} className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                  {l.label}
-                </Link>
-              ))}
-            </div>
-          </div>
+type FooterLink = { label: string; to?: string; href?: string };
 
-          {/* Products */}
-          <div className="space-y-4">
-            <h4 className="font-display font-semibold text-foreground">Products</h4>
-            <div className="flex flex-col gap-2">
-              {[
-                { label: "Teevexa Trace", path: "/teevexa-trace" },
-                { label: "Teevexa Field", path: "/teevexa-field" },
-                { label: "Teevexa Desk", path: "/teevexa-desk" },
-                { label: "Teevexa Base", path: "/teevexa-base" },
-              ].map((l) => (
-                <Link key={l.path} to={l.path} className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                  {l.label}
-                </Link>
-              ))}
-            </div>
-          </div>
+const columns: { title: string; links: FooterLink[] }[] = [
+  {
+    title: "Services",
+    links: [
+      { label: "Prototype to Production", to: "/prototype-to-production" },
+      { label: "AI Agent Development", to: "/services/ai-agents" },
+      { label: "Web Development", to: "/services/web-development" },
+      { label: "Mobile Development", to: "/services/mobile-development" },
+      { label: "E-Commerce Systems", to: "/services/e-commerce-systems" },
+      { label: "Enterprise Software", to: "/services/enterprise-software" },
+      { label: "UI/UX Design", to: "/services/ui-ux-design" },
+    ],
+  },
+  {
+    title: "Products",
+    links: [
+      { label: "Teevexa Trace", to: "/teevexa-trace" },
+      { label: "Teevexa Field", to: "/teevexa-field" },
+      { label: "Verify a Batch", to: "/verify" },
+      { label: "Pricing", to: "/pricing" },
+      { label: "API Docs", to: "/api-docs" },
+    ],
+  },
+  {
+    title: "Open Source",
+    links: [
+      { label: "TeeDesk", to: "/teedesk" },
+      { label: "CyberGuard AI", to: "/cyberguard-ai" },
+    ],
+  },
+  {
+    title: "Company",
+    links: [
+      { label: "About Us", to: "/about" },
+      { label: "Our Work", to: "/portfolio" },
+      { label: "Insights", to: "/insights" },
+      { label: "Careers", to: "/careers" },
+      { label: "Contact", to: "/contact" },
+      { label: "Client login", to: "/auth" },
+    ],
+  },
+];
 
-          {/* Services */}
-          <div className="space-y-4">
-            <h4 className="font-display font-semibold text-foreground">Services</h4>
-            <div className="flex flex-col gap-2">
-              {[
-                { label: "AI Agent Development", path: "/services/ai-agents" },
-                { label: "Web Development", path: "/services/web-development" },
-                { label: "Mobile Development", path: "/services/mobile-development" },
-                { label: "E-Commerce Systems", path: "/services/e-commerce-systems" },
-                { label: "Enterprise Software", path: "/services/enterprise-software" },
-                { label: "UI/UX Design", path: "/services/ui-ux-design" },
-              ].map((l) => (
-                <Link key={l.path} to={l.path} className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                  {l.label}
-                </Link>
-              ))}
-            </div>
-          </div>
+const linkClass = "text-sm text-muted-foreground hover:text-primary transition-colors";
 
-          {/* Contact */}
-          <div className="space-y-4">
-            <h4 className="font-display font-semibold text-foreground">Contact</h4>
-            <div className="flex flex-col gap-3 text-sm text-muted-foreground">
-              <div className="flex items-center gap-2"><Mail size={14} className="text-primary" /> info@teevexa.com</div>
-              <div className="flex items-center gap-2"><Phone size={14} className="text-primary" /> +254 783 797 132</div>
-              <div className="flex items-start gap-2"><MapPin size={14} className="text-primary mt-0.5" /><span>Nairobi, Kenya<br /><span className="text-xs opacity-70">Serving clients globally</span></span></div>
-            </div>
-          </div>
+const Footer = () => (
+  <footer className="nav-dark-surface border-t">
+    <div className="container mx-auto pt-16 pb-8">
+      {/* Call to action */}
+      <div className="rounded-3xl p-8 md:p-10 flex flex-col md:flex-row md:items-center justify-between gap-6 border border-primary/30 bg-gradient-to-br from-primary/25 via-primary/10 to-transparent">
+        <div>
+          <h2 className="font-display font-bold text-2xl md:text-3xl text-white">Have a project in mind?</h2>
+          <p className="text-white/70 mt-1.5">Tell us about it and get a tailored quote by email within 24 hours.</p>
         </div>
-
-        <div className="mt-12 pt-8 border-t border-border/40 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
-          <p>© {new Date().getFullYear()} TEEVEXA LTD. All rights reserved.</p>
-          <div className="flex gap-4">
-            <Link to="/legal/privacy-policy" className="hover:text-primary transition-colors">Privacy Policy</Link>
-            <Link to="/legal/terms-of-service" className="hover:text-primary transition-colors">Terms of Service</Link>
-            <Link to="/legal/cookies" className="hover:text-primary transition-colors">Cookie Policy</Link>
-          </div>
+        <div className="flex flex-col sm:flex-row gap-3 shrink-0">
+          <Button size="lg" className="glow-primary" asChild>
+            <Link to="/start-project">Get a Quote <ArrowRight className="ml-2" size={16} /></Link>
+          </Button>
+          <Button size="lg" variant="outline" className="bg-transparent border-white/30 text-white hover:bg-white/10 hover:text-white" asChild>
+            <Link to="/book-consultation"><CalendarDays className="mr-2" size={16} /> Book a call</Link>
+          </Button>
         </div>
       </div>
-    </footer>
-  );
-};
+
+      {/* Main */}
+      <div className="mt-14 grid gap-12 lg:grid-cols-12">
+        <div className="lg:col-span-4 space-y-5">
+          <Link to="/" className="inline-flex items-center gap-2.5">
+            <img src={logo} alt="Teevexa" className="h-10 w-10 rounded-md object-cover" />
+            <span className="text-xl font-display font-bold gradient-text tracking-tight">TEEVEXA</span>
+          </Link>
+          <p className="text-sm text-muted-foreground leading-relaxed max-w-sm">
+            Tech Evolution for Exceptional Applications. An AI-native product engineering team building software, AI agents and production-ready apps for ambitious businesses worldwide.
+          </p>
+          <ul className="space-y-2.5 text-sm text-muted-foreground">
+            <li><a href="mailto:hello@teevexa.com" className="inline-flex items-center gap-2 hover:text-primary transition-colors"><Mail size={15} className="text-primary" /> hello@teevexa.com</a></li>
+            <li><a href="tel:+254783797132" className="inline-flex items-center gap-2 hover:text-primary transition-colors"><Phone size={15} className="text-primary" /> +254 783 797 132</a></li>
+            <li className="inline-flex items-start gap-2"><MapPin size={15} className="text-primary mt-0.5" /><span>Nairobi, Kenya · serving clients globally</span></li>
+          </ul>
+          <div className="flex flex-wrap gap-2">
+            {socials.map((s) => (
+              <a
+                key={s.label}
+                href={s.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={s.label}
+                className="w-9 h-9 rounded-lg border border-border/50 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/50 transition-colors"
+              >
+                {s.icon}
+              </a>
+            ))}
+          </div>
+        </div>
+
+        <nav aria-label="Footer" className="lg:col-span-8 grid grid-cols-2 sm:grid-cols-4 gap-8">
+          {columns.map((col) => (
+            <div key={col.title}>
+              <h3 className="font-display font-semibold text-foreground mb-4 text-sm uppercase tracking-wider">{col.title}</h3>
+              <ul className="space-y-2.5">
+                {col.links.map((l) => (
+                  <li key={l.label}>
+                    {l.to ? (
+                      <Link to={l.to} className={linkClass}>{l.label}</Link>
+                    ) : (
+                      <a href={l.href} target="_blank" rel="noopener noreferrer" className={linkClass}>{l.label}</a>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </nav>
+      </div>
+
+      {/* Bottom bar */}
+      <div className="mt-14 pt-6 border-t border-border/40 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
+        <p>© {new Date().getFullYear()} TEEVEXA LTD. All rights reserved.</p>
+        <ul className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+          <li><Link to="/legal/privacy-policy" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
+          <li><Link to="/legal/terms-of-service" className="hover:text-primary transition-colors">Terms of Service</Link></li>
+          <li><Link to="/legal/cookies" className="hover:text-primary transition-colors">Cookie Policy</Link></li>
+          <li><Link to="/accessibility" className="hover:text-primary transition-colors">Accessibility</Link></li>
+          <li>
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new Event("teevexa:open-cookie-settings"))}
+              className="hover:text-primary transition-colors underline-offset-2 hover:underline"
+            >
+              Cookie settings
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+);
 
 export default Footer;

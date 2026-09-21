@@ -10,32 +10,32 @@ import {
 import benjaminHeadshot from "@/assets/benjamin-baya.jpg";
 
 const stats = [
-  { value: "2025",  label: "Year Founded" },
-  { value: "50+",   label: "Projects Delivered" },
-  { value: "8+",    label: "Countries Served" },
-  { value: "100%",  label: "Client Satisfaction" },
+  { value: "2025", label: "Year Founded" },
+  { value: "4", label: "Senior Software Engineers" },
+  { value: "2", label: "Apps Live on Google Play" },
+  { value: "24h", label: "Quote Turnaround" },
 ];
 
 const timeline = [
   {
     year: "Jul 2025",
     title: "Teevexa Begins",
-    desc: "Benjamin Baya officially launches Teevexa with one mission: deliver enterprise-grade digital solutions to African businesses. Early projects in agricultural export tracking confirm the model works.",
+    desc: "Benjamin Baya launches Teevexa with one mission: deliver enterprise-grade digital solutions to ambitious businesses, starting with agricultural export tracking.",
   },
   {
     year: "Late 2025",
-    title: "Teevexa Trace R&D",
-    desc: "The supply chain traceability problem crystallises into a product idea. R&D begins on Teevexa Trace - a blockchain-powered platform built to give African producers verifiable proof of provenance for global markets.",
+    title: "Building Teevexa Trace",
+    desc: "The supply chain traceability problem becomes a product. Work begins on Teevexa Trace and its offline-first companion, Teevexa Field, so producers can prove provenance to global buyers.",
   },
   {
     year: "Mar 2026",
     title: "TEEVEXA LTD Incorporated",
-    desc: "On 3rd March 2026, Teevexa Ltd is officially registered as a Private Limited Company in Kenya. A milestone - from a solo-founder mission to a recognised institution.",
+    desc: "On 3rd March 2026, Teevexa Ltd is registered as a Private Limited Company in Kenya.",
   },
   {
-    year: "2026 →",
-    title: "Building the Future",
-    desc: "Teevexa Trace enters active development. The client services business grows across East Africa and beyond - with engagements in Canada and internationally. The dual mission - great software for clients, and a world-class product of our own - accelerates.",
+    year: "2026",
+    title: "Trace and Field go live",
+    desc: "Teevexa Trace and Teevexa Field launch on Google Play. Alongside our own products, we build custom software, AI agents and production-ready apps for clients worldwide.",
   },
 ];
 
@@ -51,7 +51,7 @@ const About = () => (
   <>
     <SEO
       title="About Teevexa | Our Mission, Story & Team"
-      description="Learn about Teevexa - a Nairobi-born, globally operating software company building world-class digital products for ambitious businesses worldwide."
+      description="Teevexa is a Nairobi-born, AI-native product engineering company: a team of senior software engineers building software, AI agents and production-ready apps for ambitious businesses worldwide."
       canonical="/about"
       structuredData={{
         "@context": "https://schema.org",
@@ -67,7 +67,7 @@ const About = () => (
         <div className="absolute top-1/3 right-1/4 w-80 h-80 rounded-full bg-primary/8 blur-3xl animate-pulse-glow" />
         <div className="absolute bottom-1/4 left-1/3 w-64 h-64 rounded-full bg-accent/7 blur-3xl animate-pulse-glow" style={{ animationDelay: "2s" }} />
       </div>
-      <div className="container mx-auto px-4 py-24 relative z-10 animate-fade-in">
+      <div className="container mx-auto py-24 relative z-10 animate-fade-in">
         <div className="max-w-3xl">
           <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary block mb-4">About Teevexa Ltd</span>
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-display font-bold leading-tight mb-6">
@@ -75,7 +75,7 @@ const About = () => (
             <span className="gradient-text">a Mark</span>
           </h1>
           <p className="text-lg text-muted-foreground max-w-xl leading-relaxed mb-8">
-            A Nairobi-born, Kenya-registered technology company with a dual purpose: delivering world-class software to ambitious businesses globally, and building the traceability infrastructure global supply chains have always needed.
+            A Nairobi-born, Kenya-registered, AI-native product engineering company. We build software and AI agents for ambitious businesses worldwide — and our own supply chain products, live on Google Play.
           </p>
           <div className="flex flex-wrap gap-4">
             <Button size="lg" className="glow-primary" asChild>
@@ -90,7 +90,7 @@ const About = () => (
     </section>
 
     {/* ── Stats ── */}
-    <section className="section-teal py-16 px-4">
+    <section className="section-teal py-16">
       <div className="container mx-auto">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 max-w-3xl mx-auto text-center">
           {stats.map((s) => (
@@ -104,34 +104,28 @@ const About = () => (
     </section>
 
     {/* ── Our Story ── */}
-    <section className="py-24 px-4">
+    <section className="py-24">
       <div className="container mx-auto">
         <div className="grid lg:grid-cols-2 gap-16 items-center max-w-5xl mx-auto">
           <div>
             <SectionHeading label="Our Story" title="Born from Two Worlds" align="left" />
             <div className="mt-6 space-y-4 text-muted-foreground leading-relaxed">
               <p>
-                Most technology companies are built by people who love technology. Teevexa was built by someone who loves <span className="text-foreground font-medium">process integrity</span>.
+                Most technology companies are built by people who love technology. Teevexa was built by someone who loves <span className="text-foreground font-medium">process integrity</span> — knowing what happened, when, and being able to prove it.
               </p>
               <p>
-                Benjamin Baya trained as both a Chemical Engineer and a Software Engineer - two disciplines that, on the surface, have nothing in common. But Chemical Engineering is fundamentally about traceability: every reaction, every transfer, every transformation must be documented, verified, and provable. You cannot produce a pharmaceutical, export a food product, or run a refinery without an unbroken chain of custody.
+                That instinct led us to supply chains. Producers make excellent products but often can't prove where they came from, and lose premium markets because of it. So we built <span className="text-primary font-semibold">Teevexa Trace</span> and <span className="text-primary font-semibold">Teevexa Field</span>, now live on Google Play.
               </p>
               <p>
-                When Benjamin looked at Africa's agricultural sector, he saw brilliant farmers producing premium crops that deserved global markets - but couldn't prove their origins. Exporters were losing premium pricing, failing compliance audits, and being shut out of high-value supply chains not because their products were inferior, but because they had no credible trail to show for it.
-              </p>
-              <p>
-                That became the obsession behind <span className="text-primary font-semibold">Teevexa Trace</span>. But to build Teevexa Trace properly - with enterprise-grade blockchain infrastructure and a mobile-first field app built for low-connectivity environments - he first needed to build the technology company that could do it.
-              </p>
-              <p>
-                In July 2025, Teevexa was born. On 3rd March 2026, <span className="text-foreground font-semibold">TEEVEXA LTD</span> was officially incorporated in Kenya as a Private Limited Company.
+                Building those products made us a strong engineering team, and we apply the same standards to client work: custom software, AI agents, and taking AI-built prototypes to production. Teevexa Ltd was incorporated in Kenya on <span className="text-foreground font-semibold">3rd March 2026</span>.
               </p>
             </div>
             <div className="mt-8 grid grid-cols-2 gap-4">
               {[
                 "Built for real-world infrastructure constraints",
-                "Global engineering standards",
-                "Local payment integrations",
-                "Multi-language ready",
+                "Senior engineers on every project",
+                "Global and regional payment integrations",
+                "Security and quality built in, not bolted on",
               ].map((item) => (
                 <div key={item} className="flex items-start gap-2 text-sm">
                   <CheckCircle2 size={15} className="text-primary mt-0.5 flex-shrink-0" />
@@ -176,8 +170,8 @@ const About = () => (
     </section>
 
     {/* ── Timeline ── */}
-    <section className="section-card py-24 px-4">
-      <div className="container mx-auto max-w-3xl">
+    <section className="section-card py-24">
+      <div className="container mx-auto">
         <SectionHeading label="Journey" title="How We Got Here" description="A young company with a clear thesis, moving fast." />
         <div className="mt-14 relative">
           <div className="absolute left-5 top-2 bottom-2 w-px bg-gradient-to-b from-primary via-primary/40 to-transparent hidden sm:block" />
@@ -202,7 +196,7 @@ const About = () => (
     </section>
 
     {/* ── Values ── */}
-    <section className="section-teal py-24 px-4">
+    <section className="section-teal py-24">
       <div className="container mx-auto">
         <SectionHeading label="Core Values" title="What Drives Every Decision" description="These aren't aspirational statements. They're the criteria we use when we're unsure what to do." />
         <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5">
@@ -220,9 +214,9 @@ const About = () => (
     </section>
 
     {/* ── Founder & CEO ── */}
-    <section className="py-24 px-4">
-      <div className="container mx-auto max-w-5xl">
-        <SectionHeading label="Leadership" title="The Person Behind Teevexa" />
+    <section className="py-24">
+      <div className="container mx-auto">
+        <SectionHeading label="Leadership" title="Meet the Founder" />
         <div className="mt-14 grid lg:grid-cols-[320px_1fr] gap-12 items-start">
 
           {/* Headshot */}
@@ -263,19 +257,10 @@ const About = () => (
 
             <div className="space-y-4 text-muted-foreground leading-relaxed">
               <p>
-                <span className="text-foreground font-semibold">Benjamin Baya</span> is not a typical tech founder. He holds degrees in both Chemical Engineering and Software Engineering - a combination that sounds unlikely until you understand what it produces: someone who thinks about technology not just in terms of what can be built, but in terms of process integrity, provenance, and proof.
+                <span className="text-foreground font-semibold">Benjamin Baya</span> holds degrees in Chemical Engineering and Software Engineering. Chemical engineering treats every batch as something that must be documented, verified and provable — and he brings that discipline to software.
               </p>
               <p>
-                In Chemical Engineering, those principles are non-negotiable. Every reaction is logged. Every transfer is documented. Every batch has a paper trail that can be audited years later. It is a discipline that takes traceability seriously - because lives depend on it.
-              </p>
-              <p>
-                Benjamin carried that mindset into software. And when he observed Africa's agricultural and export sector - a sector filled with world-class producers who couldn't prove the quality of their own products to international buyers - he saw a solvable problem.
-              </p>
-              <p>
-                The answer was <span className="text-primary font-semibold">Teevexa Trace</span>: a blockchain-powered traceability platform that applies Chemical Engineering's rigour to supply chains at scale. Every farm batch recorded. Every handoff verified. Every export shipment provable to any buyer, anywhere in the world.
-              </p>
-              <p>
-                But building Teevexa Trace required a world-class technology foundation. So in July 2025, Benjamin launched <span className="text-foreground font-semibold">Teevexa Ltd</span> - a full-service software development house that builds the kind of infrastructure Teevexa Trace demands, while delivering that same calibre of engineering to clients across Africa and beyond.
+                He founded Teevexa in 2025 to build the traceability products global supply chains need, and leads a team of <span className="text-foreground font-semibold">four senior software engineers</span> who deliver the same standard of engineering for clients across Africa and beyond.
               </p>
               <p className="text-foreground/70 italic text-sm border-l-2 border-primary/40 pl-4">
                 "The problem with African supply chains isn't the quality of what's produced. It's the inability to prove it. That's a technology problem - and technology is exactly what we're here to fix."
@@ -288,8 +273,8 @@ const About = () => (
     </section>
 
     {/* ── Incorporation note ── */}
-    <section className="section-teal py-16 px-4">
-      <div className="container mx-auto max-w-2xl text-center">
+    <section className="section-teal py-16">
+      <div className="container mx-auto text-center">
         <p className="text-xs font-bold uppercase tracking-widest text-primary mb-3">Legal & Registration</p>
         <h3 className="font-display font-bold text-2xl mb-3">Officially TEEVEXA LTD</h3>
         <p className="text-muted-foreground text-sm leading-relaxed">
@@ -300,8 +285,8 @@ const About = () => (
     </section>
 
     {/* ── CTA ── */}
-    <section className="section-navy py-24 px-4">
-      <div className="container mx-auto text-center max-w-2xl">
+    <section className="section-navy py-24">
+      <div className="container mx-auto text-center">
         <h2 className="text-4xl font-display font-bold mb-4">
           Ready to Build <span className="gradient-text">With Us?</span>
         </h2>
@@ -310,7 +295,7 @@ const About = () => (
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <Button size="lg" className="glow-primary px-8" asChild>
-            <Link to="/start-project">Start a Project <ArrowRight className="ml-2" size={18} /></Link>
+            <Link to="/start-project">Get a Quote <ArrowRight className="ml-2" size={18} /></Link>
           </Button>
           <Button variant="outline" size="lg" className="px-8 bg-transparent text-foreground border-foreground/30 hover:bg-foreground/10 hover:border-foreground/50" asChild>
             <Link to="/teevexa-trace">Explore Teevexa Trace</Link>

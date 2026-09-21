@@ -63,12 +63,12 @@ const Careers = () => {
         canonical="/careers"
       />
       {/* ── Hero ── */}
-      <section className="relative py-32 px-4 gradient-hero network-bg overflow-hidden">
+      <section className="relative py-32  gradient-hero network-bg overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-1/3 right-1/4 w-72 h-72 rounded-full bg-primary/8 blur-3xl animate-pulse-glow" />
           <div className="absolute bottom-1/4 left-1/3 w-60 h-60 rounded-full bg-accent/7 blur-3xl animate-pulse-glow" style={{ animationDelay: "2s" }} />
         </div>
-        <div className="container mx-auto text-center relative z-10 animate-fade-in max-w-4xl">
+        <div className="container mx-auto text-center relative z-10 animate-fade-in">
           <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary block mb-4">Careers at Teevexa</span>
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-display font-bold leading-tight mb-6">
             Build Software That <span className="gradient-text">Matters</span>
@@ -92,7 +92,7 @@ const Careers = () => {
       </section>
 
       {/* ── Stats ── */}
-      <section className="section-teal py-14 px-4">
+      <section className="section-teal py-14">
         <div className="container mx-auto">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 max-w-3xl mx-auto text-center">
             {[
@@ -111,7 +111,7 @@ const Careers = () => {
       </section>
 
       {/* ── Benefits ── */}
-      <section className="py-24 px-4">
+      <section className="py-24">
         <div className="container mx-auto">
           <SectionHeading
             label="Why Teevexa"
@@ -136,8 +136,8 @@ const Careers = () => {
       </section>
 
       {/* ── Our Values ── */}
-      <section className="section-card py-20 px-4">
-        <div className="container mx-auto max-w-4xl">
+      <section className="section-card py-20">
+        <div className="container mx-auto">
           <SectionHeading
             label="Culture"
             title="We're Diverse by Design"
@@ -162,7 +162,7 @@ const Careers = () => {
       </section>
 
       {/* ── Open Positions ── */}
-      <section id="positions" className="py-24 px-4">
+      <section id="positions" className="py-24">
         <div className="container mx-auto">
           <SectionHeading label="Open Positions" title="Current Openings" description="We hire for talent, potential, and cultural fit — not just credentials." />
 
@@ -252,8 +252,8 @@ const Careers = () => {
       </section>
 
       {/* ── CTA ── */}
-      <section className="section-navy py-24 px-4">
-        <div className="container mx-auto text-center max-w-2xl">
+      <section className="section-navy py-24">
+        <div className="container mx-auto text-center">
           <h2 className="text-4xl font-display font-bold mb-4">
             Don't See a <span className="gradient-text">Perfect Fit?</span>
           </h2>

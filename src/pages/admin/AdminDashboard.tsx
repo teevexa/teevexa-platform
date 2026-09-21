@@ -1,3 +1,4 @@
+import { formatCurrency } from "@/lib/format";
 import { useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -55,6 +56,7 @@ const AdminDashboard = () => {
 
       let leads = 0, consultations = 0, users = 0, invoices = 0;
       let revenueByKES = 0, revenueByUSD = 0;
+      const revenueOther: Record<string, number> = {};
       let revenueData: { month: string; kes: number; usd: number }[] = [];
       let leadTrend: { month: string; leads: number; consultations: number }[] = [];
       let recentLeads: { id: string; full_name: string; project_type: string; created_at: string }[] = [];
@@ -78,8 +80,10 @@ const AdminDashboard = () => {
         // Revenue separated by currency — no cross-currency summing
         (paidInvoices.data || []).forEach((inv) => {
           const amt = Number(inv.amount);
-          if ((inv.currency || "KES").toUpperCase() === "USD") revenueByUSD += amt;
-          else revenueByKES += amt;
+          const code = (inv.currency || "KES").toUpperCase();
+          if (code === "USD") revenueByUSD += amt;
+          else if (code === "KES") revenueByKES += amt;
+          else revenueOther[code] = (revenueOther[code] || 0) + amt; // EUR, GBP, CAD… never lumped into KES
         });
 
         overdueInvoices = (invoicesRes.data || []).filter(
@@ -92,11 +96,10 @@ const AdminDashboard = () => {
         (paidInvoices.data || []).forEach((inv) => {
           if (!inv.paid_at) return;
           const m = new Date(inv.paid_at).toLocaleDateString("en-US", { month: "short", year: "2-digit" });
-          if ((inv.currency || "KES").toUpperCase() === "USD") {
-            monthlyUSD[m] = (monthlyUSD[m] || 0) + Number(inv.amount);
-          } else {
-            monthlyKES[m] = (monthlyKES[m] || 0) + Number(inv.amount);
-          }
+          const code = (inv.currency || "KES").toUpperCase();
+          if (code === "USD") monthlyUSD[m] = (monthlyUSD[m] || 0) + Number(inv.amount);
+          else if (code === "KES") monthlyKES[m] = (monthlyKES[m] || 0) + Number(inv.amount);
+          // other currencies appear in the totals cards only (the trend chart is KES/USD)
         });
         const allMonths = Array.from(new Set([...Object.keys(monthlyKES), ...Object.keys(monthlyUSD)])).sort();
         revenueData = allMonths.slice(-6).map((month) => ({
@@ -138,7 +141,7 @@ const AdminDashboard = () => {
       const overdueMilestones = (milestonesRes.data || []).filter((m) => m.due_date && m.due_date < today).length;
 
       return {
-        stats: { leads, projects: projectsRes.count || 0, invoices, consultations, users, revenueByKES, revenueByUSD },
+        stats: { leads, projects: projectsRes.count || 0, invoices, consultations, users, revenueByKES, revenueByUSD, revenueOther },
         projectStatusData, revenueData, leadTrend, taskStats, recentLeads,
         overdueItems: { tasks: overdueTasks, milestones: overdueMilestones, invoices: overdueInvoices },
       };
@@ -167,6 +170,7 @@ const AdminDashboard = () => {
     ...(isFullAdmin || isPM ? [
       { label: "Revenue (KES)", value: stats ? `KSh ${stats.revenueByKES.toLocaleString()}` : "—", icon: TrendingUp, color: "text-green-400" },
       ...(stats?.revenueByUSD ? [{ label: "Revenue (USD)", value: `$${stats.revenueByUSD.toLocaleString()}`, icon: TrendingUp, color: "text-emerald-400" }] : []),
+      ...Object.entries(stats?.revenueOther ?? {}).map(([code, total]) => ({ label: `Revenue (${code})`, value: formatCurrency(total as number, code), icon: TrendingUp, color: "text-emerald-400" })),
       { label: "Consultations", value: stats?.consultations ?? "—", icon: CalendarDays, color: "text-primary" },
       { label: "Invoices", value: stats?.invoices ?? "—", icon: Receipt, color: "text-accent" },
     ] : []),

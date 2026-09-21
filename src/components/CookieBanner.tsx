@@ -24,6 +24,7 @@ function loadPrefs(): CookiePreferences | null {
 function savePrefs(prefs: CookiePreferences) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
+    window.dispatchEvent(new Event("teevexa:consent"));
   } catch {
     // localStorage unavailable — fail silently
   }
@@ -75,6 +76,17 @@ export function CookieBanner() {
       const t = setTimeout(() => setVisible(true), 800);
       return () => clearTimeout(t);
     }
+  }, []);
+
+  // Lets the footer "Cookie settings" link reopen the banner with the visitor's saved choices.
+  useEffect(() => {
+    const reopen = () => {
+      setPrefs(loadPrefs() ?? { ...NECESSARY });
+      setExpanded(true);
+      setVisible(true);
+    };
+    window.addEventListener("teevexa:open-cookie-settings", reopen);
+    return () => window.removeEventListener("teevexa:open-cookie-settings", reopen);
   }, []);
 
   const accept = (p: CookiePreferences) => {

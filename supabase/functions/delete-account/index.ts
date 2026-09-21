@@ -43,13 +43,24 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    // 1. Anonymize trace_events attributed to this user.
-    //    We never hard-delete events because blockchain-anchored records are permanent
-    //    and removing the DB row would break the supply chain timeline for clients.
-    await admin
+    // 1. Anonymize trace records attributed to this user.
+    //    We never hard-delete them because blockchain-anchored records are permanent
+    //    and removing the DB rows would break the supply chain timeline for clients.
+    const { error: anonEventsErr } = await admin
       .from("trace_events")
       .update({ recorded_by: null })
       .eq("recorded_by", userId);
+    const { error: anonProductsErr } = await admin
+      .from("trace_products")
+      .update({ producer_id: null })
+      .eq("producer_id", userId);
+    if (anonEventsErr || anonProductsErr) {
+      console.error("[delete-account] anonymisation failed:", anonEventsErr ?? anonProductsErr);
+      return new Response(JSON.stringify({ error: "Failed to delete account. Please contact support@teevexa.com." }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     // 2. Delete this user's notifications
     await admin

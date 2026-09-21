@@ -196,6 +196,7 @@ export type Database = {
       }
       consultation_bookings: {
         Row: {
+          starts_at: string | null
           company: string | null
           created_at: string
           email: string
@@ -213,6 +214,7 @@ export type Database = {
           zoom_start_url: string | null
         }
         Insert: {
+          starts_at?: string | null
           company?: string | null
           created_at?: string
           email: string
@@ -230,6 +232,7 @@ export type Database = {
           zoom_start_url?: string | null
         }
         Update: {
+          starts_at?: string | null
           company?: string | null
           created_at?: string
           email?: string
@@ -792,6 +795,16 @@ export type Database = {
       }
       project_inquiries: {
         Row: {
+          description: string | null
+          source_link: string | null
+          starting_point: string | null
+          brief: Json | null
+          estimate: Json | null
+          draft_token: string | null
+          proposal_draft: string | null
+          loom_url: string | null
+          estimate_sent_at: string | null
+          first_response_at: string | null
           additional_details: string | null
           attachment_urls: string[] | null
           budget: string | null
@@ -810,6 +823,16 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          description?: string | null
+          source_link?: string | null
+          starting_point?: string | null
+          brief?: Json | null
+          estimate?: Json | null
+          draft_token?: string | null
+          proposal_draft?: string | null
+          loom_url?: string | null
+          estimate_sent_at?: string | null
+          first_response_at?: string | null
           additional_details?: string | null
           attachment_urls?: string[] | null
           budget?: string | null
@@ -828,6 +851,16 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          description?: string | null
+          source_link?: string | null
+          starting_point?: string | null
+          brief?: Json | null
+          estimate?: Json | null
+          draft_token?: string | null
+          proposal_draft?: string | null
+          loom_url?: string | null
+          estimate_sent_at?: string | null
+          first_response_at?: string | null
           additional_details?: string | null
           attachment_urls?: string[] | null
           budget?: string | null
@@ -1427,6 +1460,8 @@ export type Database = {
         Returns: boolean
       }
       within_batch_limit: { Args: { p_user_id: string }; Returns: boolean }
+      get_public_trace: { Args: { p_batch_id: string }; Returns: Json }
+      get_booked_slots: { Args: { p_date: string }; Returns: string[] }
     }
     Enums: {
       app_role:

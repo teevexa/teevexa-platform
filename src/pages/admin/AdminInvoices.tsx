@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { logAudit } from "@/lib/audit";
-import { formatCurrency } from "@/lib/format";
+import { formatCurrency, CURRENCIES } from "@/lib/format";
 import { Plus, Receipt, CheckCircle, Clock, AlertTriangle, Send } from "lucide-react";
 
 interface Invoice {
@@ -30,7 +30,7 @@ const AdminInvoices = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [showCreate, setShowCreate] = useState(false);
-  const [form, setForm] = useState({ invoice_number: "", amount: "", currency: "KES", user_id: "", due_date: "" });
+  const [form, setForm] = useState({ invoice_number: "", amount: "", currency: "USD", user_id: "", due_date: "" });
   const [sending, setSending] = useState<string | null>(null);
 
   const { data, isLoading } = useQuery({
@@ -65,7 +65,7 @@ const AdminInvoices = () => {
     await logAudit({ action: "create", entity_type: "invoice", entity_id: created?.id, details: { invoice_number: form.invoice_number, amount: Number(form.amount), currency: form.currency, client_id: form.user_id } });
     toast({ title: "Invoice created" });
     setShowCreate(false);
-    setForm({ invoice_number: "", amount: "", currency: "KES", user_id: "", due_date: "" });
+    setForm({ invoice_number: "", amount: "", currency: "USD", user_id: "", due_date: "" });
     refresh();
   };
 
@@ -174,8 +174,7 @@ const AdminInvoices = () => {
                 <Select value={form.currency} onValueChange={(v) => setForm((f) => ({ ...f, currency: v }))}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="KES">KES — Kenyan Shilling</SelectItem>
-                    <SelectItem value="USD">USD — US Dollar</SelectItem>
+                    {CURRENCIES.map((c) => <SelectItem key={c.code} value={c.code}>{c.label}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>

@@ -12,7 +12,9 @@ function CodeBlock({ code, lang = "json" }: { code: string; lang?: string }) {
       await navigator.clipboard.writeText(code);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    } catch {}
+    } catch {
+      /* clipboard unavailable */
+    }
   };
 
   return (
@@ -92,11 +94,11 @@ export default function ApiDocs() {
       />
 
       {/* Hero */}
-      <section className="relative py-20 px-4 gradient-hero network-bg overflow-hidden">
+      <section className="relative py-20  gradient-hero network-bg overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-1/3 left-1/4 w-72 h-72 rounded-full bg-primary/8 blur-3xl animate-pulse-glow" />
         </div>
-        <div className="container mx-auto max-w-3xl text-center relative z-10 animate-fade-in">
+        <div className="container mx-auto text-center relative z-10 animate-fade-in">
           <span className="inline-block text-xs font-semibold uppercase tracking-widest text-primary mb-4">
             Developer API
           </span>
@@ -121,8 +123,8 @@ export default function ApiDocs() {
       </section>
 
       {/* Quick features */}
-      <section className="py-16 px-4 section-teal">
-        <div className="container mx-auto max-w-4xl">
+      <section className="py-16  section-teal">
+        <div className="container mx-auto">
           <div className="grid sm:grid-cols-3 gap-6">
             {[
               { icon: Shield, title: "Blockchain Verified", desc: "Each event response includes the Polygon tx hash and a direct Polygonscan link." },
@@ -140,14 +142,13 @@ export default function ApiDocs() {
       </section>
 
       {/* Authentication */}
-      <section className="py-16 px-4">
-        <div className="container mx-auto max-w-3xl">
+      <section className="py-16">
+        <div className="container mx-auto">
           <SectionHeading align="left" label="Authentication" title="API Key Setup" />
           <div className="mt-6 space-y-4 text-sm text-muted-foreground leading-relaxed">
             <p>
-              API keys are available on the <strong className="text-foreground">Growth</strong> and{" "}
-              <strong className="text-foreground">Enterprise</strong> plans. Generate and manage keys from your{" "}
-              <a href="/teevexa-trace" className="text-primary hover:underline">Teevexa Trace Dashboard</a>.
+              API access is available on request while we launch — <a href="/contact" className="text-primary hover:underline">contact us</a> to enable it, then generate and manage keys from your{" "}
+              <a href="/client-portal/api-keys" className="text-primary hover:underline">client portal</a>.
             </p>
             <p>
               Pass the key in the <code className="text-primary bg-primary/10 px-1.5 py-0.5 rounded text-xs font-mono">X-Teevexa-API-Key</code> request header.
@@ -158,8 +159,8 @@ export default function ApiDocs() {
       </section>
 
       {/* Endpoint */}
-      <section className="py-6 px-4 section-card">
-        <div className="container mx-auto max-w-3xl">
+      <section className="py-6  section-card">
+        <div className="container mx-auto">
           <SectionHeading align="left" label="Endpoint" title="GET /batch-verify" />
           <div className="mt-6 space-y-2">
             <div className="flex items-center gap-3 glass rounded-xl px-4 py-3 border border-border">
@@ -172,8 +173,8 @@ export default function ApiDocs() {
 
           <div className="mt-8 space-y-3">
             <h4 className="text-sm font-semibold">Query Parameters</h4>
-            <div className="glass rounded-xl border border-border overflow-hidden">
-              <table className="w-full text-sm">
+            <div className="glass rounded-xl border border-border overflow-x-auto">
+              <table className="w-full text-sm min-w-[480px]">
                 <thead>
                   <tr className="border-b border-border/50 bg-white/4">
                     <th className="text-left px-4 py-2.5 text-xs font-semibold text-muted-foreground">Parameter</th>
@@ -212,11 +213,11 @@ export default function ApiDocs() {
       </section>
 
       {/* Response fields */}
-      <section className="py-16 px-4">
-        <div className="container mx-auto max-w-3xl">
+      <section className="py-16">
+        <div className="container mx-auto">
           <SectionHeading align="left" label="Response" title="Response Fields" />
-          <div className="mt-6 glass rounded-xl border border-border overflow-hidden">
-            <table className="w-full text-sm">
+          <div className="mt-6 glass rounded-xl border border-border overflow-x-auto">
+            <table className="w-full text-sm min-w-[480px]">
               <thead>
                 <tr className="border-b border-border/50 bg-white/4">
                   <th className="text-left px-4 py-2.5 text-xs font-semibold text-muted-foreground">Field</th>
@@ -251,8 +252,8 @@ export default function ApiDocs() {
       </section>
 
       {/* Error codes */}
-      <section className="py-16 px-4 section-card">
-        <div className="container mx-auto max-w-3xl">
+      <section className="py-16  section-card">
+        <div className="container mx-auto">
           <SectionHeading align="left" label="Errors" title="HTTP Status Codes" />
           <div className="mt-6 space-y-2">
             {errorCodes.map((e) => (
@@ -270,11 +271,11 @@ export default function ApiDocs() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 px-4">
-        <div className="container mx-auto max-w-2xl text-center">
+      <section className="py-20">
+        <div className="container mx-auto text-center">
           <SectionHeading
             title="Ready to Integrate?"
-            description="Get an API key by upgrading to a paid plan or contacting our team for enterprise access."
+            description="Contact our team to get an API key and discuss your integration."
           />
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button size="lg" className="glow-primary text-base px-8" asChild>

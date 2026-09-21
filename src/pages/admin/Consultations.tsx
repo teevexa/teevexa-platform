@@ -21,6 +21,7 @@ interface Booking {
   company: string | null;
   selected_date: string;
   selected_time: string;
+  starts_at?: string | null;
   timezone: string;
   meeting_type: string;
   notes: string | null;
@@ -104,13 +105,14 @@ const Consultations = () => {
 
   const updateStatus = async (booking: Booking, status: BookingStatus) => {
     setUpdatingStatus(true);
-    const { error } = await supabase
+    const { data: updated, error } = await supabase
       .from("consultation_bookings")
       .update({ status })
-      .eq("id", booking.id);
+      .eq("id", booking.id)
+      .select("id");
 
-    if (error) {
-      toast({ title: "Failed to update status", variant: "destructive" });
+    if (error || !updated || updated.length === 0) {
+      toast({ title: "Failed to update status", description: "You may not have permission to change this booking.", variant: "destructive" });
     } else {
       setBookings((prev) => prev.map((b) => b.id === booking.id ? { ...b, status } : b));
       setSelected((prev) => prev?.id === booking.id ? { ...prev, status } : prev);
@@ -201,7 +203,7 @@ const Consultations = () => {
                 <TableHead>Name</TableHead>
                 <TableHead>Email</TableHead>
                 <TableHead>Date</TableHead>
-                <TableHead>Time</TableHead>
+                <TableHead>Time (Nairobi)</TableHead>
                 <TableHead>Company</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Zoom</TableHead>
@@ -219,7 +221,7 @@ const Consultations = () => {
                   <TableCell className="text-sm whitespace-nowrap">
                     {new Date(b.selected_date + "T12:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
                   </TableCell>
-                  <TableCell className="text-sm">{b.selected_time}</TableCell>
+                  <TableCell className="text-sm">{b.selected_time}{b.starts_at ? "" : <span className="text-xs text-muted-foreground"> ({b.timezone})</span>}</TableCell>
                   <TableCell className="text-sm">{b.company || "—"}</TableCell>
                   <TableCell>
                     <Badge className={STATUS_STYLES[b.status] || ""}>{STATUS_LABELS[b.status] || b.status}</Badge>
@@ -266,8 +268,18 @@ const Consultations = () => {
                 <div><span className="text-muted-foreground block">Phone</span><p>{selected.phone || "—"}</p></div>
                 <div><span className="text-muted-foreground block">Company</span><p>{selected.company || "—"}</p></div>
                 <div><span className="text-muted-foreground block">Date</span><p>{new Date(selected.selected_date + "T12:00:00").toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "long", year: "numeric" })}</p></div>
-                <div><span className="text-muted-foreground block">Time</span><p>{selected.selected_time}</p></div>
-                <div><span className="text-muted-foreground block">Timezone</span><p className="text-xs">{selected.timezone}</p></div>
+                <div><span className="text-muted-foreground block">{selected.starts_at ? "Time (Nairobi)" : "Time"}</span><p>{selected.selected_time}{selected.starts_at ? "" : ` (${selected.timezone})`}</p></div>
+                <div>
+                  <span className="text-muted-foreground block">Visitor time zone</span>
+                  <p className="text-xs">
+                    {selected.timezone}
+                    {selected.starts_at && (() => {
+                      try {
+                        return ` · ${new Intl.DateTimeFormat("en-GB", { timeZone: selected.timezone, dateStyle: "medium", timeStyle: "short" }).format(new Date(selected.starts_at))}`;
+                      } catch { return ""; }
+                    })()}
+                  </p>
+                </div>
                 <div><span className="text-muted-foreground block">Zoom ID</span><p className="text-xs">{selected.zoom_meeting_id || "—"}</p></div>
               </div>
 

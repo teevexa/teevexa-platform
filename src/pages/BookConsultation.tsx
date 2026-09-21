@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
+import { useSearchParams, Link } from "react-router-dom";
 import SEO from "@/components/SEO";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -16,7 +17,12 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { format, addDays, isWeekend } from "date-fns";
+import { format, addDays, startOfDay } from "date-fns";
+import { invokeFn } from "@/lib/functions";
+import { track } from "@/lib/analytics";
+import {
+  slotsForLocalDate, eatDatesForLocalDate, MAX_DAYS_AHEAD, type Slot,
+} from "../../supabase/functions/_shared/slots";
 
 const contactSchema = z.object({
   fullName: z.string().trim().min(2, "Name is required").max(100),
@@ -25,22 +31,24 @@ const contactSchema = z.object({
   company: z.string().trim().max(100).optional(),
 });
 
-const timeSlots = [
-  "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
-  "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00",
-];
-
 const BookConsultation = () => {
   const { toast } = useToast();
+  const [params] = useSearchParams();
   const [phase, setPhase] = useState<"form" | "done">("form");
   const [submitting, setSubmitting] = useState(false);
 
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
-  const [selectedTime, setSelectedTime] = useState("");
-  const [notes, setNotes] = useState("");
-  const [contact, setContact] = useState({ fullName: "", email: "", phone: "", company: "" });
+  const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
+  const [notes, setNotes] = useState(() => (params.get("notes") ?? "").slice(0, 2000));
+  const [contact, setContact] = useState({
+    fullName: (params.get("name") ?? "").slice(0, 100),
+    email: (params.get("email") ?? "").slice(0, 255),
+    phone: "",
+    company: "",
+  });
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [bookedSlots, setBookedSlots] = useState<string[]>([]);
+  // Booked Nairobi times keyed by Nairobi date (a visitor's day can span up to 3 Nairobi dates).
+  const [booked, setBooked] = useState<Record<string, string[]>>({});
   const [loadingSlots, setLoadingSlots] = useState(false);
   const [zoomJoinUrl, setZoomJoinUrl] = useState("");
 
@@ -57,24 +65,39 @@ const BookConsultation = () => {
     }
   }, [timezone]);
 
-  const disabledDays = (date: Date) => {
-    return date < new Date() || isWeekend(date) || date > addDays(new Date(), 60);
-  };
+  const today = useMemo(() => startOfDay(new Date()), []);
 
-  // Fetch already-booked slots whenever the selected date changes
+  // A day is selectable when it has at least one bookable slot in the visitor's own time zone.
+  const disabledDays = (date: Date) =>
+    date < today ||
+    date > addDays(today, MAX_DAYS_AHEAD + 1) ||
+    slotsForLocalDate(format(date, "yyyy-MM-dd"), timezone).length === 0;
+
+  const slots = useMemo(
+    () => (selectedDate ? slotsForLocalDate(format(selectedDate, "yyyy-MM-dd"), timezone) : []),
+    [selectedDate, timezone],
+  );
+
+  // Fetch real availability (public RPC; the bookings table itself is not readable by visitors).
   useEffect(() => {
     if (!selectedDate) return;
+    let cancelled = false;
     setLoadingSlots(true);
-    setSelectedTime("");
-    supabase
-      .from("consultation_bookings")
-      .select("selected_time")
-      .eq("selected_date", format(selectedDate, "yyyy-MM-dd"))
-      .then(({ data }) => {
-        setBookedSlots(data?.map((b) => b.selected_time) ?? []);
-        setLoadingSlots(false);
-      });
+    setSelectedSlot(null);
+    Promise.all(
+      eatDatesForLocalDate(format(selectedDate, "yyyy-MM-dd")).map(async (d) => {
+        const { data } = await supabase.rpc("get_booked_slots", { p_date: d });
+        return [d, (data as string[] | null) ?? []] as const;
+      }),
+    ).then((entries) => {
+      if (cancelled) return;
+      setBooked((prev) => ({ ...prev, ...Object.fromEntries(entries) }));
+      setLoadingSlots(false);
+    });
+    return () => { cancelled = true; };
   }, [selectedDate]);
+
+  const isBooked = (slot: Slot) => (booked[slot.eatDate] ?? []).includes(slot.eatTime);
 
   const submit = async () => {
     const result = contactSchema.safeParse({
@@ -95,52 +118,52 @@ const BookConsultation = () => {
       setErrors({ date: "Select a date" });
       return;
     }
-    if (!selectedTime) {
+    if (!selectedSlot) {
       setErrors({ time: "Select a time slot" });
       return;
     }
     setErrors({});
     setSubmitting(true);
 
-    const { data, error } = await supabase.functions.invoke("book-consultation", {
-      body: {
-        full_name: contact.fullName.trim(),
-        email: contact.email.trim(),
-        phone: contact.phone?.trim() || null,
-        company: contact.company?.trim() || null,
-        selected_date: format(selectedDate, "yyyy-MM-dd"),
-        selected_time: selectedTime,
-        timezone,
-        notes: notes.trim() || null,
-      },
+    const { data, error, status } = await invokeFn<{ zoom_join_url: string | null }>("book-consultation", {
+      full_name: contact.fullName.trim(),
+      email: contact.email.trim(),
+      phone: contact.phone?.trim() || null,
+      company: contact.company?.trim() || null,
+      starts_at: selectedSlot.start.toISOString(),
+      timezone,
+      notes: notes.trim() || null,
     });
 
     setSubmitting(false);
 
-    if (error || data?.error) {
-      const msg = data?.error ?? "Please try again.";
-      // Re-fetch slots in case a race condition caused this slot to be taken
-      if (data?.error?.includes("already been booked")) {
-        setBookedSlots((prev) => [...prev, selectedTime]);
-        setSelectedTime("");
+    if (error) {
+      if (status === 409) {
+        // Someone else took it while this visitor was deciding — mark it and let them pick again.
+        setBooked((prev) => ({
+          ...prev,
+          [selectedSlot.eatDate]: [...(prev[selectedSlot.eatDate] ?? []), selectedSlot.eatTime],
+        }));
+        setSelectedSlot(null);
       }
-      toast({ title: "Booking failed", description: msg, variant: "destructive" });
+      toast({ title: "Booking failed", description: error, variant: "destructive" });
       return;
     }
 
     setZoomJoinUrl(data?.zoom_join_url ?? "");
+    track("Consultation booked");
     setPhase("done");
-    toast({ title: "Consultation booked!", description: "Check your email for the Zoom link." });
+    toast({ title: "Consultation booked!", description: "Check your email for the confirmation and calendar invite." });
   };
 
-  if (phase === "done") {
+  if (phase === "done" && selectedSlot) {
     return (
-      <section className="py-32 px-4 gradient-hero network-bg min-h-[70vh] flex items-center">
-        <div className="container mx-auto max-w-lg text-center animate-fade-in">
+      <section className="py-32  gradient-hero network-bg min-h-[70vh] flex items-center">
+        <div className="container mx-auto text-center animate-fade-in">
           <CheckCircle className="mx-auto text-primary mb-6" size={64} />
           <h2 className="font-display font-bold text-3xl mb-4">Consultation Booked!</h2>
           <p className="text-muted-foreground mb-1">
-            {selectedDate && format(selectedDate, "EEEE, MMMM d, yyyy")} at {selectedTime}
+            {format(new Date(`${selectedSlot.localDate}T00:00:00`), "EEEE, MMMM d, yyyy")} at {selectedSlot.localTime}
           </p>
           <p className="text-sm text-muted-foreground mb-6">via Zoom · {timezoneLabel}</p>
 
@@ -156,9 +179,11 @@ const BookConsultation = () => {
           )}
 
           <p className="text-sm text-muted-foreground mb-8">
-            A confirmation email with the Zoom link has been sent to <strong>{contact.email}</strong>.
+            {zoomJoinUrl
+              ? <>A confirmation email with the Zoom link has been sent to <strong>{contact.email}</strong>.</>
+              : <>A confirmation has been sent to <strong>{contact.email}</strong>. Your Zoom link will follow shortly.</>}
           </p>
-          <Button variant="outline" asChild><a href="/">Back to Home</a></Button>
+          <Button variant="outline" asChild><Link to="/">Back to Home</Link></Button>
         </div>
       </section>
     );
@@ -172,12 +197,12 @@ const BookConsultation = () => {
         canonical="/book-consultation"
       />
       {/* ── Hero ── */}
-      <section className="relative py-28 px-4 gradient-hero network-bg overflow-hidden">
+      <section className="relative py-28  gradient-hero network-bg overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-1/3 right-1/4 w-72 h-72 rounded-full bg-primary/8 blur-3xl animate-pulse-glow" />
           <div className="absolute bottom-1/4 left-1/3 w-60 h-60 rounded-full bg-accent/7 blur-3xl animate-pulse-glow" style={{ animationDelay: "2s" }} />
         </div>
-        <div className="container mx-auto text-center relative z-10 animate-fade-in max-w-3xl">
+        <div className="container mx-auto text-center relative z-10 animate-fade-in">
           <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary block mb-4">Free Consultation</span>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold leading-tight mb-4">
             Book a <span className="gradient-text">30-Minute Call</span>
@@ -186,7 +211,7 @@ const BookConsultation = () => {
             A focused discovery call with our team. No sales pitch — just honest advice on whether and how we can help.
           </p>
           <div className="flex flex-wrap justify-center gap-6 mt-8 text-sm text-muted-foreground">
-            {["Free of charge", "No commitment required", "Zoom video call", "Monday – Friday", "All time zones welcome"].map((p) => (
+            {["Free of charge", "No commitment required", "Zoom video call", "Monday – Friday (Nairobi hours)", "All time zones welcome"].map((p) => (
               <span key={p} className="flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
                 {p}
@@ -196,8 +221,8 @@ const BookConsultation = () => {
         </div>
       </section>
 
-      <section className="py-16 px-4">
-        <div className="container mx-auto max-w-4xl">
+      <section className="py-16">
+        <div className="container mx-auto">
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Left – Calendar & Time */}
             <div className="space-y-6">
@@ -223,28 +248,37 @@ const BookConsultation = () => {
                   )}
                 </h3>
                 {errors.time && <p className="text-sm text-destructive mb-2">{errors.time}</p>}
-                <div className="grid grid-cols-4 gap-2">
-                  {timeSlots.map((t) => {
-                    const booked = bookedSlots.includes(t);
-                    return (
-                      <button
-                        key={t}
-                        disabled={booked || loadingSlots}
-                        onClick={() => { setSelectedTime(t); setErrors((e) => ({ ...e, time: "" })); }}
-                        title={booked ? "Already booked" : undefined}
-                        className={`rounded-lg py-2 text-sm font-medium transition-all border ${
-                          booked
-                            ? "border-border bg-muted text-muted-foreground cursor-not-allowed opacity-50 line-through"
-                            : selectedTime === t
-                              ? "bg-primary text-primary-foreground border-primary glow-primary"
-                              : "border-border bg-card hover:border-primary/50"
-                        }`}
-                      >
-                        {t}
-                      </button>
-                    );
-                  })}
-                </div>
+                {!selectedDate ? (
+                  <p className="text-sm text-muted-foreground">Pick a date to see available times.</p>
+                ) : slots.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">No times available on this day. Please pick another date.</p>
+                ) : (
+                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                    {slots.map((slot) => {
+                      const taken = isBooked(slot);
+                      const active = selectedSlot?.start.getTime() === slot.start.getTime();
+                      return (
+                        <button
+                          key={slot.start.toISOString()}
+                          type="button"
+                          disabled={taken || loadingSlots}
+                          onClick={() => { setSelectedSlot(slot); setErrors((e) => ({ ...e, time: "" })); }}
+                          title={taken ? "Already booked" : `${slot.eatTime} in Nairobi`}
+                          aria-pressed={active}
+                          className={`rounded-lg py-2 text-sm font-medium transition-all border ${
+                            taken
+                              ? "border-border bg-muted text-muted-foreground cursor-not-allowed opacity-50 line-through"
+                              : active
+                                ? "bg-primary text-primary-foreground border-primary glow-primary"
+                                : "border-border bg-card hover:border-primary/50"
+                          }`}
+                        >
+                          {slot.localTime}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
                 <div className="flex items-center gap-2 mt-4 text-xs text-muted-foreground bg-primary/5 border border-primary/15 rounded-lg px-3 py-2">
                   <GlobeIcon size={12} className="text-primary flex-shrink-0" />
                   <span>Times shown in your timezone: <span className="font-semibold text-foreground">{timezoneLabel}</span></span>
@@ -298,12 +332,12 @@ const BookConsultation = () => {
               </div>
 
               {/* Summary */}
-              {selectedDate && selectedTime && (
+              {selectedDate && selectedSlot && (
                 <div className="glass rounded-2xl p-6 border-primary/30 animate-fade-in">
                   <h3 className="font-display font-semibold mb-3">Booking Summary</h3>
                   <div className="space-y-1 text-sm text-muted-foreground">
                     <p><span className="text-foreground font-medium">Date:</span> {format(selectedDate, "EEEE, MMMM d, yyyy")}</p>
-                    <p><span className="text-foreground font-medium">Time:</span> {selectedTime} ({timezoneLabel})</p>
+                    <p><span className="text-foreground font-medium">Time:</span> {selectedSlot.localTime} ({timezoneLabel}) · {selectedSlot.eatTime} Nairobi</p>
                     <p><span className="text-foreground font-medium">Platform:</span> Zoom</p>
                     <p><span className="text-foreground font-medium">Duration:</span> 30 minutes</p>
                   </div>

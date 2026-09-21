@@ -1,8 +1,9 @@
+import { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import Layout from "@/components/Layout";
 import Index from "@/pages/Index";
@@ -19,55 +20,19 @@ import Careers from "@/pages/Careers";
 import CareerDetail from "@/pages/CareerDetail";
 import Insights from "@/pages/Insights";
 import InsightDetail from "@/pages/InsightDetail";
-import PortalLayout from "@/components/portal/PortalLayout";
-import Dashboard from "@/pages/portal/Dashboard";
-import Projects from "@/pages/portal/Projects";
-import ProjectDetail from "@/pages/portal/ProjectDetail";
-import Files from "@/pages/portal/Files";
-import Messages from "@/pages/portal/Messages";
-import Invoices from "@/pages/portal/Invoices";
-import PortalSettings from "@/pages/portal/PortalSettings";
-import AdminLayout from "@/components/admin/AdminLayout";
-import AdminDashboard from "@/pages/admin/AdminDashboard";
-import Leads from "@/pages/admin/Leads";
-import Consultations from "@/pages/admin/Consultations";
-import AdminProjects from "@/pages/admin/AdminProjects";
-import AdminProjectDetail from "@/pages/admin/AdminProjectDetail";
-import AdminTasks from "@/pages/admin/AdminTasks";
-import AdminMilestones from "@/pages/admin/AdminMilestones";
-import AdminUsers from "@/pages/admin/AdminUsers";
-import AdminInvoices from "@/pages/admin/AdminInvoices";
-import AdminBlog from "@/pages/admin/AdminBlog";
-import AdminCareers from "@/pages/admin/AdminCareers";
-import Waitlist from "@/pages/admin/Waitlist";
-import AdminContacts from "@/pages/admin/AdminContacts";
-import AdminProposals from "@/pages/admin/AdminProposals";
-import AdminMeetingNotes from "@/pages/admin/AdminMeetingNotes";
-import Proposals from "@/pages/portal/Proposals";
-import MeetingNotes from "@/pages/portal/MeetingNotes";
-import AuditLogs from "@/pages/admin/AuditLogs";
-import AdminSettings from "@/pages/admin/AdminSettings";
-import AdminPlaceholder from "@/pages/admin/AdminPlaceholder";
-import AdminMessages from "@/pages/admin/AdminMessages";
-import AdminKanban from "@/pages/admin/AdminKanban";
-import ActivityFeed from "@/pages/portal/ActivityFeed";
-import ProjectTimeline from "@/pages/portal/ProjectTimeline";
-import Deliverables from "@/pages/portal/Deliverables";
-import SupportTickets from "@/pages/portal/SupportTickets";
-import AdminDeliverables from "@/pages/admin/AdminDeliverables";
-import AdminSupportTickets from "@/pages/admin/AdminSupportTickets";
-import AdminTimeTracking from "@/pages/admin/AdminTimeTracking";
-import AdminRoleActivity from "@/pages/admin/AdminRoleActivity";
-import AdminReports from "@/pages/admin/AdminReports";
-import PlaceholderPage from "@/pages/PlaceholderPage";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import TermsOfService from "@/pages/TermsOfService";
 import CookiePolicy from "@/pages/CookiePolicy";
 import { CookieBanner } from "@/components/CookieBanner";
 import NotFound from "@/pages/NotFound";
 import TeevexaTrace from "@/pages/TeevexaTrace";
-import TeevexaDesk from "@/pages/TeevexaDesk";
-import TeevexaBase from "@/pages/TeevexaBase";
+import TeeDesk from "@/pages/TeeDesk";
+import OpenSource from "@/pages/OpenSource";
+import CyberGuardAI from "@/pages/CyberGuardAI";
+import Accessibility from "@/pages/Accessibility";
+import Portfolio from "@/pages/Portfolio";
+import PortfolioDetail from "@/pages/PortfolioDetail";
+import PrototypeToProduction from "@/pages/PrototypeToProduction";
 import TeevexaField from "@/pages/TeevexaField";
 import AccountDeletion from "@/pages/AccountDeletion";
 import TraceBatch from "@/pages/TraceBatch";
@@ -75,6 +40,54 @@ import VerifyBatch from "@/pages/VerifyBatch";
 import Pricing from "@/pages/Pricing";
 import ApiDocs from "@/pages/ApiDocs";
 import ScrollToTop from "@/components/ScrollToTop";
+
+// Portal and admin are only needed after sign-in: load them on demand to keep the public bundle small.
+const PortalLayout = lazy(() => import("@/components/portal/PortalLayout"));
+const Dashboard = lazy(() => import("@/pages/portal/Dashboard"));
+const Projects = lazy(() => import("@/pages/portal/Projects"));
+const ProjectDetail = lazy(() => import("@/pages/portal/ProjectDetail"));
+const Files = lazy(() => import("@/pages/portal/Files"));
+const Messages = lazy(() => import("@/pages/portal/Messages"));
+const Invoices = lazy(() => import("@/pages/portal/Invoices"));
+const PortalSettings = lazy(() => import("@/pages/portal/PortalSettings"));
+const AdminLayout = lazy(() => import("@/components/admin/AdminLayout"));
+const AdminDashboard = lazy(() => import("@/pages/admin/AdminDashboard"));
+const Leads = lazy(() => import("@/pages/admin/Leads"));
+const Consultations = lazy(() => import("@/pages/admin/Consultations"));
+const AdminProjects = lazy(() => import("@/pages/admin/AdminProjects"));
+const AdminProjectDetail = lazy(() => import("@/pages/admin/AdminProjectDetail"));
+const AdminTasks = lazy(() => import("@/pages/admin/AdminTasks"));
+const AdminMilestones = lazy(() => import("@/pages/admin/AdminMilestones"));
+const AdminUsers = lazy(() => import("@/pages/admin/AdminUsers"));
+const AdminInvoices = lazy(() => import("@/pages/admin/AdminInvoices"));
+const AdminBlog = lazy(() => import("@/pages/admin/AdminBlog"));
+const AdminCareers = lazy(() => import("@/pages/admin/AdminCareers"));
+const AdminContacts = lazy(() => import("@/pages/admin/AdminContacts"));
+const AdminProposals = lazy(() => import("@/pages/admin/AdminProposals"));
+const AdminMeetingNotes = lazy(() => import("@/pages/admin/AdminMeetingNotes"));
+const Proposals = lazy(() => import("@/pages/portal/Proposals"));
+const MeetingNotes = lazy(() => import("@/pages/portal/MeetingNotes"));
+const AuditLogs = lazy(() => import("@/pages/admin/AuditLogs"));
+const AdminSettings = lazy(() => import("@/pages/admin/AdminSettings"));
+const AdminMessages = lazy(() => import("@/pages/admin/AdminMessages"));
+const AdminKanban = lazy(() => import("@/pages/admin/AdminKanban"));
+const ActivityFeed = lazy(() => import("@/pages/portal/ActivityFeed"));
+const ProjectTimeline = lazy(() => import("@/pages/portal/ProjectTimeline"));
+const Deliverables = lazy(() => import("@/pages/portal/Deliverables"));
+const SupportTickets = lazy(() => import("@/pages/portal/SupportTickets"));
+const AdminDeliverables = lazy(() => import("@/pages/admin/AdminDeliverables"));
+const AdminSupportTickets = lazy(() => import("@/pages/admin/AdminSupportTickets"));
+const AdminTimeTracking = lazy(() => import("@/pages/admin/AdminTimeTracking"));
+const AdminRoleActivity = lazy(() => import("@/pages/admin/AdminRoleActivity"));
+const AdminReports = lazy(() => import("@/pages/admin/AdminReports"));
+const ApiKeys = lazy(() => import("@/pages/portal/ApiKeys"));
+const AdminPortfolio = lazy(() => import("@/pages/admin/AdminPortfolio"));
+
+const RouteFallback = () => (
+  <div className="min-h-screen flex items-center justify-center bg-background">
+    <div className="animate-pulse-glow text-primary text-lg">Loading...</div>
+  </div>
+);
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -95,6 +108,7 @@ const App = () => (
       <BrowserRouter>
         <ScrollToTop />
         <CookieBanner />
+        <Suspense fallback={<RouteFallback />}>
         <Routes>
           {/* Public pages */}
           <Route element={<Layout />}>
@@ -109,8 +123,16 @@ const App = () => (
             <Route path="/insights" element={<Insights />} />
             <Route path="/insights/:slug" element={<InsightDetail />} />
             <Route path="/teevexa-trace" element={<TeevexaTrace />} />
-            <Route path="/teevexa-desk" element={<TeevexaDesk />} />
-            <Route path="/teevexa-base" element={<TeevexaBase />} />
+            <Route path="/teedesk" element={<TeeDesk />} />
+            <Route path="/open-source" element={<OpenSource />} />
+            <Route path="/cyberguard-ai" element={<CyberGuardAI />} />
+            <Route path="/accessibility" element={<Accessibility />} />
+            <Route path="/portfolio" element={<Portfolio />} />
+            <Route path="/portfolio/:slug" element={<PortfolioDetail />} />
+            <Route path="/prototype-to-production" element={<PrototypeToProduction />} />
+            {/* Retired product URLs: keep old inbound links working */}
+            <Route path="/teevexa-desk" element={<Navigate to="/teedesk" replace />} />
+            <Route path="/teevexa-base" element={<Navigate to="/" replace />} />
             <Route path="/teevexa-field" element={<TeevexaField />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/api-docs" element={<ApiDocs />} />
@@ -143,6 +165,7 @@ const App = () => (
             <Route path="invoices" element={<Invoices />} />
             <Route path="proposals" element={<Proposals />} />
             <Route path="meeting-notes" element={<MeetingNotes />} />
+            <Route path="api-keys" element={<ApiKeys />} />
             <Route path="settings" element={<PortalSettings />} />
           </Route>
 
@@ -168,14 +191,15 @@ const App = () => (
             <Route path="invoices" element={<AdminInvoices />} />
             <Route path="meeting-notes" element={<AdminMeetingNotes />} />
             <Route path="blog" element={<AdminBlog />} />
+            <Route path="portfolio" element={<AdminPortfolio />} />
             <Route path="careers" element={<AdminCareers />} />
-            <Route path="waitlist" element={<Waitlist />} />
             <Route path="audit-logs" element={<AuditLogs />} />
             <Route path="settings" element={<AdminSettings />} />
           </Route>
 
           <Route path="*" element={<NotFound />} />
         </Routes>
+        </Suspense>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

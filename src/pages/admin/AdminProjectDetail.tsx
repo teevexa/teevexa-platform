@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- rows come from loosely-typed joined queries */
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -103,8 +104,9 @@ const AdminProjectDetail = () => {
   const addNote = async () => {
     if (!newNote.trim() || !id) return;
     const user = (await supabase.auth.getUser()).data.user;
+    if (!user) { toast({ title: "Not signed in", variant: "destructive" }); return; }
     const { error } = await supabase.from("project_notes").insert({
-      project_id: id, author_id: user?.id!, content: newNote.trim(), note_type: "feedback",
+      project_id: id, author_id: user.id, content: newNote.trim(), note_type: "feedback",
     });
     if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
     setNewNote(""); load();

@@ -7,7 +7,8 @@ export default {
   theme: {
     container: {
       center: true,
-      padding: "2rem",
+      // Matches the navbar and footer (px-4 / lg:px-8) so every section lines up with them.
+      padding: { DEFAULT: "1rem", lg: "2rem" },
       screens: {
         "2xl": "1400px",
       },
@@ -94,5 +95,5 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
 } satisfies Config;

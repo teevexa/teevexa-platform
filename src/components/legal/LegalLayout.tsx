@@ -59,7 +59,7 @@ export function LegalLayout({ title, subtitle, lastUpdated, sections, children }
 
       {/* ── Document header ── */}
       <div className="border-b border-border/30 bg-gradient-to-b from-background via-background to-card/20 print:bg-white print:border-slate-200">
-        <div className="container mx-auto px-4 lg:px-8 py-12 max-w-7xl print:py-6">
+        <div className="container mx-auto py-12 print:py-6">
 
           {/* Breadcrumb — hide in print (redundant in a saved PDF) */}
           <nav className="flex items-center gap-1.5 text-xs text-muted-foreground mb-6 flex-wrap print:hidden">
@@ -95,7 +95,7 @@ export function LegalLayout({ title, subtitle, lastUpdated, sections, children }
       </div>
 
       {/* ── Body: TOC sidebar + content ── */}
-      <div className="container mx-auto px-4 lg:px-8 max-w-7xl mt-10 print:mt-6">
+      <div className="container mx-auto mt-10 print:mt-6">
         {/*
           Default grid for screens. `print:block` collapses it to a single
           column so the PDF is full-width with no sidebar wasted space.
@@ -138,7 +138,7 @@ export function LegalLayout({ title, subtitle, lastUpdated, sections, children }
       {/* Back to top — fixed, hidden by @media print .fixed rule */}
       <button
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        className={`fixed bottom-6 right-6 z-40 p-3 bg-primary text-primary-foreground rounded-full shadow-lg hover:opacity-90 transition-all duration-300 ${
+        className={`fixed bottom-24 right-4 sm:bottom-6 sm:right-6 z-40 p-3 bg-primary text-primary-foreground rounded-full shadow-lg hover:opacity-90 transition-all duration-300 ${
           showBackToTop ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"
         }`}
         aria-label="Back to top"

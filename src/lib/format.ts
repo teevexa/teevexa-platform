@@ -1,21 +1,27 @@
 // ── Currency ──────────────────────────────────────────────────────────────────
-const FORMATTERS: Record<string, Intl.NumberFormat> = {
-  KES: new Intl.NumberFormat("en-KE", { minimumFractionDigits: 0, maximumFractionDigits: 2 }),
-  USD: new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }),
-};
+export const CURRENCIES: { code: string; label: string }[] = [
+  { code: "USD", label: "USD — US Dollar" },
+  { code: "KES", label: "KES — Kenyan Shilling" },
+  { code: "EUR", label: "EUR — Euro" },
+  { code: "GBP", label: "GBP — British Pound" },
+  { code: "CAD", label: "CAD — Canadian Dollar" },
+];
 
-const SYMBOLS: Record<string, string> = { KES: "KSh", USD: "$" };
+const cache = new Map<string, Intl.NumberFormat>();
 
 export function formatCurrency(amount: number, currency: string): string {
-  const code = (currency || "KES").toUpperCase();
-  const fmt = FORMATTERS[code];
-  if (!fmt) return `${code} ${amount.toLocaleString()}`;
-  const symbol = SYMBOLS[code];
-  return symbol
-    ? code === "USD"
-      ? fmt.format(amount)
-      : `${symbol} ${fmt.format(amount)}`
-    : fmt.format(amount);
+  const code = (currency || "USD").toUpperCase();
+  let fmt = cache.get(code);
+  if (!fmt) {
+    try {
+      fmt = new Intl.NumberFormat("en-US", { style: "currency", currency: code, currencyDisplay: "narrowSymbol" });
+    } catch {
+      return `${code} ${Number(amount).toLocaleString()}`; // unknown code
+    }
+    cache.set(code, fmt);
+  }
+  // Intl renders KES as "KES 1,000"; the app has always shown "KSh 1,000".
+  return fmt.format(amount).replace(/^KES\s?/, "KSh ");
 }
 
 // ── File size ─────────────────────────────────────────────────────────────────

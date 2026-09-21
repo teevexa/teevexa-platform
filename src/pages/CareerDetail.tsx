@@ -118,6 +118,7 @@ const CareerDetail = () => {
   if (!job) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-5 px-4 text-center">
+        <SEO title="Position not found" description="This role may have been filled or removed." noindex />
         <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center">
           <Briefcase className="text-muted-foreground" size={32} />
         </div>
@@ -150,11 +151,11 @@ const CareerDetail = () => {
         canonical={`/careers/${job.slug}`}
       />
       {/* ── Hero ── */}
-      <section className="relative pt-32 pb-16 px-4 gradient-hero network-bg overflow-hidden">
+      <section className="relative pt-32 pb-16  gradient-hero network-bg overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-1/3 right-1/4 w-72 h-72 rounded-full bg-primary/8 blur-3xl animate-pulse-glow" />
         </div>
-        <div className="container mx-auto max-w-5xl relative z-10 animate-fade-in">
+        <div className="container mx-auto relative z-10 animate-fade-in">
           <Link
             to="/careers"
             className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors mb-8"
@@ -183,8 +184,8 @@ const CareerDetail = () => {
       </section>
 
       {/* ── Why Teevexa bar ── */}
-      <section className="section-teal py-12 px-4">
-        <div className="container mx-auto max-w-5xl">
+      <section className="section-teal py-12">
+        <div className="container mx-auto">
           <div className="grid sm:grid-cols-3 gap-4">
             {[
               { icon: Globe,      label: "Remote-First",        desc: "Work from anywhere across Africa" },
@@ -206,8 +207,8 @@ const CareerDetail = () => {
       </section>
 
       {/* ── Main content + Application ── */}
-      <section className="py-20 px-4">
-        <div className="container mx-auto max-w-5xl">
+      <section className="py-20">
+        <div className="container mx-auto">
           <div className="grid lg:grid-cols-[1fr_420px] gap-12">
 
             {/* Left — job details */}

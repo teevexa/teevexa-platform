@@ -9,6 +9,7 @@ import { FileDown, FileText, Loader2 } from "lucide-react";
 import { format, parseISO } from "date-fns";
 
 const AdminReports = () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [projects, setProjects] = useState<any[]>([]);
   const [selectedProject, setSelectedProject] = useState("");
   const [generating, setGenerating] = useState(false);
@@ -158,8 +159,8 @@ const AdminReports = () => {
         };
       }
       toast({ title: "Report generated", description: "Use your browser's print dialog to save as PDF." });
-    } catch (err: any) {
-      toast({ title: "Error generating report", description: err.message, variant: "destructive" });
+    } catch (err: unknown) {
+      toast({ title: "Error generating report", description: err instanceof Error ? err.message : "Please try again.", variant: "destructive" });
     } finally {
       setGenerating(false);
     }

@@ -9,9 +9,10 @@
 //   - No auth required — returns public data only (batch + events with
 //     blockchain hashes).  Personal data (recorded_by UUIDs) is omitted.
 //
-// Rate limiting:
+// Rate limiting (best-effort, per edge instance):
 //   - API key requests: rpm from trace_api_keys.rate_limit_rpm (or 60 default).
-//   - Unauthenticated: 20 rpm (enforced at CDN / edge level in future).
+//   - Unauthenticated: 20 rpm per IP.
+//   Exceeding the limit returns 429 with Retry-After.
 //
 // Response (200):
 // {
@@ -57,8 +58,8 @@ function computeTrustScore(events: any[]): number {
   return Math.min(Math.round(onChainScore + gpsScore + continuityScore + densityScore), 100);
 }
 
-async function verifyApiKey(adminClient: any, apiKey: string): Promise<boolean> {
-  if (!apiKey || apiKey.length < 8) return false;
+async function verifyApiKey(adminClient: any, apiKey: string): Promise<{ ok: boolean; rpm: number }> {
+  if (!apiKey || apiKey.length < 8) return { ok: false, rpm: 0 };
   const prefix = apiKey.slice(0, 8);
 
   const { data: keyRows } = await adminClient
@@ -66,27 +67,37 @@ async function verifyApiKey(adminClient: any, apiKey: string): Promise<boolean> 
     .select("id, key_hash, rate_limit_rpm, revoked, user_id")
     .eq("prefix", prefix)
     .eq("revoked", false)
-    .limit(5);
+    .limit(50);
 
-  if (!keyRows || keyRows.length === 0) return false;
+  if (!keyRows || keyRows.length === 0) return { ok: false, rpm: 0 };
 
-  // Compare full key using bcrypt — we use a simple constant-time hex comparison here
-  // since full bcrypt requires an npm dep. The prefix acts as a quick filter;
-  // the actual key is stored as a SHA-256 hash for this implementation.
-  const { createHash } = await import("node:crypto").catch(() => ({ createHash: null }));
-  if (createHash) {
-    const hash = createHash("sha256").update(apiKey).digest("hex");
-    return keyRows.some((row: any) => row.key_hash === hash);
-  }
-
-  // Deno fallback: use Web Crypto SHA-256
+  // The prefix is only a quick filter; keys are stored as SHA-256 hashes.
   const encoded = new TextEncoder().encode(apiKey);
   const hashBuffer = await crypto.subtle.digest("SHA-256", encoded);
   const hashHex = Array.from(new Uint8Array(hashBuffer))
     .map((b) => b.toString(16).padStart(2, "0"))
     .join("");
-  return keyRows.some((row: any) => row.key_hash === hashHex);
+  const row = keyRows.find((r: any) => r.key_hash === hashHex);
+  return row ? { ok: true, rpm: Number(row.rate_limit_rpm) || 60 } : { ok: false, rpm: 0 };
 }
+
+// Best-effort per-instance rate limiter (sliding 60s window). Edge instances don't share memory,
+// so this bounds abuse per instance rather than guaranteeing a global limit.
+const hits = new Map<string, number[]>();
+function rateLimited(id: string, limit: number): boolean {
+  const now = Date.now();
+  const recent = (hits.get(id) ?? []).filter((t) => now - t < 60_000);
+  recent.push(now);
+  hits.set(id, recent);
+  if (hits.size > 5000) for (const k of hits.keys()) { hits.delete(k); break; }
+  return recent.length > limit;
+}
+
+const TX_HASH_RE = /^0x[0-9a-fA-F]{64}$/;
+// A row only counts as on-chain when it holds a real transaction hash (not a "pending:" claim marker).
+// deno-lint-ignore no-explicit-any
+const withValidHashes = (rows: any[]): any[] =>
+  rows.map((r) => ({ ...r, blockchain_tx_hash: r.blockchain_tx_hash && TX_HASH_RE.test(r.blockchain_tx_hash) ? r.blockchain_tx_hash : null }));
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -113,17 +124,30 @@ Deno.serve(async (req) => {
 
     // Optional API key validation (doesn't block if absent — public read)
     const apiKeyHeader = req.headers.get("X-Teevexa-API-Key");
+    let limitId: string;
+    let limit: number;
     if (apiKeyHeader) {
-      const valid = await verifyApiKey(adminClient, apiKeyHeader);
-      if (!valid) {
+      const { ok, rpm } = await verifyApiKey(adminClient, apiKeyHeader);
+      if (!ok) {
         return json({ error: "Invalid or revoked API key" }, 401);
       }
+      limitId = `key:${apiKeyHeader.slice(0, 8)}`;
+      limit = rpm;
       // Update last_used_at
       const prefix = apiKeyHeader.slice(0, 8);
       await adminClient
         .from("trace_api_keys")
         .update({ last_used_at: new Date().toISOString() })
         .eq("prefix", prefix);
+    } else {
+      limitId = `ip:${(req.headers.get("x-forwarded-for") ?? "").split(",")[0].trim() || "unknown"}`;
+      limit = 20;
+    }
+    if (rateLimited(limitId, limit)) {
+      return new Response(JSON.stringify({ error: "Too many requests" }), {
+        status: 429,
+        headers: { ...corsHeaders, "Content-Type": "application/json", "Retry-After": "60" },
+      });
     }
 
     // Fetch product (public read — anon policy allows this)
@@ -144,7 +168,7 @@ Deno.serve(async (req) => {
       .eq("product_id", batchId)
       .order("recorded_at", { ascending: true });
 
-    const evList = events || [];
+    const evList = withValidHashes(events || []);
     const onChainCount = evList.filter((e) => e.blockchain_tx_hash).length;
     const trustScore = computeTrustScore(evList);
 

@@ -1,13 +1,8 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import PlayStoreButton from "@/components/PlayStoreButton";
+import { TRACE_PLAY_URL } from "@/lib/links";
 import SEO from "@/components/SEO";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { useToast } from "@/hooks/use-toast";
 import SectionHeading from "@/components/SectionHeading";
 import {
   QrCode, MapPin, BarChart3, Shield, Leaf, Eye, Lock,
@@ -31,46 +26,13 @@ const useCases = [
   { icon: Smartphone, title: "Consumer Trust", desc: "Let your customers scan and verify product authenticity." },
 ];
 
-const industries = [
-  "Agriculture & Farming", "Food & Beverage", "Manufacturing", "Logistics & Supply Chain",
-  "Export & Trade", "Pharmaceuticals", "Retail", "Other",
-];
 
 const TeevexaTrace = () => {
-  const { toast } = useToast();
-  const [showForm, setShowForm] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [form, setForm] = useState({ full_name: "", email: "", company: "", industry: "" });
-
-  const set = (key: string, val: string) => setForm((f) => ({ ...f, [key]: val }));
-
-  const submit = async () => {
-    if (!form.full_name.trim() || !form.email.trim()) {
-      toast({ title: "Name and email are required", variant: "destructive" });
-      return;
-    }
-    setSaving(true);
-    const { error } = await supabase.from("waitlist_signups").insert({
-      full_name: form.full_name.trim(),
-      email: form.email.trim(),
-      company: form.company.trim() || null,
-      industry: form.industry || null,
-    });
-    setSaving(false);
-    if (error) {
-      toast({ title: "Something went wrong", description: error.message, variant: "destructive" });
-      return;
-    }
-    toast({ title: "You're on the list! 🎉", description: "We'll notify you when Teevexa Trace launches." });
-    setShowForm(false);
-    setForm({ full_name: "", email: "", company: "", industry: "" });
-  };
-
   return (
     <>
       <SEO
         title="Teevexa Trace | Supply Chain Provenance Platform"
-        description="Teevexa Trace is a blockchain-powered supply chain provenance SaaS that lets businesses track, verify, and certify their products from source to shelf."
+        description="Teevexa Trace is a supply chain provenance platform, now on Google Play, that lets businesses track, verify, and certify their products from source to shelf."
         canonical="/teevexa-trace"
       />
       {/* Hero */}
@@ -79,9 +41,9 @@ const TeevexaTrace = () => {
           <div className="absolute top-1/4 left-1/4 w-72 h-72 rounded-full bg-primary/8 blur-3xl animate-pulse-glow" />
           <div className="absolute bottom-1/3 right-1/4 w-80 h-80 rounded-full bg-accent/7 blur-3xl animate-pulse-glow" style={{ animationDelay: "1.5s" }} />
         </div>
-        <div className="container mx-auto px-4 text-center relative z-10 animate-fade-in">
+        <div className="container mx-auto text-center relative z-10 animate-fade-in">
           <span className="inline-block text-xs font-semibold uppercase tracking-widest text-primary mb-4">
-            Coming Soon
+            Now live on Google Play
           </span>
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-bold leading-tight max-w-5xl mx-auto">
             Teevexa <span className="gradient-text">Trace</span>
@@ -90,9 +52,7 @@ const TeevexaTrace = () => {
             Blockchain-powered traceability platform bringing transparency, trust, and compliance to supply chains across Africa and beyond.
           </p>
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button size="lg" className="glow-primary text-base px-8" onClick={() => setShowForm(true)}>
-              Join the Waitlist <ArrowRight className="ml-2" size={18} />
-            </Button>
+            <PlayStoreButton href={TRACE_PLAY_URL} app="Teevexa Trace" />
             <Button variant="outline" size="lg" className="text-base px-8" asChild>
               <a href="#features">Explore Features</a>
             </Button>
@@ -101,8 +61,8 @@ const TeevexaTrace = () => {
       </section>
 
       {/* Problem Statement */}
-      <section className="section-teal py-24 px-4">
-        <div className="container mx-auto max-w-4xl text-center">
+      <section className="section-teal py-24">
+        <div className="container mx-auto text-center">
           <SectionHeading label="The Problem" title="Supply Chains Lack Transparency" />
           <div className="mt-8 grid md:grid-cols-3 gap-6">
             {[
@@ -120,7 +80,7 @@ const TeevexaTrace = () => {
       </section>
 
       {/* Features */}
-      <section id="features" className="py-24 px-4 section-card">
+      <section id="features" className="py-24  section-card">
         <div className="container mx-auto">
           <SectionHeading label="Features" title="Everything You Need for Full Traceability" description="Built for enterprises and smallholders alike." />
           <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -136,8 +96,8 @@ const TeevexaTrace = () => {
       </section>
 
       {/* How It Works */}
-      <section className="py-24 px-4">
-        <div className="container mx-auto max-w-4xl">
+      <section className="py-24">
+        <div className="container mx-auto">
           <SectionHeading label="How It Works" title="Simple. Powerful. Transparent." />
           <div className="mt-12 space-y-8">
             {[
@@ -159,7 +119,7 @@ const TeevexaTrace = () => {
       </section>
 
       {/* Use Cases */}
-      <section className="py-24 px-4 section-card">
+      <section className="py-24  section-card">
         <div className="container mx-auto">
           <SectionHeading label="Use Cases" title="Built for Multiple Industries" />
           <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -175,8 +135,8 @@ const TeevexaTrace = () => {
       </section>
 
       {/* Tech Stack */}
-      <section className="py-24 px-4">
-        <div className="container mx-auto max-w-3xl text-center">
+      <section className="py-24">
+        <div className="container mx-auto text-center">
           <SectionHeading label="Technology" title="Enterprise-Grade Infrastructure" />
           <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
@@ -195,8 +155,8 @@ const TeevexaTrace = () => {
       </section>
 
       {/* Why Blockchain */}
-      <section className="py-24 px-4">
-        <div className="container mx-auto max-w-4xl">
+      <section className="py-24">
+        <div className="container mx-auto">
           <SectionHeading
             label="The Technology"
             title="Why Blockchain?"
@@ -219,8 +179,8 @@ const TeevexaTrace = () => {
       </section>
 
       {/* Competitive Differentiation */}
-      <section className="py-24 px-4 section-card">
-        <div className="container mx-auto max-w-5xl">
+      <section className="py-24  section-card">
+        <div className="container mx-auto">
           <SectionHeading
             label="Why Teevexa Trace"
             title="Built for Africa, Ready for the World"
@@ -268,76 +228,27 @@ const TeevexaTrace = () => {
         </div>
       </section>
 
-      {/* Pricing */}
-      <section className="py-24 px-4">
-        <div className="container mx-auto max-w-5xl">
+      {/* Free while we launch */}
+      <section className="py-24">
+        <div className="container mx-auto text-center">
           <SectionHeading
             label="Pricing"
-            title="Transparent, Scalable Pricing"
-            description="Indicative tiers — final pricing confirmed at launch. No hidden fees."
+            title="Free While We Launch"
+            description="Teevexa Trace and Teevexa Field are free to use today. Download them and start tracing — no credit card, no trial clock."
           />
-          <div className="mt-12 grid md:grid-cols-3 gap-6">
-            {[
-              {
-                name: "Starter",
-                price: "Free",
-                period: "during beta",
-                color: "border-border",
-                badge: null,
-                features: ["Up to 500 product scans/month", "1 supply chain template", "QR code generation", "Basic compliance dashboard", "Email support"],
-              },
-              {
-                name: "Growth",
-                price: "$149",
-                period: "/ month",
-                color: "border-primary",
-                badge: "Most Popular",
-                features: ["Up to 50,000 scans/month", "Unlimited supply chain templates", "IoT sensor integration", "EUDR & export report generation", "Offline mobile field app", "Priority support"],
-              },
-              {
-                name: "Enterprise",
-                price: "Custom",
-                period: "contact us",
-                color: "border-accent",
-                badge: "For large organisations",
-                features: ["Unlimited scans", "White-label deployment", "Custom blockchain network", "On-premise option", "Dedicated customer success manager", "SLA guarantee"],
-              },
-            ].map((tier) => (
-              <div key={tier.name} className={`glass rounded-2xl p-6 border-2 ${tier.color} flex flex-col`}>
-                {tier.badge && (
-                  <span className="inline-block text-xs font-semibold uppercase tracking-wider text-primary mb-3">{tier.badge}</span>
-                )}
-                <h3 className="font-display font-bold text-xl">{tier.name}</h3>
-                <div className="mt-2 mb-6">
-                  <span className="text-3xl font-display font-bold">{tier.price}</span>
-                  <span className="text-sm text-muted-foreground ml-1">{tier.period}</span>
-                </div>
-                <ul className="space-y-2 flex-1">
-                  {tier.features.map((f) => (
-                    <li key={f} className="flex items-start gap-2 text-sm text-muted-foreground">
-                      <CheckCheck size={14} className="text-primary mt-0.5 shrink-0" /> {f}
-                    </li>
-                  ))}
-                </ul>
-                <Button
-                  className={`mt-6 w-full ${tier.color === "border-primary" ? "glow-primary" : ""}`}
-                  variant={tier.color === "border-primary" ? "default" : "outline"}
-                  onClick={() => setShowForm(true)}
-                >
-                  Join Waitlist
-                </Button>
-              </div>
-            ))}
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <PlayStoreButton href={TRACE_PLAY_URL} app="Teevexa Trace" />
+            <Button variant="outline" size="lg" className="text-base px-8" asChild>
+              <Link to="/pricing">Pricing details <ArrowRight className="ml-2" size={18} /></Link>
+            </Button>
           </div>
-          <p className="text-center text-xs text-muted-foreground mt-6">
-            Prices shown in USD. African local currency billing (NGN, KES, GHS, ZAR) available at launch.
-          </p>
+          <p className="mt-5 text-xs text-muted-foreground">Need an API, white-label or on-premise setup? <Link to="/contact" className="text-primary hover:underline">Talk to us</Link>.</p>
         </div>
       </section>
 
       {/* Developer & Verify tools */}
-      <section className="section-card py-16 px-4">
-        <div className="container mx-auto max-w-4xl">
+      <section className="section-card py-16">
+        <div className="container mx-auto">
           <div className="grid md:grid-cols-2 gap-6">
             <div className="glass rounded-2xl p-7 hover:border-primary/40 transition-colors">
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
@@ -368,58 +279,18 @@ const TeevexaTrace = () => {
       </section>
 
       {/* CTA */}
-      <section className="section-navy py-24 px-4 network-bg">
-        <div className="container mx-auto text-center max-w-2xl">
+      <section className="section-navy py-24  network-bg">
+        <div className="container mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-display font-bold">
-            Be the First to <span className="gradient-text">Trace</span>
+            Start Tracing <span className="gradient-text">Today</span>
           </h2>
           <p className="mt-4 text-muted-foreground">
-            Join the waitlist today and be among the first to access Teevexa Trace when we launch.
+            Download Teevexa Trace, and pair it with Teevexa Field for your field agents.
           </p>
-          <Button size="lg" className="mt-8 glow-primary px-8" onClick={() => setShowForm(true)}>
-            Join the Waitlist <ArrowRight className="ml-2" size={18} />
-          </Button>
+          <div className="mt-8 flex justify-center"><PlayStoreButton href={TRACE_PLAY_URL} app="Teevexa Trace" /></div>
         </div>
       </section>
 
-      {/* Waitlist Dialog */}
-      <Dialog open={showForm} onOpenChange={setShowForm}>
-        <DialogContent className="glass max-w-md">
-          <DialogHeader>
-            <DialogTitle>Join the Teevexa Trace Waitlist</DialogTitle>
-            <DialogDescription>Be the first to know when we launch. No spam, ever.</DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label>Full Name *</Label>
-              <Input value={form.full_name} onChange={(e) => set("full_name", e.target.value)} placeholder="John Doe" />
-            </div>
-            <div className="space-y-2">
-              <Label>Email *</Label>
-              <Input type="email" value={form.email} onChange={(e) => set("email", e.target.value)} placeholder="john@example.com" />
-            </div>
-            <div className="space-y-2">
-              <Label>Company</Label>
-              <Input value={form.company} onChange={(e) => set("company", e.target.value)} placeholder="Your company name" />
-            </div>
-            <div className="space-y-2">
-              <Label>Industry</Label>
-              <Select value={form.industry} onValueChange={(v) => set("industry", v)}>
-                <SelectTrigger><SelectValue placeholder="Select your industry" /></SelectTrigger>
-                <SelectContent>
-                  {industries.map((i) => <SelectItem key={i} value={i}>{i}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            </div>
-            <Button className="w-full glow-primary" onClick={submit} disabled={saving}>
-              {saving ? "Submitting..." : "Join Waitlist"}
-            </Button>
-            <p className="text-xs text-muted-foreground text-center flex items-center justify-center gap-1">
-              <CheckCircle2 size={12} /> Your data is safe. We never share your information.
-            </p>
-          </div>
-        </DialogContent>
-      </Dialog>
     </>
   );
 };
