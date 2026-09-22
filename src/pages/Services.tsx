@@ -75,11 +75,7 @@ const process = [
 
 const Services = () => (
   <>
-    <SEO
-      title="Software Development Services | Teevexa"
-      description="Custom web apps, mobile apps, e-commerce, enterprise software, and UI/UX design — Teevexa delivers end-to-end digital products for ambitious businesses worldwide."
-      canonical="/services"
-    />
+    <SEO route="/services" />
     {/* ── Hero ── */}
     <section className="relative py-32  gradient-hero network-bg overflow-hidden">
       <div className="absolute inset-0 pointer-events-none">
@@ -130,7 +126,7 @@ const Services = () => (
                 ))}
               </ul>
               <span className="inline-flex items-center text-sm font-semibold text-primary group-hover:gap-2 gap-1 transition-all mt-auto">
-                See Full Details <ArrowRight size={14} />
+                See Full Details<span className="sr-only"> about {s.title}</span> <ArrowRight size={14} />
               </span>
             </Link>
           ))}
@@ -146,7 +142,7 @@ const Services = () => (
           {process.slice(0, 6).map((p) => (
             <div key={p.step} className="rounded-2xl border border-border p-6 group hover:border-primary/40 hover:shadow-md transition-all duration-300">
               <div className="flex items-center gap-3 mb-4">
-                <span className="text-[11px] font-bold text-primary/60">{p.step}</span>
+                <span className="text-[11px] font-bold text-primary">{p.step}</span>
                 <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
                   <p.icon className="text-primary" size={18} />
                 </div>
@@ -158,7 +154,7 @@ const Services = () => (
           {/* Step 7 — Support — spans full width on its row */}
           <div className="rounded-2xl border border-border p-6 group hover:border-primary/40 hover:shadow-md transition-all duration-300 sm:col-span-2 lg:col-span-3 xl:col-span-1 xl:col-start-4">
             <div className="flex items-center gap-3 mb-4">
-              <span className="text-[11px] font-bold text-primary/60">07</span>
+              <span className="text-[11px] font-bold text-primary">07</span>
               <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
                 <HeadphonesIcon className="text-primary" size={18} />
               </div>
@@ -241,9 +237,9 @@ const Services = () => (
                 <model.icon size={22} className={model.accent ? "text-primary-foreground" : "text-primary"} />
               </div>
               <h3 className="font-display font-bold text-lg mb-3">{model.title}</h3>
-              <p className={`text-sm leading-relaxed mb-8 flex-1 ${model.accent ? "text-primary-foreground/80" : "text-muted-foreground"}`}>{model.desc}</p>
+              <p className={`text-sm leading-relaxed mb-8 flex-1 ${model.accent ? "text-primary-foreground" : "text-muted-foreground"}`}>{model.desc}</p>
               <Button variant={model.accent ? "secondary" : "outline"} asChild className="mt-auto">
-                <Link to={model.link}>{model.cta} <ArrowRight className="ml-2" size={14} /></Link>
+                <Link to={model.link}>{model.cta}<span className="sr-only"> ({model.title})</span> <ArrowRight className="ml-2" size={14} /></Link>
               </Button>
             </div>
           ))}

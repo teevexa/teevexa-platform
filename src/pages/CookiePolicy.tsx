@@ -17,12 +17,7 @@ const SECTIONS = [
 
 const CookiePolicy = () => (
   <>
-  <SEO
-    title="Cookie Policy | Teevexa"
-    description="Learn how Teevexa uses cookies and similar tracking technologies on our website."
-    canonical="/legal/cookies"
-    noindex
-  />
+  <SEO route="/legal/cookies" />
   <LegalLayout
     title="Cookie Policy"
     subtitle="This policy explains what cookies are, how we use them, and how you can control them."

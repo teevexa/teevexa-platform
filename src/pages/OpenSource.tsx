@@ -28,14 +28,10 @@ const projects = [
 
 const OpenSource = () => (
   <>
-    <SEO
-      title="Open Source | TeeDesk & CyberGuard AI | Teevexa"
-      description="Open-source projects by Teevexa Ltd that developers can use and contribute to: TeeDesk (AI customer support) and CyberGuard AI (threat detection)."
-      canonical="/open-source"
-    />
+    <SEO route="/open-source" />
     <section className="py-28  gradient-hero network-bg">
       <div className="container mx-auto text-center animate-fade-in">
-        <SectionHeading label="Open source" title="Built in the open" description="We build in public and give back. Use these projects, learn from them, and help make them better." />
+        <SectionHeading as="h1" label="Open source" title="Built in the open" description="We build in public and give back. Use these projects, learn from them, and help make them better." />
       </div>
     </section>
 
@@ -52,7 +48,7 @@ const OpenSource = () => (
             <div className="flex flex-wrap gap-1.5">{p.tags.map((t) => <span key={t} className="text-[11px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground">{t}</span>)}</div>
             <div className="flex flex-wrap gap-3 pt-2 border-t border-border/30">
               <Button size="sm" className="glow-primary" asChild><a href={p.repo} target="_blank" rel="noopener noreferrer"><Github className="mr-2" size={14} /> GitHub</a></Button>
-              {p.page && <Button size="sm" variant="outline" asChild><Link to={p.page}>Learn more <ArrowRight className="ml-2" size={14} /></Link></Button>}
+              {p.page && <Button size="sm" variant="outline" asChild><Link to={p.page}>Learn more<span className="sr-only"> about {p.name}</span> <ArrowRight className="ml-2" size={14} /></Link></Button>}
             </div>
           </div>
         ))}

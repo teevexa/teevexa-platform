@@ -17,7 +17,7 @@ interface Props {
 /** Text-based "Get it on Google Play" link button (opens the store listing in a new tab). */
 const PlayStoreButton = ({ href, app, variant = "default", className = "" }: Props) => (
   <Button size="lg" variant={variant} className={`text-base px-8 ${variant === "default" ? "glow-primary" : ""} ${className}`} asChild>
-    <a href={href} target="_blank" rel="noopener noreferrer" aria-label={`Get ${app} on Google Play`}>
+    <a href={href} target="_blank" rel="noopener noreferrer" aria-label={`Get it on Google Play: ${app}`}>
       <span className="mr-2 inline-flex"><PlayIcon /></span> Get it on Google Play
     </a>
   </Button>

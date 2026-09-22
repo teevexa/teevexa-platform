@@ -21,11 +21,7 @@ const features = [
 
 const TeeDesk = () => (
   <>
-    <SEO
-      title="TeeDesk | Open-Source AI Customer Support Platform | Teevexa"
-      description="TeeDesk is an open-source, AI-powered customer support platform with a chat widget, admin dashboard, knowledge base, automated ticket triage, sentiment analysis and WhatsApp integration."
-      canonical="/teedesk"
-    />
+    <SEO route="/teedesk" />
 
     <section className="relative min-h-[70vh] flex items-center justify-center gradient-hero network-bg overflow-hidden">
       <div className="container mx-auto text-center relative z-10 animate-fade-in py-24">

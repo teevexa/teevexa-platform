@@ -98,11 +98,7 @@ const ServiceDetail = () => {
 
   return (
     <>
-      <SEO
-        title={`${service.title} | Teevexa`}
-        description={`${service.tagline} ${service.approach}`}
-        canonical={`/services/${slug}`}
-      />
+      <SEO route={`/services/${slug}`} />
       {/* ── Hero ── */}
       <section className="relative py-32  gradient-hero network-bg overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
@@ -139,9 +135,9 @@ const ServiceDetail = () => {
         <div className="container mx-auto">
           <div className="grid md:grid-cols-3 gap-6">
             {[
-              { num: "01", label: "The Problem",   text: service.problem,  accent: "bg-destructive/10 text-destructive" },
-              { num: "02", label: "The Gap",        text: service.gap,      accent: "bg-accent/10 text-accent" },
-              { num: "03", label: "Our Approach",   text: service.approach, accent: "bg-primary/10 text-primary" },
+              { num: "01", label: "The Problem",   text: service.problem,  accent: "bg-destructive/10 text-red-800 dark:text-destructive" },
+              { num: "02", label: "The Gap",        text: service.gap,      accent: "bg-accent/10 text-amber-900 dark:text-accent" },
+              { num: "03", label: "Our Approach",   text: service.approach, accent: "bg-primary/10 text-[#065e69] dark:text-primary" },
             ].map((item) => (
               <div key={item.num} className="glass rounded-2xl p-7 hover:border-primary/40 hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
                 <span className={`inline-block text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full mb-4 ${item.accent}`}>
@@ -184,7 +180,7 @@ const ServiceDetail = () => {
                   <p.icon size={20} className="text-primary group-hover:text-primary-foreground transition-colors" />
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold text-primary/60 mb-0.5">{p.step}</p>
+                  <p className="text-[10px] font-bold text-primary mb-0.5">{p.step}</p>
                   <p className="text-xs font-semibold">{p.title}</p>
                 </div>
               </div>

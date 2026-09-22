@@ -45,11 +45,7 @@ const Insights = () => {
 
   return (
     <>
-      <SEO
-        title="Insights | Engineering Blog & Articles | Teevexa"
-        description="Read Teevexa's engineering blog — articles on software architecture, mobile development, AI, cloud, and building software that lasts."
-        canonical="/insights"
-      />
+      <SEO route="/insights" />
       {/* ── Hero ── */}
       <section className="relative py-32  gradient-hero network-bg overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">

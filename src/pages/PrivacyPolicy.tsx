@@ -22,12 +22,7 @@ const SECTIONS = [
 
 const PrivacyPolicy = () => (
   <>
-  <SEO
-    title="Privacy Policy | Teevexa"
-    description="Read Teevexa's privacy policy to understand how we collect, use, and protect your personal data."
-    canonical="/legal/privacy-policy"
-    noindex
-  />
+  <SEO route="/legal/privacy-policy" />
   <LegalLayout
     title="Privacy Policy"
     subtitle="We are committed to protecting your privacy and handling your personal data with transparency and care."

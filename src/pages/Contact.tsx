@@ -14,56 +14,8 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
 import SEO from "@/components/SEO";
+import { contactFaqGroups as faqGroups } from "@/content/faqs";
 
-const faqGroups = [
-  {
-    group: "Working with us",
-    items: [
-      {
-        q: "How quickly do you respond to enquiries?",
-        a: "We reply to all messages within one business day. Our core team operates on EAT (UTC+3), but we accommodate EST, CET, and PST consultations — just mention your preferred time zone when you reach out.",
-      },
-      {
-        q: "Do you work with startups or only enterprises?",
-        a: "Both. We've built MVPs for early-stage startups and scaled platforms for large enterprises. Our approach adapts to your stage — lean and fast for startups, structured and compliant for enterprises.",
-      },
-      {
-        q: "What does a typical engagement look like?",
-        a: "Most projects follow a Discovery → Design → Build → Launch cycle. We kick off with a scoping call, align on requirements and milestones, then move into iterative sprints. You'll have a dedicated project manager and access to your own client portal throughout.",
-      },
-    ],
-  },
-  {
-    group: "Scope & Pricing",
-    items: [
-      {
-        q: "How do I get a project quote?",
-        a: "Use our Start a Project page: describe your idea in your own words and answer five quick questions. We review it and email you a tailored quote within 24 hours — no account needed.",
-      },
-      {
-        q: "What is your minimum project size?",
-        a: "Every project is scoped individually, so we don't publish a minimum. Send us the details and you'll receive a clear quote by email within 24 hours. Smaller retainers and advisory arrangements are also available — just ask.",
-      },
-      {
-        q: "Do you offer ongoing maintenance after launch?",
-        a: "Yes. We offer flexible retainer packages covering bug fixes, feature iterations, security patches, hosting management, and performance monitoring — so your product keeps improving after go-live.",
-      },
-    ],
-  },
-  {
-    group: "Geography & Logistics",
-    items: [
-      {
-        q: "What countries do you serve?",
-        a: "We're headquartered in Nairobi, Kenya, and work remotely across Africa and with international clients in Europe and North America. No geography is off-limits — we operate entirely remote-first.",
-      },
-      {
-        q: "Can I visit your office or meet in person?",
-        a: "Absolutely. Our team is based in Nairobi and we welcome in-person meetings for local clients. For international clients, we use video calls and async tools — most clients never need to travel.",
-      },
-    ],
-  },
-];
 
 // Internal routes use client-side navigation; in-page anchors stay plain links.
 const ActionLink = ({ href, className, children }: { href: string; className?: string; children: React.ReactNode }) =>
@@ -115,11 +67,7 @@ const Contact = () => {
 
   return (
     <>
-      <SEO
-        title="Contact Teevexa | Talk to Our Team"
-        description="Get in touch with Teevexa. Send a message, book a free 30-minute consultation, or start a project — we reply within one business day."
-        canonical="/contact"
-      />
+      <SEO route="/contact" />
 
       {/* ── Hero ── */}
       <section className="relative py-32  gradient-hero network-bg overflow-hidden">
@@ -163,7 +111,7 @@ const Contact = () => {
                 <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
                   <action.icon className="text-primary" size={22} />
                 </div>
-                <h3 className="font-display font-bold mb-1">{action.title}</h3>
+                <h2 className="font-display font-bold mb-1">{action.title}</h2>
                 <p className="text-xs text-muted-foreground mb-3">{action.desc}</p>
                 <span className="text-xs font-semibold text-primary group-hover:underline">{action.cta} →</span>
               </ActionLink>
@@ -188,7 +136,7 @@ const Contact = () => {
                   <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-5">
                     <CheckCircle className="text-primary" size={32} />
                   </div>
-                  <h3 className="font-display font-bold text-xl mb-2">Message Received!</h3>
+                  <h2 className="font-display font-bold text-xl mb-2">Message Received!</h2>
                   <p className="text-muted-foreground text-sm">We'll get back to you within one business day.</p>
                 </div>
               ) : (
@@ -243,7 +191,7 @@ const Contact = () => {
             {/* Info sidebar */}
             <div className="lg:col-span-2 space-y-5">
               <div className="glass rounded-2xl p-6">
-                <h3 className="font-display font-semibold mb-5">Contact Information</h3>
+                <h2 className="font-display font-semibold mb-5">Contact Information</h2>
                 <div className="space-y-4">
                   <a href="mailto:hello@teevexa.com" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-primary transition-colors group">
                     <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
@@ -273,14 +221,14 @@ const Contact = () => {
                     <div>
                       <p className="font-medium text-foreground">Mon – Fri</p>
                       <p>8 AM – 6 PM EAT (UTC+3)</p>
-                      <p className="text-xs mt-1 text-primary/80">EST · CET · PST calls accommodated on request</p>
+                      <p className="text-xs mt-1 text-primary">EST · CET · PST calls accommodated on request</p>
                     </div>
                   </div>
                 </div>
               </div>
 
               <div className="glass rounded-2xl p-6">
-                <h3 className="font-display font-semibold mb-4">Follow Us</h3>
+                <h2 className="font-display font-semibold mb-4">Follow Us</h2>
                 <div className="flex gap-3">
                   {[
                     { href: "https://www.linkedin.com/company/teevexa", icon: Linkedin,  label: "LinkedIn" },

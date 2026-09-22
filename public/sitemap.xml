@@ -1,19 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://teevexa.com/</loc>
+    <loc>https://teevexa.com</loc>
     <changefreq>weekly</changefreq>
     <priority>1.00</priority>
-  </url>
-  <url>
-    <loc>https://teevexa.com/prototype-to-production</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.95</priority>
-  </url>
-  <url>
-    <loc>https://teevexa.com/start-project</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.90</priority>
   </url>
   <url>
     <loc>https://teevexa.com/services</loc>
@@ -51,6 +41,31 @@
     <priority>0.80</priority>
   </url>
   <url>
+    <loc>https://teevexa.com/prototype-to-production</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://teevexa.com/start-project</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.90</priority>
+  </url>
+  <url>
+    <loc>https://teevexa.com/book-consultation</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.70</priority>
+  </url>
+  <url>
+    <loc>https://teevexa.com/contact</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.70</priority>
+  </url>
+  <url>
+    <loc>https://teevexa.com/about</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.70</priority>
+  </url>
+  <url>
     <loc>https://teevexa.com/portfolio</loc>
     <changefreq>weekly</changefreq>
     <priority>0.80</priority>
@@ -59,6 +74,16 @@
     <loc>https://teevexa.com/insights</loc>
     <changefreq>weekly</changefreq>
     <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://teevexa.com/careers</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.60</priority>
+  </url>
+  <url>
+    <loc>https://teevexa.com/accessibility</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.30</priority>
   </url>
   <url>
     <loc>https://teevexa.com/teevexa-trace</loc>
@@ -73,7 +98,7 @@
   <url>
     <loc>https://teevexa.com/pricing</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.70</priority>
+    <priority>0.60</priority>
   </url>
   <url>
     <loc>https://teevexa.com/verify</loc>
@@ -99,30 +124,5 @@
     <loc>https://teevexa.com/cyberguard-ai</loc>
     <changefreq>monthly</changefreq>
     <priority>0.60</priority>
-  </url>
-  <url>
-    <loc>https://teevexa.com/accessibility</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.30</priority>
-  </url>
-  <url>
-    <loc>https://teevexa.com/about</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.70</priority>
-  </url>
-  <url>
-    <loc>https://teevexa.com/careers</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.60</priority>
-  </url>
-  <url>
-    <loc>https://teevexa.com/contact</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.70</priority>
-  </url>
-  <url>
-    <loc>https://teevexa.com/book-consultation</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.70</priority>
   </url>
 </urlset>

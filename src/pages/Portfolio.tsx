@@ -83,14 +83,10 @@ const Portfolio = () => {
 
   return (
     <>
-      <SEO
-        title="Our Work | Case Studies | Teevexa"
-        description="Products Teevexa has built and shipped: Teevexa Trace and Field on Google Play, plus the open-source TeeDesk and CyberGuard AI, alongside client case studies."
-        canonical="/portfolio"
-      />
+      <SEO route="/portfolio" />
       <section className="relative py-28  gradient-hero network-bg">
         <div className="container mx-auto text-center animate-fade-in">
-          <SectionHeading label="Our work" title="Software we've built and shipped" description="Products we designed, built and run ourselves, and the client projects we've delivered." />
+          <SectionHeading as="h1" label="Our work" title="Software we've built and shipped" description="Products we designed, built and run ourselves, and the client projects we've delivered." />
         </div>
       </section>
 
@@ -115,7 +111,7 @@ const Portfolio = () => {
                       {p.action.href.includes("github") && <Github className="mr-2" size={14} />}{p.action.label}
                     </a>
                   </Button>
-                  <Button size="sm" variant="outline" asChild><Link to={p.page}>Learn more <ArrowRight className="ml-2" size={14} /></Link></Button>
+                  <Button size="sm" variant="outline" asChild><Link to={p.page}>Learn more<span className="sr-only"> about {p.name}</span> <ArrowRight className="ml-2" size={14} /></Link></Button>
                 </div>
               </div>
             ))}

@@ -21,11 +21,7 @@ export default function VerifyBatch() {
 
   return (
     <>
-      <SEO
-        title="Verify a Product | Teevexa Trace"
-        description="Enter a product batch ID to verify its supply chain journey, GPS-tracked events, and blockchain-anchored provenance records."
-        canonical="/verify"
-      />
+      <SEO route="/verify" />
 
       <div className="min-h-screen gradient-hero network-bg flex items-center justify-center pb-16 px-4">
         <div className="w-full max-w-lg text-center">

@@ -51,11 +51,7 @@ export default function Pricing() {
 
   return (
     <>
-      <SEO
-        title="Pricing — Teevexa Trace & Field | Free While We Launch"
-        description="Teevexa Trace and Teevexa Field are free to use while we launch. Download them on Google Play, or talk to us about enterprise needs."
-        canonical="/pricing"
-      />
+      <SEO route="/pricing" />
 
       <section className="relative py-24  gradient-hero network-bg overflow-hidden">
         <div className="container mx-auto text-center relative z-10 animate-fade-in">

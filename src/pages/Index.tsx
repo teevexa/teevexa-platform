@@ -30,7 +30,7 @@ const products = [
     icon: QrCode,
     title: "Teevexa Trace",
     type: "Live on Google Play",
-    typeColor: "bg-primary/15 text-primary",
+    typeColor: "bg-primary/15 text-[#065e69] dark:text-primary",
     tagline: "Supply chain traceability for producers that need to prove origin, quality, and compliance to global buyers.",
     bullets: [
       "Farm-to-export QR verification",
@@ -45,7 +45,7 @@ const products = [
     icon: Smartphone,
     title: "Teevexa Field",
     type: "Live on Google Play",
-    typeColor: "bg-accent/15 text-accent",
+    typeColor: "bg-accent/15 text-amber-900 dark:text-accent",
     tagline: "The offline-first mobile companion for supply chain field agents - works anywhere.",
     bullets: [
       "No internet needed to log events",
@@ -60,7 +60,7 @@ const products = [
     icon: MessageSquare,
     title: "TeeDesk",
     type: "Open source",
-    typeColor: "bg-green-500/15 text-green-400",
+    typeColor: "bg-green-500/15 text-green-800 dark:text-green-400",
     tagline: "AI-powered customer support platform: chat widget, admin dashboard, knowledge base, ticket triage and WhatsApp.",
     bullets: [
       "Local LLMs via Ollama, RAG knowledge base",
@@ -75,7 +75,7 @@ const products = [
     icon: ShieldAlert,
     title: "CyberGuard AI",
     type: "Open source",
-    typeColor: "bg-green-500/15 text-green-400",
+    typeColor: "bg-green-500/15 text-green-800 dark:text-green-400",
     tagline: "AI-enhanced threat detection for teams too small for an enterprise SIEM.",
     bullets: [
       "Anomaly scoring with a real trained ML model",
@@ -112,30 +112,7 @@ const whyUs = [
 
 const Index = () => (
   <>
-    <SEO
-      title="Teevexa - Tech Evolution for Exceptional Applications"
-      description="Teevexa is an AI-native product engineering company in Nairobi, serving ambitious businesses worldwide: custom software, AI agents, and taking AI-built prototypes to production."
-      canonical="/"
-      structuredData={{
-        "@context": "https://schema.org",
-        "@type": "Organization",
-        name: "Teevexa",
-        url: "https://teevexa.com",
-        logo: "https://teevexa.com/og-image.png",
-        sameAs: [
-          "https://www.linkedin.com/company/teevexa",
-          "https://x.com/teevexa",
-          "https://www.instagram.com/teevexa",
-        ],
-        contactPoint: {
-          "@type": "ContactPoint",
-          telephone: "+254783797132",
-          contactType: "customer support",
-          areaServed: "Worldwide",
-          availableLanguage: "English",
-        },
-      }}
-    />
+    <SEO route="/" />
 
     {/* ── Hero ── */}
     <section className="relative min-h-screen flex flex-col items-center justify-center gradient-hero network-bg overflow-hidden">
@@ -258,7 +235,7 @@ const Index = () => (
                 ))}
               </ul>
               <span className="inline-flex items-center text-sm font-semibold text-primary group-hover:gap-2 gap-1 transition-all">
-                Explore Service <ArrowRight size={14} />
+                Explore Service<span className="sr-only">: {s.title}</span> <ArrowRight size={14} />
               </span>
             </Link>
           ))}

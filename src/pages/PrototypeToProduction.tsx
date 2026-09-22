@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import SectionHeading from "@/components/SectionHeading";
 import SEO from "@/components/SEO";
+import { prototypeFaqs as faqs } from "@/content/faqs";
 import { INTEGRATIONS, PROTOTYPE_PACKAGE } from "../../supabase/functions/_shared/estimate";
 
 const gaps = [
@@ -24,29 +25,10 @@ const steps = [
   { step: "04", title: "Launch & support", desc: "We go live with you, hand over documentation, and support you for 30 days after launch." },
 ];
 
-const faqs = [
-  { q: "Which AI tools do you work with?", a: "Lovable, Bolt, v0, Replit, Cursor, Windsurf, Base44, ChatGPT/Claude-generated code and most React, Next.js, Vite or Flutter codebases. If you can share the code or a link, we can review it." },
-  { q: "What if the prototype can't be salvaged?", a: "We tell you straight after the audit. If a rebuild of some or all of it is the better path, we'll re-quote before doing any work — you never pay for a rebuild without agreeing to it." },
-  { q: "Could the price change later?", a: "Your quote sets out scope, price and timeline. If the scope changes we agree it with you first — no surprises. Third-party fees (hosting, payment providers, SMS, AI usage) are billed by those providers directly." },
-  { q: "Who owns the code?", a: "You do. You get the full repository, deployment access and handover documentation." },
-  { q: "How fast can you start?", a: "Typically within a week of accepting the quote. Faster scheduling is available on request." },
-  { q: "What if I need more than the sprint covers?", a: "Larger scopes (many custom features, native mobile apps or enterprise systems) are quoted as custom builds. We'll tell you in your quote which path fits." },
-];
 
 const PrototypeToProduction = () => (
   <>
-    <SEO
-      title="Take Your AI Prototype to Production | Production Sprint | Teevexa"
-      description="Built an app with Lovable, Bolt, v0 or Cursor? Our Prototype-to-Production Sprint adds security, live payments (Stripe, PayPal, Pesapal, M-Pesa and more), deployment and 30 days of support."
-      canonical="/prototype-to-production"
-      structuredData={{
-        "@context": "https://schema.org",
-        "@type": "Service",
-        name: PROTOTYPE_PACKAGE.name,
-        provider: { "@type": "Organization", name: "Teevexa Ltd", url: "https://teevexa.com" },
-        description: "Service that hardens, integrates, deploys and supports AI-built prototypes so they are ready for real users.",
-      }}
-    />
+    <SEO route="/prototype-to-production" />
 
     {/* Hero */}
     <section className="relative py-28  gradient-hero network-bg overflow-hidden">

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import SEO from "@/components/SEO";
+import { jobPostingLd } from "@/seo/site";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -34,6 +35,7 @@ interface Job {
   responsibilities: string | null;
   requirements: string | null;
   benefits: string | null;
+  created_at?: string | null;
 }
 
 const CareerDetail = () => {
@@ -147,8 +149,17 @@ const CareerDetail = () => {
     <>
       <SEO
         title={`${job.title} — ${job.department} | Teevexa Careers`}
-        description={`${job.title} (${job.employment_type}) in ${job.location}. Join Teevexa and help build Africa's digital future.`}
+        description={`${job.title} (${job.employment_type}) in ${job.location}. Join Teevexa and help build AI-native software and supply chain products.`}
         canonical={`/careers/${job.slug}`}
+        breadcrumb={job.title}
+        structuredData={jobPostingLd({
+          title: job.title,
+          description: job.description,
+          path: `/careers/${job.slug}`,
+          posted: job.created_at,
+          employmentType: job.employment_type,
+          location: job.location,
+        })}
       />
       {/* ── Hero ── */}
       <section className="relative pt-32 pb-16  gradient-hero network-bg overflow-hidden">

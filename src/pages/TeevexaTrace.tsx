@@ -30,11 +30,7 @@ const useCases = [
 const TeevexaTrace = () => {
   return (
     <>
-      <SEO
-        title="Teevexa Trace | Supply Chain Provenance Platform"
-        description="Teevexa Trace is a supply chain provenance platform, now on Google Play, that lets businesses track, verify, and certify their products from source to shelf."
-        canonical="/teevexa-trace"
-      />
+      <SEO route="/teevexa-trace" />
       {/* Hero */}
       <section className="relative min-h-[80vh] flex items-center justify-center gradient-hero network-bg overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
@@ -216,7 +212,7 @@ const TeevexaTrace = () => {
                       {them === true
                         ? <CheckCheck size={16} className="mx-auto text-green-400/50" />
                         : them === "partial"
-                        ? <span className="text-yellow-500 text-xs font-medium">Partial</span>
+                        ? <span className="text-amber-800 dark:text-yellow-500 text-xs font-medium">Partial</span>
                         : <X size={16} className="mx-auto text-destructive/60" />
                       }
                     </td>

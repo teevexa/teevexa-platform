@@ -24,12 +24,7 @@ const RETAINED_DATA = [
 export default function AccountDeletion() {
   return (
     <>
-      <SEO
-        title="Delete Your Account | Teevexa Trace"
-        description="Instructions for deleting your Teevexa Trace or Teevexa Trace Field account and associated data."
-        canonical="/account/delete"
-        noindex
-      />
+      <SEO route="/account/delete" />
 
       <div className="min-h-screen bg-background">
         <div className="max-w-2xl mx-auto px-6 py-16 sm:py-24">

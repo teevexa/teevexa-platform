@@ -113,7 +113,7 @@ export function CookieBanner() {
               <p className="font-display font-bold text-foreground text-sm">We use cookies</p>
               <p className="text-xs text-muted-foreground mt-0.5">
                 To improve your experience, analyze traffic, and remember your preferences.{" "}
-                <Link to="/legal/cookies" className="text-primary hover:underline" onClick={() => setVisible(false)}>
+                <Link to="/legal/cookies" className="text-primary underline underline-offset-2 hover:no-underline" onClick={() => setVisible(false)}>
                   Cookie Policy
                 </Link>
               </p>

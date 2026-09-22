@@ -55,7 +55,7 @@ const PortfolioDetail = () => {
 
   return (
     <>
-      <SEO title={item.title} description={item.description.slice(0, 155)} canonical={`/portfolio/${item.slug}`} ogImage={item.cover_image_url || undefined} />
+      <SEO title={item.title} description={item.description.slice(0, 155)} canonical={`/portfolio/${item.slug}`} breadcrumb={item.title} ogImage={item.cover_image_url || undefined} />
       <section className="pt-28 pb-10  gradient-hero network-bg">
         <div className="container mx-auto">
           <Link to="/portfolio" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary mb-6"><ArrowLeft size={15} /> All case studies</Link>

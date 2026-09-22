@@ -250,11 +250,7 @@ const StartProject = () => {
 
   return (
     <>
-      <SEO
-        title="Get a Quote | Start Your Project | Teevexa"
-        description="Describe your project in your own words, answer five quick questions, and we'll email you a tailored quote within 24 hours. No account needed."
-        canonical="/start-project"
-      />
+      <SEO route="/start-project" />
 
       <section className="relative py-24  gradient-hero network-bg overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">

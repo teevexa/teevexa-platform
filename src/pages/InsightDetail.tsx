@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, Clock, FileText } from "lucide-react";
 import SEO from "@/components/SEO";
+import { articleLd } from "@/seo/site";
 
 interface Post {
   id: string;
@@ -17,6 +18,7 @@ interface Post {
   tags: string[];
   published_at: string | null;
   created_at: string;
+  updated_at?: string | null;
 }
 
 const InsightDetail = () => {
@@ -74,21 +76,20 @@ const InsightDetail = () => {
         title={post.title}
         description={post.excerpt || `Read ${post.title} on the Teevexa engineering blog.`}
         canonical={`/insights/${post.slug}`}
+        breadcrumb={post.title}
         ogImage={post.cover_image_url || undefined}
         ogType="article"
         publishedAt={post.published_at || undefined}
+        modifiedAt={post.updated_at || undefined}
         author="Teevexa"
-        structuredData={{
-          "@context": "https://schema.org",
-          "@type": "Article",
-          headline: post.title,
-          description: post.excerpt || "",
-          image: post.cover_image_url || undefined,
-          datePublished: post.published_at || undefined,
-          author: { "@type": "Organization", name: "Teevexa" },
-          publisher: { "@type": "Organization", name: "Teevexa", url: "https://teevexa.com" },
-          url: `https://teevexa.com/insights/${post.slug}`,
-        }}
+        structuredData={articleLd({
+          title: post.title,
+          description: post.excerpt || `Read ${post.title} on the Teevexa engineering blog.`,
+          path: `/insights/${post.slug}`,
+          image: post.cover_image_url,
+          published: post.published_at,
+          modified: post.updated_at,
+        })}
       />
       {/* ── Hero ── */}
       <section className="relative pt-32 pb-16  gradient-hero network-bg overflow-hidden">

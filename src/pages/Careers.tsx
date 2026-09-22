@@ -57,11 +57,7 @@ const Careers = () => {
 
   return (
     <>
-      <SEO
-        title="Careers at Teevexa | Join Our Engineering Team"
-        description="Explore open roles at Teevexa. We're building world-class digital products for businesses worldwide — come build with us."
-        canonical="/careers"
-      />
+      <SEO route="/careers" />
       {/* ── Hero ── */}
       <section className="relative py-32  gradient-hero network-bg overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
@@ -153,7 +149,7 @@ const Careers = () => {
                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 mx-auto">
                   <v.icon className="text-primary" size={22} />
                 </div>
-                <h4 className="font-display font-bold mb-2">{v.title}</h4>
+                <h3 className="font-display font-bold mb-2">{v.title}</h3>
                 <p className="text-sm text-muted-foreground">{v.desc}</p>
               </div>
             ))}

@@ -89,11 +89,7 @@ const workflow = [
 
 const TeevexaField = () => (
   <>
-    <SEO
-      title="Teevexa Field | Mobile App for Supply Chain Field Agents"
-      description="Teevexa Field is the offline-first mobile app for field agents in the Teevexa Trace ecosystem. Scan, log, and track supply chain events from anywhere."
-      canonical="/teevexa-field"
-    />
+    <SEO route="/teevexa-field" />
 
     {/* ── Hero ── */}
     <section className="relative min-h-[80vh] flex items-center justify-center gradient-hero network-bg overflow-hidden">

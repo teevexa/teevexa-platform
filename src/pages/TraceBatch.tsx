@@ -368,6 +368,7 @@ export default function TraceBatch() {
         title={`${product.product_name} — Verified | Teevexa Trace`}
         description={`Verify the complete supply chain of ${product.product_name} (Batch: ${product.batch_id}) from ${product.origin ?? "origin"} to destination. ${events.length} events recorded, ${onChainEvents.length} anchored on Polygon blockchain.`}
         canonical={`/trace/${product.batch_id}`}
+        noindex
       />
 
       <div className="min-h-screen gradient-hero network-bg pt-8 pb-16">

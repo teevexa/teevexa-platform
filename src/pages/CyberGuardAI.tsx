@@ -16,11 +16,7 @@ const features = [
 
 const CyberGuardAI = () => (
   <>
-    <SEO
-      title="CyberGuard AI | Open-Source AI Threat Detection | Teevexa"
-      description="CyberGuard AI is an open-source, AI-enhanced cybersecurity threat detector: ingest network traffic, score anomalies with a trained ML model, alert over Slack, email or webhook, and get plain-language triage from a local AI assistant."
-      canonical="/cyberguard-ai"
-    />
+    <SEO route="/cyberguard-ai" />
 
     <section className="relative min-h-[70vh] flex items-center justify-center gradient-hero network-bg overflow-hidden">
       <div className="container mx-auto text-center relative z-10 animate-fade-in py-24">

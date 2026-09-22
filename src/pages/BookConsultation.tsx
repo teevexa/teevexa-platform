@@ -191,11 +191,7 @@ const BookConsultation = () => {
 
   return (
     <>
-      <SEO
-        title="Book a Free Consultation | Teevexa"
-        description="Schedule a free 30-minute consultation with Teevexa's team. Let's talk about your goals, challenges, and how we can help you build something great."
-        canonical="/book-consultation"
-      />
+      <SEO route="/book-consultation" />
       {/* ── Hero ── */}
       <section className="relative py-28  gradient-hero network-bg overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
@@ -227,9 +223,9 @@ const BookConsultation = () => {
             {/* Left – Calendar & Time */}
             <div className="space-y-6">
               <div className="glass rounded-2xl p-6">
-                <h3 className="font-display font-semibold mb-4 flex items-center gap-2">
+                <h2 className="font-display font-semibold mb-4 flex items-center gap-2">
                   <CalendarDays size={18} className="text-primary" /> Select a Date
-                </h3>
+                </h2>
                 {errors.date && <p className="text-sm text-destructive mb-2">{errors.date}</p>}
                 <Calendar
                   mode="single"
@@ -241,12 +237,12 @@ const BookConsultation = () => {
               </div>
 
               <div className="glass rounded-2xl p-6">
-                <h3 className="font-display font-semibold mb-4 flex items-center gap-2">
+                <h2 className="font-display font-semibold mb-4 flex items-center gap-2">
                   <Clock size={18} className="text-primary" /> Select a Time
                   {loadingSlots && (
                     <span className="ml-auto text-xs text-muted-foreground animate-pulse">Loading availability…</span>
                   )}
-                </h3>
+                </h2>
                 {errors.time && <p className="text-sm text-destructive mb-2">{errors.time}</p>}
                 {!selectedDate ? (
                   <p className="text-sm text-muted-foreground">Pick a date to see available times.</p>
@@ -300,7 +296,7 @@ const BookConsultation = () => {
             {/* Right – Contact Info */}
             <div className="space-y-6">
               <div className="glass rounded-2xl p-6 space-y-4">
-                <h3 className="font-display font-semibold">Your Details</h3>
+                <h2 className="font-display font-semibold">Your Details</h2>
                 <div className="space-y-2">
                   <Label>Full Name *</Label>
                   <Input value={contact.fullName} onChange={(e) => { setContact((c) => ({ ...c, fullName: e.target.value })); setErrors((e2) => ({ ...e2, fullName: "" })); }} placeholder="John Doe" />
@@ -322,7 +318,7 @@ const BookConsultation = () => {
               </div>
 
               <div className="glass rounded-2xl p-6 space-y-4">
-                <h3 className="font-display font-semibold">Notes (optional)</h3>
+                <h2 className="font-display font-semibold">Notes (optional)</h2>
                 <Textarea
                   rows={4}
                   value={notes}
@@ -334,7 +330,7 @@ const BookConsultation = () => {
               {/* Summary */}
               {selectedDate && selectedSlot && (
                 <div className="glass rounded-2xl p-6 border-primary/30 animate-fade-in">
-                  <h3 className="font-display font-semibold mb-3">Booking Summary</h3>
+                  <h2 className="font-display font-semibold mb-3">Booking Summary</h2>
                   <div className="space-y-1 text-sm text-muted-foreground">
                     <p><span className="text-foreground font-medium">Date:</span> {format(selectedDate, "EEEE, MMMM d, yyyy")}</p>
                     <p><span className="text-foreground font-medium">Time:</span> {selectedSlot.localTime} ({timezoneLabel}) · {selectedSlot.eatTime} Nairobi</p>

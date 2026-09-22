@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Sora:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -24,14 +23,14 @@
     --popover-foreground: 222 47% 11%;
 
     /* Electric teal slightly darkened for legibility on white */
-    --primary: 186 90% 34%;
+    --primary: 186 90% 26%; /* darkened from 34% so small teal text and white-on-teal buttons reach WCAG AA (>= 4.5:1) */
     --primary-foreground: 0 0% 100%;
 
     --secondary: 213 20% 92%;
     --secondary-foreground: 222 47% 11%;
 
     --muted: 213 20% 92%;
-    --muted-foreground: 215 16% 45%;
+    --muted-foreground: 215 16% 39%;
 
     /* Warm amber accent */
     --accent: 38 92% 44%;
@@ -42,7 +41,7 @@
 
     --border: 213 20% 88%;
     --input: 213 20% 88%;
-    --ring: 186 90% 34%;
+    --ring: 186 90% 26%;
 
     --radius: 0.75rem;
 
@@ -495,4 +494,12 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* Links inside running text need more than colour to be recognisable (WCAG 1.4.1). */
+main p > a.text-primary,
+main li > a.text-primary,
+main p a.text-primary:not([class*="inline-flex"]) {
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }

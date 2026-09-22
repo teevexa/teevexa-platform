@@ -100,3 +100,13 @@ Watch the output for the two `NOTICE`s about unique indexes (`uq_consultation_sl
 **Pricing is internal only.** Visitors never see prices: they submit a request and you email the real quote within 24 hours. `supabase/functions/_shared/estimate.ts` only produces an *internal price guide* shown to your team in admin Leads (placeholder numbers — tune freely).
 
 `npm run build` regenerates `public/sitemap.xml` (static routes + published posts, case studies and jobs).
+
+
+---
+
+## SEO
+
+- **One source of truth:** `src/seo/routes.ts` holds the title, description, structured data and sitemap settings for every static public page; `src/seo/site.ts` holds the Organization/WebSite/Breadcrumb/FAQ/Service/SoftwareApplication/Article/JobPosting JSON-LD builders. Pages use `<SEO route="/about" />`.
+- **Prerendering:** `npm run build` runs `scripts/generate-sitemap.mjs` (before) and `scripts/prerender.mjs` (after). The prerender writes a real HTML file for each route (plus every published blog post, case study and open job when the `VITE_SUPABASE_*` env vars are set at build time) with correct meta, Open Graph, JSON-LD and a text fallback, so crawlers and link previews do not depend on JavaScript. Content published after a build still works (client-side meta) and is prerendered on the next deploy: trigger a redeploy after publishing new posts.
+- **Adding a page:** add a route in `App.tsx`, add its entry to `PAGES` in `src/seo/routes.ts`, and use `<SEO route="/your-path" />`. `src/test/seo.test.ts` fails if a public route has no SEO data, or if titles/descriptions are too long, too short or duplicated.
+- **Search Console:** submit `https://teevexa.com/sitemap.xml`, verify the domain, and check the Pages and Enhancements reports after the first crawl. `www` to apex redirection is a Vercel domain setting.

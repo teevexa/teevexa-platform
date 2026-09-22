@@ -49,18 +49,7 @@ const values = [
 
 const About = () => (
   <>
-    <SEO
-      title="About Teevexa | Our Mission, Story & Team"
-      description="Teevexa is a Nairobi-born, AI-native product engineering company: a team of senior software engineers building software, AI agents and production-ready apps for ambitious businesses worldwide."
-      canonical="/about"
-      structuredData={{
-        "@context": "https://schema.org",
-        "@type": "AboutPage",
-        name: "About Teevexa",
-        url: "https://teevexa.com/about",
-        description: "Learn about Teevexa - who we are, what drives us, and the team building digital infrastructure for businesses worldwide.",
-      }}
-    />
+    <SEO route="/about" />
     {/* ── Hero ── */}
     <section className="relative min-h-[70vh] flex items-center gradient-hero network-bg overflow-hidden">
       <div className="absolute inset-0 pointer-events-none">
@@ -205,7 +194,7 @@ const About = () => (
               <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
                 <v.icon className="text-primary" size={22} />
               </div>
-              <h4 className="font-display font-bold mb-2">{v.title}</h4>
+              <h3 className="font-display font-bold mb-2">{v.title}</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">{v.desc}</p>
             </div>
           ))}
@@ -233,7 +222,7 @@ const About = () => (
               <h3 className="font-display font-bold text-xl">Benjamin Baya</h3>
               <p className="text-primary font-semibold text-sm mt-0.5">Founder & CEO — TEEVEXA LTD</p>
               <div className="flex gap-2 mt-3 justify-center lg:justify-start">
-                <a href="https://www.linkedin.com/in/benjamin-mweri-baya" target="_blank" rel="noopener noreferrer"
+                <a href="https://www.linkedin.com/in/benjamin-mweri-baya" target="_blank" rel="noopener noreferrer" aria-label="Benjamin Baya on LinkedIn"
                   className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary hover:bg-primary hover:text-primary-foreground transition-all">
                   <Linkedin size={14} />
                 </a>

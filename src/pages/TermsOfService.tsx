@@ -25,12 +25,7 @@ const SECTIONS = [
 
 const TermsOfService = () => (
   <>
-  <SEO
-    title="Terms of Service | Teevexa"
-    description="Read Teevexa's terms of service governing the use of our website, products, and services."
-    canonical="/legal/terms-of-service"
-    noindex
-  />
+  <SEO route="/legal/terms-of-service" />
   <LegalLayout
     title="Terms of Service"
     subtitle="Please read these terms carefully before accessing or using any of our services."

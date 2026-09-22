@@ -20,10 +20,10 @@ function CodeBlock({ code, lang = "json" }: { code: string; lang?: string }) {
   return (
     <div className="relative rounded-xl border border-border/60 overflow-hidden bg-[#0d1117] font-mono text-sm">
       <div className="flex items-center justify-between px-4 py-2 bg-white/4 border-b border-border/40">
-        <span className="text-xs text-muted-foreground">{lang}</span>
+        <span className="text-xs text-slate-400">{lang}</span>
         <button
           onClick={handleCopy}
-          className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+          className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors"
         >
           {copied ? <Check size={12} className="text-green-400" /> : <Copy size={12} />}
           {copied ? "Copied" : "Copy"}
@@ -87,11 +87,7 @@ const errorCodes = [
 export default function ApiDocs() {
   return (
     <>
-      <SEO
-        title="API Documentation — Teevexa Trace"
-        description="Teevexa Trace REST API for batch provenance verification. Integrate supply chain transparency into your retail, logistics, or compliance workflows."
-        canonical="/api-docs"
-      />
+      <SEO route="/api-docs" />
 
       {/* Hero */}
       <section className="relative py-20  gradient-hero network-bg overflow-hidden">
@@ -133,7 +129,7 @@ export default function ApiDocs() {
             ].map((f) => (
               <div key={f.title} className="glass rounded-2xl p-5 flex flex-col gap-3">
                 <f.icon size={22} className="text-primary" />
-                <h4 className="font-semibold text-sm">{f.title}</h4>
+                <h2 className="font-semibold text-sm">{f.title}</h2>
                 <p className="text-xs text-muted-foreground">{f.desc}</p>
               </div>
             ))}
@@ -172,7 +168,7 @@ export default function ApiDocs() {
           </div>
 
           <div className="mt-8 space-y-3">
-            <h4 className="text-sm font-semibold">Query Parameters</h4>
+            <h3 className="text-sm font-semibold">Query Parameters</h3>
             <div className="glass rounded-xl border border-border overflow-x-auto">
               <table className="w-full text-sm min-w-[480px]">
                 <thead>
@@ -187,7 +183,7 @@ export default function ApiDocs() {
                   <tr>
                     <td className="px-4 py-3 font-mono text-xs text-primary">batchId</td>
                     <td className="px-4 py-3 text-xs text-muted-foreground">string</td>
-                    <td className="px-4 py-3 text-xs text-green-400">Yes</td>
+                    <td className="px-4 py-3 text-xs text-green-700 dark:text-green-400">Yes</td>
                     <td className="px-4 py-3 text-xs text-muted-foreground">The batch ID printed on the product QR code</td>
                   </tr>
                 </tbody>
@@ -196,17 +192,17 @@ export default function ApiDocs() {
           </div>
 
           <div className="mt-8 space-y-4">
-            <h4 className="text-sm font-semibold">Request Example (cURL)</h4>
+            <h3 className="text-sm font-semibold">Request Example (cURL)</h3>
             <CodeBlock code={curlExample} lang="bash" />
           </div>
 
           <div className="mt-8 space-y-4">
-            <h4 className="text-sm font-semibold">Request Example (JavaScript)</h4>
+            <h3 className="text-sm font-semibold">Request Example (JavaScript)</h3>
             <CodeBlock code={jsExample} lang="javascript" />
           </div>
 
           <div className="mt-8 space-y-4">
-            <h4 className="text-sm font-semibold">Response Example (200 OK)</h4>
+            <h3 className="text-sm font-semibold">Response Example (200 OK)</h3>
             <CodeBlock code={responseExample} lang="json" />
           </div>
         </div>
@@ -259,9 +255,9 @@ export default function ApiDocs() {
             {errorCodes.map((e) => (
               <div key={e.code} className="glass rounded-xl border border-border px-4 py-3 flex items-center gap-4">
                 <span className={`font-mono text-sm font-bold w-10 shrink-0 ${
-                  e.code === "200" ? "text-green-400"
-                  : e.code.startsWith("4") ? "text-amber-400"
-                  : "text-red-400"
+                  e.code === "200" ? "text-green-700 dark:text-green-400"
+                  : e.code.startsWith("4") ? "text-amber-700 dark:text-amber-400"
+                  : "text-red-700 dark:text-red-400"
                 }`}>{e.code}</span>
                 <span className="text-sm text-muted-foreground">{e.desc}</span>
               </div>

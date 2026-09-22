@@ -13,11 +13,7 @@ const SECTIONS = [
 
 const Accessibility = () => (
   <>
-    <SEO
-      title="Accessibility Statement | Teevexa"
-      description="Teevexa's commitment to making teevexa.com usable by everyone, the measures we take, known limitations, and how to reach us if you hit a barrier."
-      canonical="/accessibility"
-    />
+    <SEO route="/accessibility" />
     <LegalLayout
       title="Accessibility Statement"
       subtitle="We want everyone to be able to use teevexa.com, whatever device, ability or assistive technology they use."
