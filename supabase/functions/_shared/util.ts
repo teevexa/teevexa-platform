@@ -25,7 +25,7 @@ export const textToHtml = (v: string): string =>
     .map((p) => `<p style="margin:0 0 14px;line-height:1.6;">${p.replace(/\n/g, "<br/>")}</p>`)
     .join("");
 
-export const SITE_URL = Deno.env.get("SITE_URL") ?? "https://teevexa.com";
+export const SITE_URL = Deno.env.get("SITE_URL") ?? "https://www.teevexa.com";
 export const ADMIN_INBOX = Deno.env.get("ADMIN_NOTIFY_EMAIL") ?? "teevexa@gmail.com";
 
 export const adminClient = (): SupabaseClient =>

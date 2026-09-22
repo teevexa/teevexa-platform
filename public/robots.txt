@@ -6,4 +6,4 @@ Disallow: /auth
 Disallow: /forgot-password
 Disallow: /reset-password
 
-Sitemap: https://teevexa.com/sitemap.xml
+Sitemap: https://www.teevexa.com/sitemap.xml

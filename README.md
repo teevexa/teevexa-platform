@@ -92,7 +92,7 @@ Watch the output for the two `NOTICE`s about unique indexes (`uq_consultation_sl
 | `ANTHROPIC_API_KEY` | **Optional and NOT recommended unless you want to pay for it.** Leave unset: the funnel then uses free keyword matching and a template reply draft. If you ever set it, visitors' project text is sent to Anthropic — update the privacy policy first. |
 | `CRON_SECRET` | `automated-reminders` now rejects callers without `x-cron-secret`. Schedule it with pg_cron/`net.http_post` sending that header. |
 | `ZOOM_ACCOUNT_ID`, `ZOOM_CLIENT_ID`, `ZOOM_CLIENT_SECRET` | Zoom links (booking still works without; the team is told to send a link). |
-| `SITE_URL`, `ADMIN_NOTIFY_EMAIL` | optional overrides (defaults: https://teevexa.com, teevexa@gmail.com). |
+| `SITE_URL`, `ADMIN_NOTIFY_EMAIL` | optional overrides (defaults: https://www.teevexa.com, teevexa@gmail.com). |
 | `POLYGON_RPC_URL`, `POLYGON_PRIVATE_KEY` | blockchain anchoring (still disabled until set). |
 
 **5. Optional:** set `VITE_PLAUSIBLE_DOMAIN` to enable consent-gated analytics.

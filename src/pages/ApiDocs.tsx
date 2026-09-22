@@ -48,7 +48,7 @@ const responseExample = `{
   "total_events": 6,
   "on_chain_events": 5,
   "verified": true,
-  "public_url": "https://teevexa.com/trace/TEEVEXA-ABC123",
+  "public_url": "https://www.teevexa.com/trace/TEEVEXA-ABC123",
   "events": [
     {
       "event_type": "harvest",
@@ -64,7 +64,7 @@ const responseExample = `{
 
 const jsExample = `// Node.js / browser fetch
 const res = await fetch(
-  "https://teevexa.com/functions/v1/batch-verify?batchId=TEEVEXA-ABC123",
+  "https://xxxx.supabase.co/functions/v1/batch-verify?batchId=TEEVEXA-ABC123",
   {
     headers: {
       "X-Teevexa-API-Key": process.env.TEEVEXA_API_KEY,

@@ -98,7 +98,7 @@ async function fetchLinkText(raw: string): Promise<string | null> {
       const res = await fetch(url, {
         redirect: "manual",
         signal: ctrl.signal,
-        headers: { "user-agent": "TeevexaBot/1.0 (+https://teevexa.com)", accept: "text/html,text/plain" },
+        headers: { "user-agent": "TeevexaBot/1.0 (+https://www.teevexa.com)", accept: "text/html,text/plain" },
       }).finally(() => clearTimeout(timer));
       if (res.status >= 300 && res.status < 400) {
         const loc = res.headers.get("location");

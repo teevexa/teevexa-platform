@@ -71,7 +71,7 @@ describe("structured data", () => {
     const items = breadcrumbItems("/services/ai-agents");
     expect(items.map((i) => i.name)).toEqual(["Home", "Services", "AI Agent Development"]);
     const ld = breadcrumbLd(items) as { itemListElement: { item: string; position: number }[] };
-    expect(ld.itemListElement[2].item).toBe("https://teevexa.com/services/ai-agents");
+    expect(ld.itemListElement[2].item).toBe("https://www.teevexa.com/services/ai-agents");
     expect(ld.itemListElement.map((i) => i.position)).toEqual([1, 2, 3]);
   });
 
@@ -90,14 +90,14 @@ describe("structured data", () => {
   it("builds Article and JobPosting data", () => {
     const a = articleLd({ title: "T", description: "D", path: "/insights/t", published: "2026-01-01" }) as Record<string, unknown>;
     expect(a["@type"]).toBe("Article");
-    expect(a.image).toBe("https://teevexa.com/og-image.png");
+    expect(a.image).toBe("https://www.teevexa.com/og-image.png");
     const j = jobPostingLd({ title: "Eng", description: "x", path: "/careers/eng", location: "Remote", employmentType: "full-time" }) as Record<string, unknown>;
     expect(j.employmentType).toBe("FULL_TIME");
     expect(j.jobLocationType).toBe("TELECOMMUTE");
   });
 
   it("uses no trailing slash in canonical URLs", () => {
-    expect(absoluteUrl("/")).toBe("https://teevexa.com");
-    expect(absoluteUrl("/about")).toBe("https://teevexa.com/about");
+    expect(absoluteUrl("/")).toBe("https://www.teevexa.com");
+    expect(absoluteUrl("/about")).toBe("https://www.teevexa.com/about");
   });
 });

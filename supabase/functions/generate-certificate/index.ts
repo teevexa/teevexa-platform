@@ -26,7 +26,7 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-const VERIFY_BASE = "https://teevexa.com/trace/";
+const VERIFY_BASE = "https://www.teevexa.com/trace/";
 const POLYGONSCAN_BASE = "https://polygonscan.com/tx/";
 
 // Compact hex colour helpers

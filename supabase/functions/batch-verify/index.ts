@@ -23,7 +23,7 @@
 //   "total_events": 6,
 //   "on_chain_events": 5,
 //   "verified": true,
-//   "public_url": "https://teevexa.com/trace/TEEVEXA-ABC123",
+//   "public_url": "https://www.teevexa.com/trace/TEEVEXA-ABC123",
 //   "events": [
 //     {
 //       "event_type": "harvest",
@@ -43,7 +43,7 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-teevexa-api-key",
 };
 
-const VERIFY_BASE = "https://teevexa.com/trace/";
+const VERIFY_BASE = "https://www.teevexa.com/trace/";
 const POLYGONSCAN_BASE = "https://polygonscan.com/tx/";
 
 function computeTrustScore(events: any[]): number {

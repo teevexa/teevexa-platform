@@ -1,7 +1,7 @@
 // Site-wide SEO constants and JSON-LD builders. Pure TypeScript with no React or path aliases,
 // because the build-time prerender script bundles this file with esbuild.
 
-export const SITE_URL = "https://teevexa.com";
+export const SITE_URL = "https://www.teevexa.com";
 export const SITE_NAME = "Teevexa";
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.png`;
 export const TWITTER_HANDLE = "@teevexa";
