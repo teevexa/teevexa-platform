@@ -1,7 +1,7 @@
 import {
-  adminClient, corsHeaders, json, escapeHtml, sendEmail, isEmail, SITE_URL, ADMIN_INBOX,
+  adminClient, corsHeaders, json, escapeHtml, sendEmail, isEmail, hasDescribedProject, SITE_URL, ADMIN_INBOX,
 } from "../_shared/util.ts";
-import { eatParts, isBookableInstant, isValidTimeZone, zonedParts } from "../_shared/slots.ts";
+import { eatParts, isBookableInstant, isValidTimeZone, zonedParts, SLOT_DURATION_MINUTES } from "../_shared/slots.ts";
 
 // ── Zoom Server-to-Server OAuth ───────────────────────────────────────────────
 async function getZoomAccessToken(): Promise<string> {
@@ -35,7 +35,7 @@ async function createZoomMeeting(opts: {
       type: 2,
       // Slots are defined in Nairobi time, so schedule the meeting in that zone.
       start_time: `${opts.eatDate}T${opts.eatTime}:00`,
-      duration: 30,
+      duration: SLOT_DURATION_MINUTES,
       timezone: "Africa/Nairobi",
       agenda: opts.agenda,
       settings: { join_before_host: false, waiting_room: true, mute_upon_entry: true, auto_recording: "none" },
@@ -52,7 +52,7 @@ function icsStamp(d: Date): string {
 }
 
 function generateIcs(opts: { name: string; start: Date; joinUrl: string | null }): string {
-  const end = new Date(opts.start.getTime() + 30 * 60_000);
+  const end = new Date(opts.start.getTime() + SLOT_DURATION_MINUTES * 60_000);
   const safeName = opts.name.replace(/[\r\n,;]/g, " ");
   return [
     "BEGIN:VCALENDAR",
@@ -66,7 +66,7 @@ function generateIcs(opts: { name: string; start: Date; joinUrl: string | null }
     `DTSTART:${icsStamp(opts.start)}`,
     `DTEND:${icsStamp(end)}`,
     `SUMMARY:Teevexa Discovery Call — ${safeName}`,
-    `DESCRIPTION:${opts.joinUrl ? `Join Zoom: ${opts.joinUrl}\\n` : "Meeting link will be emailed separately.\\n"}Duration: 30 minutes`,
+    `DESCRIPTION:${opts.joinUrl ? `Join Zoom: ${opts.joinUrl}\\n` : "Meeting link will be emailed separately.\\n"}Duration: ${SLOT_DURATION_MINUTES} minutes`,
     ...(opts.joinUrl ? [`LOCATION:${opts.joinUrl}`] : []),
     "STATUS:CONFIRMED",
     "SEQUENCE:0",
@@ -93,14 +93,14 @@ function userConfirmationHtml(o: { name: string; when: string; whenEat: string; 
       <div style="max-width:540px;margin:32px auto;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #e2e8f0;">
         <div style="background:#0e7490;padding:32px 40px;">
           <h1 style="margin:0;color:#ffffff;font-size:22px;font-weight:700;">Consultation Confirmed!</h1>
-          <p style="margin:8px 0 0;color:#a5f3fc;font-size:14px;">Teevexa — Free 30-Minute Discovery Call</p>
+          <p style="margin:8px 0 0;color:#a5f3fc;font-size:14px;">Teevexa — Free ${SLOT_DURATION_MINUTES}-Minute Discovery Call</p>
         </div>
         <div style="padding:32px 40px;">
           <p style="margin:0 0 20px;color:#334155;font-size:15px;">Hi ${escapeHtml(o.name)},<br/><br/>Your consultation with the Teevexa team is confirmed.</p>
           <table cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;margin-bottom:24px;">
             <tr><td style="padding:10px 12px;background:#f1f5f9;font-size:13px;color:#64748b;font-weight:600;width:110px;">YOUR TIME</td><td style="padding:10px 12px;background:#f1f5f9;font-size:14px;color:#0f172a;">${escapeHtml(o.when)}</td></tr>
             <tr><td style="padding:10px 12px;border-top:1px solid #e2e8f0;font-size:13px;color:#64748b;font-weight:600;">NAIROBI</td><td style="padding:10px 12px;border-top:1px solid #e2e8f0;font-size:14px;color:#0f172a;">${escapeHtml(o.whenEat)}</td></tr>
-            <tr><td style="padding:10px 12px;border-top:1px solid #e2e8f0;font-size:13px;color:#64748b;font-weight:600;">PLATFORM</td><td style="padding:10px 12px;border-top:1px solid #e2e8f0;font-size:14px;color:#0f172a;">Zoom · 30 minutes</td></tr>
+            <tr><td style="padding:10px 12px;border-top:1px solid #e2e8f0;font-size:13px;color:#64748b;font-weight:600;">PLATFORM</td><td style="padding:10px 12px;border-top:1px solid #e2e8f0;font-size:14px;color:#0f172a;">Zoom · ${SLOT_DURATION_MINUTES} minutes</td></tr>
           </table>
           ${linkBlock}
           <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;"/>
@@ -130,6 +130,15 @@ Deno.serve(async (req) => {
 
     if (full_name.length < 2 || !isEmail(email)) return json({ error: "Please provide your name and a valid email." }, 400);
     if (!isBookableInstant(startsAt)) return json({ error: "That time is not available. Please choose another slot." }, 400);
+
+    // Gate: only visitors who have already described their project (via the quote-request funnel)
+    // may claim a call slot. Checked before anything is claimed so a rejection never costs a slot.
+    if (!(await hasDescribedProject(supabase, email))) {
+      return json(
+        { error: "Please tell us about your project first — it takes about a minute — then come back and book your call.", code: "NO_PROJECT_DESCRIPTION" },
+        403,
+      );
+    }
 
     // Slots are stored in Nairobi wall-clock time; the unique index on (date, time) prevents double booking.
     const eat = eatParts(startsAt);
@@ -177,7 +186,7 @@ Deno.serve(async (req) => {
         guestName: full_name,
         eatDate: eat.date,
         eatTime: eat.time,
-        agenda: notes || "Free 30-minute discovery consultation",
+        agenda: notes || `Free ${SLOT_DURATION_MINUTES}-minute discovery consultation`,
       });
       await supabase
         .from("consultation_bookings")

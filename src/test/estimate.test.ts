@@ -70,7 +70,10 @@ describe("heuristicBrief / sanitizeBrief", () => {
   });
 });
 
-import { slotsForLocalDate, isBookableInstant, slotInstant, eatParts, zonedParts, isValidTimeZone } from "../../supabase/functions/_shared/slots";
+import {
+  slotsForLocalDate, isBookableInstant, slotInstant, eatParts, zonedParts, isValidTimeZone,
+  SLOT_TIMES, SLOT_DURATION_MINUTES,
+} from "../../supabase/functions/_shared/slots";
 
 describe("consultation slots (Nairobi-defined)", () => {
   const now = new Date("2026-09-21T00:00:00Z"); // Monday
@@ -80,15 +83,28 @@ describe("consultation slots (Nairobi-defined)", () => {
     expect(eatParts(slotInstant("2026-09-22", "09:00"))).toMatchObject({ date: "2026-09-22", time: "09:00", weekday: 2 });
   });
 
+  it("books 20-minute slots, three per busy hour, 09:00-18:00 with a 13:00-14:00 lunch break", () => {
+    expect(SLOT_DURATION_MINUTES).toBe(20);
+    expect(SLOT_TIMES.length).toBe(24); // 8 working hours a day x 3 slots/hour
+    expect(SLOT_TIMES[0]).toBe("09:00");
+    expect(SLOT_TIMES[SLOT_TIMES.length - 1]).toBe("17:40"); // last slot ends 18:00
+    expect(SLOT_TIMES).not.toContain("13:00"); // lunch
+    expect(SLOT_TIMES).not.toContain("13:40"); // lunch
+    // Every slot has two more slots 20 and 40 minutes later within the same business hour.
+    const sameHour = (t: string) => SLOT_TIMES.filter((x) => x.slice(0, 2) === t.slice(0, 2));
+    expect(sameHour("09:00")).toEqual(["09:00", "09:20", "09:40"]);
+    expect(sameHour("14:00")).toEqual(["14:00", "14:20", "14:40"]);
+  });
+
   it("Nairobi visitor sees the same clock times", () => {
     const s = slotsForLocalDate("2026-09-22", "Africa/Nairobi", now);
-    expect(s.map((x) => x.localTime)).toEqual(["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00"]);
+    expect(s.map((x) => x.localTime)).toEqual(SLOT_TIMES);
   });
 
   it("Toronto visitor gets early-morning local times and never a slot outside Nairobi hours", () => {
     const s = slotsForLocalDate("2026-09-22", "America/Toronto", now); // EDT = UTC-4
     expect(s[0].localTime).toBe("02:00"); // 09:00 EAT
-    s.forEach((x) => expect(["09:00","09:30","10:00","10:30","11:00","11:30","13:00","13:30","14:00","14:30","15:00","15:30","16:00"]).toContain(x.eatTime));
+    s.forEach((x) => expect(SLOT_TIMES).toContain(x.eatTime));
     s.forEach((x) => expect(zonedParts(x.start, "America/Toronto").date).toBe("2026-09-22"));
   });
 
@@ -98,9 +114,11 @@ describe("consultation slots (Nairobi-defined)", () => {
     s.forEach((x) => expect(x.eatDate).toBe("2026-09-28"));
   });
 
-  it("rejects weekends, off-grid times, the past and far future", () => {
-    expect(isBookableInstant(slotInstant("2026-09-26", "10:00"), now)).toBe(false); // Saturday
-    expect(isBookableInstant(slotInstant("2026-09-22", "12:00"), now)).toBe(false); // lunch
+  it("accepts Saturday, rejects Sunday, off-grid times, the past and far future", () => {
+    expect(isBookableInstant(slotInstant("2026-09-26", "10:00"), now)).toBe(true); // Saturday — now a working day
+    expect(isBookableInstant(slotInstant("2026-09-27", "10:00"), now)).toBe(false); // Sunday
+    expect(isBookableInstant(slotInstant("2026-09-22", "13:00"), now)).toBe(false); // lunch (13:00-14:00)
+    expect(isBookableInstant(slotInstant("2026-09-22", "12:00"), now)).toBe(true); // 12:00 is a working slot now
     expect(isBookableInstant(slotInstant("2026-09-21", "09:00"), new Date("2026-09-21T05:00:00Z"))).toBe(false); // <4h lead
     expect(isBookableInstant(slotInstant("2027-03-01", "10:00"), now)).toBe(false);
     expect(isBookableInstant(slotInstant("2026-09-22", "10:00"), now)).toBe(true);

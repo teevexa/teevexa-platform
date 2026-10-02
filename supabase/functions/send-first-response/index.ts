@@ -41,7 +41,7 @@ Deno.serve(async (req) => {
       <div style="font-family:sans-serif;color:#1e293b;max-width:560px;margin:auto;font-size:15px;">
         ${textToHtml(message)}
         ${loom ? `<p style="margin:24px 0;"><a href="${escapeHtml(loom)}" style="background:#0e7490;color:#fff;text-decoration:none;padding:12px 24px;border-radius:8px;font-weight:600;display:inline-block;">▶ Watch your walkthrough</a></p>` : ""}
-        <p style="margin:24px 0;"><a href="${bookUrl}" style="color:#0e7490;font-weight:600;">Book a free 30-minute call →</a></p>
+        <p style="margin:24px 0;"><a href="${bookUrl}" style="color:#0e7490;font-weight:600;">Book a free 20-minute call →</a></p>
         <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;"/>
         <p style="color:#94a3b8;font-size:12px;">Teevexa Ltd · Nairobi, Kenya · teevexa.com</p>
       </div>`;

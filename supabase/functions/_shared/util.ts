@@ -109,6 +109,35 @@ export const randomToken = (): string => {
 
 export const isEmail = (s: string) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(s) && s.length <= 254;
 
+/**
+ * True once this email has submitted a project description through the quote-request funnel
+ * (supabase/functions/intake-project). Used to gate free-consultation bookings so visitors
+ * describe their project before claiming a slot. Service-role only (bypasses RLS on purpose).
+ */
+export async function hasDescribedProject(admin: SupabaseClient, email: string): Promise<boolean> {
+  const { data } = await admin
+    .from("project_inquiries")
+    .select("id")
+    .ilike("email", email)
+    .not("description", "is", null)
+    .neq("description", "")
+    .limit(1);
+  return !!data && data.length > 0;
+}
+
+/** Simple in-memory sliding-window rate limiter for public edge functions (per-instance, best-effort). */
+export function makeRateLimiter(limit: number, windowMs = 60_000) {
+  const hits = new Map<string, number[]>();
+  return (id: string): boolean => {
+    const now = Date.now();
+    const recent = (hits.get(id) ?? []).filter((t) => now - t < windowMs);
+    recent.push(now);
+    hits.set(id, recent);
+    if (hits.size > 5000) for (const k of hits.keys()) { hits.delete(k); break; }
+    return recent.length > limit;
+  };
+}
+
 export function clientIp(req: Request): string {
   return (req.headers.get("x-forwarded-for") ?? "").split(",")[0].trim() || "unknown";
 }

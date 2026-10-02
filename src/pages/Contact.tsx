@@ -100,7 +100,7 @@ const Contact = () => {
           <div className="grid sm:grid-cols-3 gap-4">
             {[
               { icon: MessageSquare, title: "Send a Message", desc: "General enquiries & questions", link: "#contact-form", cta: "Fill the form below" },
-              { icon: CalendarDays,  title: "Book a Call",    desc: "30-min free consultation",     link: "/book-consultation", cta: "Pick a time slot" },
+              { icon: CalendarDays,  title: "Book a Call",    desc: "20-min free consultation",     link: "/book-consultation", cta: "Pick a time slot" },
               { icon: Zap,           title: "Start a Project",desc: "Tell us about your build",      link: "/start-project",     cta: "Submit your brief" },
             ].map((action) => (
               <ActionLink

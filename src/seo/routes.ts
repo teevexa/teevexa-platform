@@ -117,9 +117,9 @@ export const PAGES: Record<string, PageMeta> = {
     priority: 0.9,
   },
   "/book-consultation": {
-    title: "Book a Free 30-Minute Consultation | Teevexa",
+    title: "Book a Free 20-Minute Consultation | Teevexa",
     description:
-      "Schedule a free 30-minute video call with the Teevexa team to discuss your goals, challenges and the best way to build your product. Any time zone.",
+      "Schedule a free 20-minute video call with the Teevexa team to discuss your goals, challenges and the best way to build your product. Any time zone.",
     crumb: "Book a Consultation",
     changefreq: "monthly",
     priority: 0.7,

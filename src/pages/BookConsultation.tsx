@@ -9,11 +9,15 @@ import { Label } from "@/components/ui/label";
 import { Calendar } from "@/components/ui/calendar";
 import {
   CheckCircle,
+  CheckCircle2,
   Video,
   Clock,
   Globe as GlobeIcon,
   CalendarDays,
   ExternalLink,
+  Loader2,
+  ArrowRight,
+  Sparkles,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -47,6 +51,10 @@ const BookConsultation = () => {
     company: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  // "missing" = this email has not yet described a project — only state that blocks booking.
+  // "idle"/"checking" never block: a slow or failed check must not lock out a legitimate visitor.
+  // The server (book-consultation) re-checks this at submit regardless, so this is advisory only.
+  const [leadCheck, setLeadCheck] = useState<"idle" | "checking" | "ok" | "missing">("idle");
   // Booked Nairobi times keyed by Nairobi date (a visitor's day can span up to 3 Nairobi dates).
   const [booked, setBooked] = useState<Record<string, string[]>>({});
   const [loadingSlots, setLoadingSlots] = useState(false);
@@ -99,7 +107,35 @@ const BookConsultation = () => {
 
   const isBooked = (slot: Slot) => (booked[slot.eatDate] ?? []).includes(slot.eatTime);
 
+  // Early, friendly feedback while they type their email: have they already told us about their
+  // project? This never blocks on its own (see leadCheck's comment above) — book-consultation
+  // enforces the rule for real when they submit.
+  useEffect(() => {
+    const email = contact.email.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+      setLeadCheck("idle");
+      return;
+    }
+    let cancelled = false;
+    setLeadCheck("checking");
+    const t = setTimeout(async () => {
+      const { data, error } = await invokeFn<{ hasProject: boolean }>("lead-check", { email });
+      if (cancelled) return;
+      if (error || !data) { setLeadCheck("idle"); return; }
+      setLeadCheck(data.hasProject ? "ok" : "missing");
+    }, 600);
+    return () => { cancelled = true; clearTimeout(t); };
+  }, [contact.email]);
+
   const submit = async () => {
+    if (leadCheck === "missing") {
+      toast({
+        title: "Tell us about your project first",
+        description: "It only takes about a minute, and it helps us make the most of the call.",
+        variant: "destructive",
+      });
+      return;
+    }
     const result = contactSchema.safeParse({
       fullName: contact.fullName,
       email: contact.email,
@@ -201,13 +237,13 @@ const BookConsultation = () => {
         <div className="container mx-auto text-center relative z-10 animate-fade-in">
           <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary block mb-4">Free Consultation</span>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold leading-tight mb-4">
-            Book a <span className="gradient-text">30-Minute Call</span>
+            Book a <span className="gradient-text">20-Minute Call</span>
           </h1>
           <p className="text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto">
             A focused discovery call with our team. No sales pitch — just honest advice on whether and how we can help.
           </p>
           <div className="flex flex-wrap justify-center gap-6 mt-8 text-sm text-muted-foreground">
-            {["Free of charge", "No commitment required", "Zoom video call", "Monday – Friday (Nairobi hours)", "All time zones welcome"].map((p) => (
+            {["Free of charge", "No commitment required", "Zoom video call", "Monday – Saturday (Nairobi hours)", "All time zones welcome"].map((p) => (
               <span key={p} className="flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
                 {p}
@@ -219,6 +255,14 @@ const BookConsultation = () => {
 
       <section className="py-16">
         <div className="container mx-auto">
+          <div className="glass rounded-2xl p-4 mb-6 flex items-start gap-3 border-primary/20 max-w-3xl mx-auto">
+            <Sparkles size={18} className="text-primary mt-0.5 shrink-0" />
+            <p className="text-sm text-muted-foreground">
+              <span className="text-foreground font-medium">Haven&apos;t told us about your project yet?</span> We ask
+              everyone to share a quick project brief first — it takes about a minute and helps us make the most of the
+              call. <Link to="/start-project" className="text-primary hover:underline font-semibold">Start here</Link>.
+            </p>
+          </div>
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Left – Calendar & Time */}
             <div className="space-y-6">
@@ -306,6 +350,30 @@ const BookConsultation = () => {
                   <Label>Email *</Label>
                   <Input type="email" value={contact.email} onChange={(e) => { setContact((c) => ({ ...c, email: e.target.value })); setErrors((e2) => ({ ...e2, email: "" })); }} placeholder="john@example.com" />
                   {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
+                  {leadCheck === "checking" && (
+                    <p className="text-xs text-muted-foreground flex items-center gap-1.5">
+                      <Loader2 size={12} className="animate-spin" /> Checking…
+                    </p>
+                  )}
+                  {leadCheck === "ok" && (
+                    <p className="text-xs text-green-700 dark:text-green-400 flex items-center gap-1.5">
+                      <CheckCircle2 size={12} /> Thanks — we have your project details.
+                    </p>
+                  )}
+                  {leadCheck === "missing" && (
+                    <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 px-3 py-2.5 text-xs space-y-1.5">
+                      <p className="text-amber-900 dark:text-amber-200">
+                        We don&apos;t have a project description from you yet — tell us about your project first so we
+                        can make the most of the call.
+                      </p>
+                      <Link
+                        to={`/start-project?name=${encodeURIComponent(contact.fullName)}&email=${encodeURIComponent(contact.email)}`}
+                        className="inline-flex items-center gap-1 font-semibold text-primary hover:underline"
+                      >
+                        Describe my project <ArrowRight size={12} />
+                      </Link>
+                    </div>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <Label>Phone</Label>
@@ -335,12 +403,12 @@ const BookConsultation = () => {
                     <p><span className="text-foreground font-medium">Date:</span> {format(selectedDate, "EEEE, MMMM d, yyyy")}</p>
                     <p><span className="text-foreground font-medium">Time:</span> {selectedSlot.localTime} ({timezoneLabel}) · {selectedSlot.eatTime} Nairobi</p>
                     <p><span className="text-foreground font-medium">Platform:</span> Zoom</p>
-                    <p><span className="text-foreground font-medium">Duration:</span> 30 minutes</p>
+                    <p><span className="text-foreground font-medium">Duration:</span> 20 minutes</p>
                   </div>
                 </div>
               )}
 
-              <Button onClick={submit} size="lg" className="w-full glow-primary" disabled={submitting}>
+              <Button onClick={submit} size="lg" className="w-full glow-primary" disabled={submitting || leadCheck === "missing"}>
                 {submitting ? "Creating your Zoom meeting…" : "Confirm Booking"}
               </Button>
               <p className="text-xs text-muted-foreground text-center">

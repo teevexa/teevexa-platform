@@ -85,7 +85,13 @@ const StartProject = () => {
   const prototypeParam = params.get("type") === "prototype";
 
   const [step, setStep] = useState<Step>(saved?.step ?? "idea");
-  const [idea, setIdea] = useState<Idea>(saved?.idea ?? emptyIdea);
+  // Saved progress always wins; otherwise prefill from ?name=&email= (e.g. arriving from the
+  // booking page's "Describe my project" link) so the visitor never has to retype them.
+  const [idea, setIdea] = useState<Idea>(saved?.idea ?? {
+    ...emptyIdea,
+    email: (params.get("email") ?? "").slice(0, 254),
+    name: (params.get("name") ?? "").slice(0, 100),
+  });
   const [answers, setAnswers] = useState<Answers>(saved?.answers ?? defaultAnswers);
   const [extras, setExtras] = useState<Extras>(saved?.extras ?? emptyExtras);
   const [draft, setDraft] = useState<Draft | null>(saved?.draft ?? null);

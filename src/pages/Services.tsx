@@ -254,7 +254,7 @@ const Services = () => (
           Not Sure Where to <span className="gradient-text">Start?</span>
         </h2>
         <p className="text-muted-foreground leading-relaxed mb-10">
-          Book a free 30-minute consultation. We'll assess your needs and recommend the right approach - no sales pitch.
+          Book a free 20-minute consultation. We'll assess your needs and recommend the right approach - no sales pitch.
         </p>
         <Button size="lg" className="glow-primary px-10" asChild>
           <Link to="/book-consultation">Book Free Consultation <ArrowRight className="ml-2" size={18} /></Link>

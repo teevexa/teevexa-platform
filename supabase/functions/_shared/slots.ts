@@ -3,10 +3,14 @@
 // so a slot means the same instant for everyone and can't be double-booked across time zones.
 // Pure TypeScript (Intl only).
 
+// 20-minute slots (3 per hour) so a busy hour can seat three different clients.
+// Business hours: 09:00-18:00 Nairobi time, Mon-Sat, with a 13:00-14:00 lunch break.
 export const SLOT_TIMES = [
-  "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
-  "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00",
+  "09:00", "09:20", "09:40", "10:00", "10:20", "10:40", "11:00", "11:20", "11:40", "12:00", "12:20", "12:40",
+  "14:00", "14:20", "14:40", "15:00", "15:20", "15:40", "16:00", "16:20", "16:40", "17:00", "17:20", "17:40",
 ];
+
+export const SLOT_DURATION_MINUTES = 20;
 
 export const EAT_OFFSET_HOURS = 3;
 export const MIN_LEAD_HOURS = 4;
@@ -74,11 +78,11 @@ const addDays = (date: string, n: number): string => {
   return `${t.getUTCFullYear()}-${pad(t.getUTCMonth() + 1)}-${pad(t.getUTCDate())}`;
 };
 
-/** Is this instant a bookable slot (Mon–Fri, on the grid, within the lead/lookahead window)? */
+/** Is this instant a bookable slot (Mon–Sat, on the grid, within the lead/lookahead window)? */
 export function isBookableInstant(instant: Date, now: Date = new Date()): boolean {
   if (Number.isNaN(instant.getTime())) return false;
   const { time, weekday } = eatParts(instant);
-  if (weekday < 1 || weekday > 5) return false;
+  if (weekday < 1 || weekday > 6) return false; // 0 = Sunday, 6 = Saturday — only Sunday is excluded
   if (!SLOT_TIMES.includes(time)) return false;
   if (instant.getTime() < now.getTime() + MIN_LEAD_HOURS * 3600_000) return false;
   if (instant.getTime() > now.getTime() + MAX_DAYS_AHEAD * 86400_000) return false;
