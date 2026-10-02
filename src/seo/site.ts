@@ -53,6 +53,13 @@ export const globalJsonLd = (): JsonLd[] => [
     knowsAbout: ["Software development", "AI agents", "Mobile app development", "Supply chain traceability", "Payments integration"],
     sameAs: SOCIAL_PROFILES,
     contactPoint: [{ "@type": "ContactPoint", contactType: "sales", email: "hello@teevexa.com", availableLanguage: "English" }],
+    founder: {
+      "@type": "Person",
+      name: "Benjamin Baya",
+      jobTitle: "Founder & CEO",
+      url: "https://benjaminbaya.com",
+      sameAs: ["https://www.linkedin.com/in/benjamin-mweri-baya"],
+    },
   },
   {
     "@context": "https://schema.org",

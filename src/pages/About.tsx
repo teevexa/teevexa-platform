@@ -222,6 +222,10 @@ const About = () => (
               <h3 className="font-display font-bold text-xl">Benjamin Baya</h3>
               <p className="text-primary font-semibold text-sm mt-0.5">Founder & CEO — TEEVEXA LTD</p>
               <div className="flex gap-2 mt-3 justify-center lg:justify-start">
+                <a href="https://benjaminbaya.com" target="_blank" rel="noopener noreferrer" aria-label="Benjamin Baya's website"
+                  className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary hover:bg-primary hover:text-primary-foreground transition-all">
+                  <Globe size={14} />
+                </a>
                 <a href="https://www.linkedin.com/in/benjamin-mweri-baya" target="_blank" rel="noopener noreferrer" aria-label="Benjamin Baya on LinkedIn"
                   className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary hover:bg-primary hover:text-primary-foreground transition-all">
                   <Linkedin size={14} />
