@@ -10,8 +10,8 @@ import {
 } from "lucide-react";
 
 const stats = [
-  { value: "2025", label: "Founded" },
-  { value: "4", label: "Senior Engineers" },
+  { value: "2026", label: "Founded" },
+  { value: "3", label: "Products Built" },
   { value: "2", label: "Apps Live on Google Play" },
   { value: "24h", label: "Quote Turnaround" },
 ];

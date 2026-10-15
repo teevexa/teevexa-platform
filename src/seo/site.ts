@@ -47,7 +47,7 @@ export const globalJsonLd = (): JsonLd[] => [
       "AI-native product engineering company in Nairobi, Kenya. Custom software, AI agents and production-ready apps for businesses worldwide.",
     email: "hello@teevexa.com",
     telephone: "+254783797132",
-    foundingDate: "2025",
+    foundingDate: "2026-03-03",
     address: { "@type": "PostalAddress", addressLocality: "Nairobi", addressCountry: "KE" },
     areaServed: "Worldwide",
     knowsAbout: ["Software development", "AI agents", "Mobile app development", "Supply chain traceability", "Payments integration"],
@@ -56,9 +56,9 @@ export const globalJsonLd = (): JsonLd[] => [
     founder: {
       "@type": "Person",
       name: "Benjamin Baya",
-      jobTitle: "Founder & CEO",
+      jobTitle: "Founder & Lead Software Engineer",
       url: "https://benjaminbaya.com",
-      sameAs: ["https://www.linkedin.com/in/benjamin-mweri-baya"],
+      sameAs: ["https://www.linkedin.com/in/b3njaminbaya"],
     },
   },
   {

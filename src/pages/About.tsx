@@ -10,27 +10,22 @@ import {
 import benjaminHeadshot from "@/assets/benjamin-baya.jpg";
 
 const stats = [
-  { value: "2025", label: "Year Founded" },
-  { value: "4", label: "Senior Software Engineers" },
+  { value: "2026", label: "Year Founded" },
+  { value: "3", label: "Products Built" },
   { value: "2", label: "Apps Live on Google Play" },
   { value: "24h", label: "Quote Turnaround" },
 ];
 
 const timeline = [
   {
-    year: "Jul 2025",
-    title: "Teevexa Begins",
-    desc: "Benjamin Baya launches Teevexa with one mission: deliver enterprise-grade digital solutions to ambitious businesses, starting with agricultural export tracking.",
+    year: "Mar 2026",
+    title: "Teevexa Founded",
+    desc: "On 3 March 2026, Benjamin Baya founds Teevexa Ltd and registers it as a Private Limited Company in Kenya, with one mission: deliver enterprise-grade digital solutions to ambitious businesses, starting with supply chain traceability.",
   },
   {
-    year: "Late 2025",
+    year: "2026",
     title: "Building Teevexa Trace",
     desc: "The supply chain traceability problem becomes a product. Work begins on Teevexa Trace and its offline-first companion, Teevexa Field, so producers can prove provenance to global buyers.",
-  },
-  {
-    year: "Mar 2026",
-    title: "TEEVEXA LTD Incorporated",
-    desc: "On 3rd March 2026, Teevexa Ltd is registered as a Private Limited Company in Kenya.",
   },
   {
     year: "2026",
@@ -112,7 +107,7 @@ const About = () => (
             <div className="mt-8 grid grid-cols-2 gap-4">
               {[
                 "Built for real-world infrastructure constraints",
-                "Senior engineers on every project",
+                "Vetted engineers on every project",
                 "Global and regional payment integrations",
                 "Security and quality built in, not bolted on",
               ].map((item) => (
@@ -166,7 +161,7 @@ const About = () => (
           <div className="absolute left-5 top-2 bottom-2 w-px bg-gradient-to-b from-primary via-primary/40 to-transparent hidden sm:block" />
           <div className="space-y-8">
             {timeline.map((item, i) => (
-              <div key={item.year} className="sm:pl-16 relative animate-slide-up" style={{ animationDelay: `${i * 0.1}s` }}>
+              <div key={item.title} className="sm:pl-16 relative animate-slide-up" style={{ animationDelay: `${i * 0.1}s` }}>
                 <div className="hidden sm:flex absolute left-0 top-0 flex-col items-center">
                   <div className="w-10 h-10 rounded-full bg-primary/15 border-2 border-primary flex items-center justify-center z-10">
                     <span className="text-[9px] font-bold text-primary text-center leading-tight">{item.year}</span>
@@ -202,7 +197,7 @@ const About = () => (
       </div>
     </section>
 
-    {/* ── Founder & CEO ── */}
+    {/* ── Founder ── */}
     <section className="py-24">
       <div className="container mx-auto">
         <SectionHeading label="Leadership" title="Meet the Founder" />
@@ -214,19 +209,19 @@ const About = () => (
               <div className="absolute -inset-1.5 rounded-3xl bg-gradient-to-br from-primary/30 to-accent/20 blur-sm" />
               <img
                 src={benjaminHeadshot}
-                alt="Benjamin Baya — Founder & CEO of Teevexa Ltd"
+                alt="Benjamin Baya, Founder & Lead Software Engineer of Teevexa Ltd"
                 className="relative w-64 h-72 lg:w-full lg:h-80 object-cover object-top rounded-2xl"
               />
             </div>
             <div className="text-center lg:text-left">
               <h3 className="font-display font-bold text-xl">Benjamin Baya</h3>
-              <p className="text-primary font-semibold text-sm mt-0.5">Founder & CEO — TEEVEXA LTD</p>
+              <p className="text-primary font-semibold text-sm mt-0.5">Founder & Lead Software Engineer, TEEVEXA LTD</p>
               <div className="flex gap-2 mt-3 justify-center lg:justify-start">
                 <a href="https://benjaminbaya.com" target="_blank" rel="noopener noreferrer" aria-label="Benjamin Baya's website"
                   className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary hover:bg-primary hover:text-primary-foreground transition-all">
                   <Globe size={14} />
                 </a>
-                <a href="https://www.linkedin.com/in/benjamin-mweri-baya" target="_blank" rel="noopener noreferrer" aria-label="Benjamin Baya on LinkedIn"
+                <a href="https://www.linkedin.com/in/b3njaminbaya" target="_blank" rel="noopener noreferrer" aria-label="Benjamin Baya on LinkedIn"
                   className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary hover:bg-primary hover:text-primary-foreground transition-all">
                   <Linkedin size={14} />
                 </a>
@@ -239,8 +234,8 @@ const About = () => (
             {/* Credentials */}
             <div className="flex flex-wrap gap-3 mb-6">
               {[
-                { icon: FlaskConical, label: "Chemical Engineer" },
-                { icon: Code2,        label: "Certified Software Engineer" },
+                { icon: FlaskConical, label: "B.Eng Chemical Engineering" },
+                { icon: Code2,        label: "Software Engineer" },
               ].map((c) => (
                 <span key={c.label} className="inline-flex items-center gap-2 glass rounded-full px-4 py-2 text-xs font-semibold text-foreground/80">
                   <c.icon size={13} className="text-primary" /> {c.label}
@@ -250,10 +245,10 @@ const About = () => (
 
             <div className="space-y-4 text-muted-foreground leading-relaxed">
               <p>
-                <span className="text-foreground font-semibold">Benjamin Baya</span> holds degrees in Chemical Engineering and Software Engineering. Chemical engineering treats every batch as something that must be documented, verified and provable — and he brings that discipline to software.
+                <span className="text-foreground font-semibold">Benjamin Baya</span> holds a degree in Chemical Engineering and a certificate in full-stack software engineering. Chemical engineering treats every batch as something that must be documented, verified and provable, and he brings that discipline to software.
               </p>
               <p>
-                He founded Teevexa in 2025 to build the traceability products global supply chains need, and leads a team of <span className="text-foreground font-semibold">four senior software engineers</span> who deliver the same standard of engineering for clients across Africa and beyond.
+                He founded Teevexa on 3 March 2026 to build the traceability products global supply chains need. He leads its engineering, working with vetted engineers as projects require, and delivers the same standard of engineering for clients across Africa and beyond.
               </p>
               <p className="text-foreground/70 italic text-sm border-l-2 border-primary/40 pl-4">
                 "The problem with African supply chains isn't the quality of what's produced. It's the inability to prove it. That's a technology problem - and technology is exactly what we're here to fix."

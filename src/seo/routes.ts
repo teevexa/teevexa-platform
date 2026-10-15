@@ -35,7 +35,7 @@ export const PAGES: Record<string, PageMeta> = {
   "/services": {
     title: "Software Development Services: Web, Mobile, AI | Teevexa",
     description:
-      "Custom web apps, mobile apps, AI agents, e-commerce and enterprise software, plus prototype-to-production engineering. Senior engineers, global standards.",
+      "Custom web apps, mobile apps, AI agents, e-commerce and enterprise software, plus prototype-to-production engineering. Vetted engineers, global standards.",
     crumb: "Services",
     changefreq: "monthly",
     priority: 0.9,
@@ -138,7 +138,7 @@ export const PAGES: Record<string, PageMeta> = {
   "/about": {
     title: "About Teevexa | AI-Native Product Engineering Company",
     description:
-      "Teevexa is a Nairobi-born product engineering company: senior engineers building software, AI agents and supply chain apps for ambitious businesses.",
+      "Teevexa is a Nairobi-born product engineering company building software, AI agents and supply chain apps for ambitious businesses.",
     crumb: "About",
     changefreq: "monthly",
     priority: 0.7,
