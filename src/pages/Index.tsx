@@ -11,7 +11,7 @@ import {
 
 const stats = [
   { value: "2026", label: "Founded" },
-  { value: "3", label: "Products Built" },
+  { value: "4", label: "Products Built" },
   { value: "2", label: "Apps Live on Google Play" },
   { value: "24h", label: "Quote Turnaround" },
 ];

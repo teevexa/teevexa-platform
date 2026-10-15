@@ -11,7 +11,7 @@ import benjaminHeadshot from "@/assets/benjamin-baya.jpg";
 
 const stats = [
   { value: "2026", label: "Year Founded" },
-  { value: "3", label: "Products Built" },
+  { value: "4", label: "Products Built" },
   { value: "2", label: "Apps Live on Google Play" },
   { value: "24h", label: "Quote Turnaround" },
 ];
