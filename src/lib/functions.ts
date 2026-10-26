@@ -29,3 +29,13 @@ export async function invokeFn<T = Record<string, unknown>>(name: string, body: 
   }
   return { data: null, error: message, status };
 }
+
+/**
+ * Best-effort: asks the backend to trigger a Vercel rebuild so a newly published blog post, case
+ * study or job posting gets a real prerendered page and a sitemap entry without waiting for the
+ * next unrelated deploy. Never throws and never blocks a save; a missing Deploy Hook secret or a
+ * failed request here should not stop an editor from publishing.
+ */
+export function triggerRebuild(): void {
+  invokeFn("trigger-rebuild", {}).catch(() => { /* best-effort, ignore */ });
+}

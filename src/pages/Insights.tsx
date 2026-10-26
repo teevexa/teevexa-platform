@@ -117,6 +117,8 @@ const Insights = () => {
                           alt={featured.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                           style={{ position: "absolute", inset: 0 }}
+                          loading="eager"
+                          decoding="async"
                         />
                       ) : (
                         <Sparkles className="text-primary/30" size={72} />
@@ -168,6 +170,8 @@ const Insights = () => {
                             src={post.cover_image_url}
                             alt={post.title}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            loading="lazy"
+                            decoding="async"
                           />
                         </div>
                       ) : (

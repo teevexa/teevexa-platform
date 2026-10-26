@@ -47,12 +47,16 @@ export type Database = {
       blog_posts: {
         Row: {
           author_id: string | null
+          author_name: string | null
           content: string
           cover_image_url: string | null
           created_at: string
           excerpt: string | null
           id: string
+          meta_description: string | null
+          meta_title: string | null
           published_at: string | null
+          seo_noindex: boolean
           slug: string
           status: string
           tags: string[] | null
@@ -61,12 +65,16 @@ export type Database = {
         }
         Insert: {
           author_id?: string | null
+          author_name?: string | null
           content: string
           cover_image_url?: string | null
           created_at?: string
           excerpt?: string | null
           id?: string
+          meta_description?: string | null
+          meta_title?: string | null
           published_at?: string | null
+          seo_noindex?: boolean
           slug: string
           status?: string
           tags?: string[] | null
@@ -75,12 +83,16 @@ export type Database = {
         }
         Update: {
           author_id?: string | null
+          author_name?: string | null
           content?: string
           cover_image_url?: string | null
           created_at?: string
           excerpt?: string | null
           id?: string
+          meta_description?: string | null
+          meta_title?: string | null
           published_at?: string | null
+          seo_noindex?: boolean
           slug?: string
           status?: string
           tags?: string[] | null
@@ -100,8 +112,11 @@ export type Database = {
           gallery_urls: string[] | null
           id: string
           industry: string | null
+          meta_description: string | null
+          meta_title: string | null
           published_at: string | null
           results: string | null
+          seo_noindex: boolean
           slug: string
           solution: string | null
           status: string
@@ -119,8 +134,11 @@ export type Database = {
           gallery_urls?: string[] | null
           id?: string
           industry?: string | null
+          meta_description?: string | null
+          meta_title?: string | null
           published_at?: string | null
           results?: string | null
+          seo_noindex?: boolean
           slug: string
           solution?: string | null
           status?: string
@@ -138,8 +156,11 @@ export type Database = {
           gallery_urls?: string[] | null
           id?: string
           industry?: string | null
+          meta_description?: string | null
+          meta_title?: string | null
           published_at?: string | null
           results?: string | null
+          seo_noindex?: boolean
           slug?: string
           solution?: string | null
           status?: string

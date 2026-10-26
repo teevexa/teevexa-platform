@@ -73,11 +73,23 @@ let written = 0;
 function write(path, page) {
   const html = template
     .replace(new RegExp(`${START}[\\s\\S]*?${END}`), `${START}\n${head({ ...page, path })}\n    ${END}`)
-    .replace('<div id="root"></div>', `<div id="root"></div>${fallback(page)}`);
+    .replace('<div id="root"></div>', `<div id="root">${page.bodyHtml || ""}</div>${fallback(page)}`);
   const file = path === "/" ? join(dist, "index.html") : join(dist, path, "index.html");
   mkdirSync(dirname(file), { recursive: true });
   writeFileSync(file, html);
   written++;
+}
+
+// Real server-rendered body content for dynamic content types, so a crawler or AI retrieval bot that
+// does not execute JavaScript still sees the actual article/case-study text, not just its metadata.
+// React's createRoot().render() (src/main.tsx) replaces #root's children wholesale on mount, so this
+// is swapped out cleanly for real visitors with no hydration mismatch.
+function articleBody(title, dateLabel, markdown) {
+  return `<article style="font-family:sans-serif;max-width:720px;margin:0 auto;padding:40px 16px"><h1>${escText(title)}</h1>${dateLabel ? `<p><em>${escText(dateLabel)}</em></p>` : ""}${seo.renderMarkdown(markdown || "")}</article>`;
+}
+function caseStudyBody(r) {
+  const section = (t, text) => (text ? `<h2>${escText(t)}</h2><p>${escText(text)}</p>` : "");
+  return `<article style="font-family:sans-serif;max-width:720px;margin:0 auto;padding:40px 16px"><h1>${escText(r.title)}</h1><p>${escText(r.description)}</p>${section("The challenge", r.challenge)}${section("Our solution", r.solution)}${section("Results", r.results)}</article>`;
 }
 
 // 1) Static pages
@@ -92,19 +104,27 @@ for (const d of DYNAMIC) {
     if (!r.slug) continue;
     const path = `${d.base}/${r.slug}`;
     if (d.table === "blog_posts") {
-      const description = trim(r.excerpt || `Read ${r.title} on the Teevexa engineering blog.`, 158);
+      const description = trim(r.meta_description || r.excerpt || `Read ${r.title} on the Teevexa engineering blog.`, 158);
+      const title = r.meta_title || r.title;
+      const dateLabel = r.published_at ? new Date(r.published_at).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }) : "";
       write(path, {
-        title: r.title, h1: r.title, description, crumb: r.title, ogType: "article", image: r.cover_image_url,
-        published: r.published_at, modified: r.updated_at,
-        jsonLd: [seo.articleLd({ title: r.title, description, path, image: r.cover_image_url, published: r.published_at, modified: r.updated_at })],
+        title, h1: r.title, description, crumb: r.title, ogType: "article", image: r.cover_image_url,
+        published: r.published_at, modified: r.updated_at, noindex: !!r.seo_noindex,
+        jsonLd: [seo.articleLd({ title, description, path, image: r.cover_image_url, published: r.published_at, modified: r.updated_at, author: r.author_name })],
+        bodyHtml: articleBody(r.title, dateLabel, r.content),
       });
     } else if (d.table === "case_studies") {
-      write(path, { title: r.title, h1: r.title, description: trim(r.description, 158), crumb: r.title, image: r.cover_image_url });
+      const description = trim(r.meta_description || r.description, 158);
+      write(path, {
+        title: r.meta_title || r.title, h1: r.title, description, crumb: r.title, image: r.cover_image_url,
+        noindex: !!r.seo_noindex, bodyHtml: caseStudyBody(r),
+      });
     } else {
       const description = trim(`${r.title} (${r.employment_type}) in ${r.location}. Join Teevexa and help build AI-native software and supply chain products.`, 158);
       write(path, {
-        title: `${r.title} — ${r.department} | Teevexa Careers`, h1: r.title, description, crumb: r.title,
+        title: `${r.title}: ${r.department} | Teevexa Careers`, h1: r.title, description, crumb: r.title,
         jsonLd: [seo.jobPostingLd({ title: r.title, description: trim(r.description, 4000), path, posted: r.created_at, employmentType: r.employment_type, location: r.location })],
+        bodyHtml: articleBody(r.title, "", r.description),
       });
     }
   }

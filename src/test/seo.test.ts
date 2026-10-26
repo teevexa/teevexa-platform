@@ -96,6 +96,17 @@ describe("structured data", () => {
     expect(j.jobLocationType).toBe("TELECOMMUTE");
   });
 
+  it("falls back to the Teevexa organization as Article author when no byline is given", () => {
+    const a = articleLd({ title: "T", description: "D", path: "/insights/t" }) as { author: { "@type": string; name: string } };
+    expect(a.author["@type"]).toBe("Organization");
+    expect(a.author.name).toBe("Teevexa");
+  });
+
+  it("emits a real Person as Article author when a byline is given", () => {
+    const a = articleLd({ title: "T", description: "D", path: "/insights/t", author: "Jane Mwangi" }) as { author: { "@type": string; name: string } };
+    expect(a.author).toEqual({ "@type": "Person", name: "Jane Mwangi" });
+  });
+
   it("uses no trailing slash in canonical URLs", () => {
     expect(absoluteUrl("/")).toBe("https://www.teevexa.com");
     expect(absoluteUrl("/about")).toBe("https://www.teevexa.com/about");

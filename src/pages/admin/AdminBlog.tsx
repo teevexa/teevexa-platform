@@ -10,8 +10,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { logAudit } from "@/lib/audit";
+import { triggerRebuild } from "@/lib/functions";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Plus, FileText, Pencil, Trash2, Bold, Italic, Heading2, Link2, Code2, List } from "lucide-react";
 
@@ -19,9 +21,13 @@ interface BlogPost {
   id: string; title: string; slug: string; excerpt: string | null;
   content: string; cover_image_url: string | null; status: string;
   tags: string[]; published_at: string | null; created_at: string;
+  meta_title: string | null; meta_description: string | null; seo_noindex: boolean; author_name: string | null;
 }
 
-const emptyForm = { title: "", slug: "", excerpt: "", content: "", cover_image_url: "", status: "draft", tags: "" };
+const emptyForm = {
+  title: "", slug: "", excerpt: "", content: "", cover_image_url: "", status: "draft", tags: "",
+  metaTitle: "", metaDescription: "", seoNoindex: false, authorName: "",
+};
 
 const AdminBlog = () => {
   const { toast } = useToast();
@@ -54,6 +60,8 @@ const AdminBlog = () => {
       title: post.title, slug: post.slug, excerpt: post.excerpt || "",
       content: post.content, cover_image_url: post.cover_image_url || "",
       status: post.status, tags: (post.tags || []).join(", "),
+      metaTitle: post.meta_title || "", metaDescription: post.meta_description || "",
+      seoNoindex: post.seo_noindex || false, authorName: post.author_name || "",
     });
     setShowEditor(true);
   };
@@ -74,6 +82,10 @@ const AdminBlog = () => {
       status: form.status, tags,
       published_at: form.status === "published" ? new Date().toISOString() : null,
       author_id: user?.id || null,
+      meta_title: form.metaTitle.trim() || null,
+      meta_description: form.metaDescription.trim() || null,
+      seo_noindex: form.seoNoindex,
+      author_name: form.authorName.trim() || null,
     };
 
     let resultId = editing;
@@ -87,6 +99,7 @@ const AdminBlog = () => {
     }
 
     await logAudit({ action: editing ? "update" : "create", entity_type: "blog_post", entity_id: resultId || undefined, details: { title: payload.title, status: payload.status } });
+    if (payload.status === "published") triggerRebuild();
 
     setSaving(false);
     toast({ title: editing ? "Post updated" : "Post created" });
@@ -222,6 +235,27 @@ const AdminBlog = () => {
               <div className="space-y-2">
                 <Label>Tags (comma-separated)</Label>
                 <Input value={form.tags} onChange={(e) => setForm((f) => ({ ...f, tags: e.target.value }))} placeholder="tech, design, ai" />
+              </div>
+            </div>
+            <div className="space-y-4 rounded-lg border border-border/50 p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Search & social (optional)</p>
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>SEO title override</Label>
+                  <Input value={form.metaTitle} onChange={(e) => setForm((f) => ({ ...f, metaTitle: e.target.value }))} placeholder={form.title || "Falls back to the post title"} maxLength={60} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Author byline</Label>
+                  <Input value={form.authorName} onChange={(e) => setForm((f) => ({ ...f, authorName: e.target.value }))} placeholder="Falls back to “Teevexa”" />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label>SEO description override</Label>
+                <Textarea rows={2} value={form.metaDescription} onChange={(e) => setForm((f) => ({ ...f, metaDescription: e.target.value }))} placeholder="Falls back to the excerpt. Aim for 110–160 characters." maxLength={160} />
+              </div>
+              <div className="flex items-center gap-2">
+                <Checkbox id="seo-noindex" checked={form.seoNoindex} onCheckedChange={(v) => setForm((f) => ({ ...f, seoNoindex: v === true }))} />
+                <Label htmlFor="seo-noindex" className="font-normal cursor-pointer">Keep this post out of search results (noindex)</Label>
               </div>
             </div>
             <div className="space-y-2">

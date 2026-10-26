@@ -142,6 +142,8 @@ export const webPageLd = (type: "AboutPage" | "ContactPage" | "CollectionPage" |
 
 export const articleLd = (p: {
   title: string; description: string; path: string; image?: string | null; published?: string | null; modified?: string | null;
+  /** Real byline set by the editor. Falls back to the Teevexa organization when not given. */
+  author?: string | null;
 }): JsonLd => ({
   "@context": "https://schema.org",
   "@type": "Article",
@@ -152,7 +154,7 @@ export const articleLd = (p: {
   image: p.image || DEFAULT_OG_IMAGE,
   datePublished: p.published || undefined,
   dateModified: p.modified || p.published || undefined,
-  author: { "@type": "Organization", name: "Teevexa", url: SITE_URL },
+  author: p.author ? { "@type": "Person", name: p.author } : { "@type": "Organization", name: "Teevexa", url: SITE_URL },
   publisher: { "@id": ORG_ID },
 });
 

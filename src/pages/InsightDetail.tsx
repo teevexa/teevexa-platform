@@ -19,6 +19,10 @@ interface Post {
   published_at: string | null;
   created_at: string;
   updated_at?: string | null;
+  meta_title?: string | null;
+  meta_description?: string | null;
+  seo_noindex?: boolean;
+  author_name?: string | null;
 }
 
 const InsightDetail = () => {
@@ -70,25 +74,31 @@ const InsightDetail = () => {
     ? new Date(post.published_at).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
     : "";
 
+  const seoTitle = post.meta_title || post.title;
+  const seoDescription = post.meta_description || post.excerpt || `Read ${post.title} on the Teevexa engineering blog.`;
+  const author = post.author_name || "Teevexa";
+
   return (
     <>
       <SEO
-        title={post.title}
-        description={post.excerpt || `Read ${post.title} on the Teevexa engineering blog.`}
+        title={seoTitle}
+        description={seoDescription}
         canonical={`/insights/${post.slug}`}
         breadcrumb={post.title}
         ogImage={post.cover_image_url || undefined}
         ogType="article"
+        noindex={post.seo_noindex || undefined}
         publishedAt={post.published_at || undefined}
         modifiedAt={post.updated_at || undefined}
-        author="Teevexa"
+        author={author}
         structuredData={articleLd({
-          title: post.title,
-          description: post.excerpt || `Read ${post.title} on the Teevexa engineering blog.`,
+          title: seoTitle,
+          description: seoDescription,
           path: `/insights/${post.slug}`,
           image: post.cover_image_url,
           published: post.published_at,
           modified: post.updated_at,
+          author,
         })}
       />
       {/* ── Hero ── */}
@@ -116,6 +126,7 @@ const InsightDetail = () => {
           )}
           <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
             <Clock size={14} /> {formattedDate}
+            {author && <span>· By {author}</span>}
           </div>
         </div>
       </section>
@@ -129,6 +140,8 @@ const InsightDetail = () => {
                 src={post.cover_image_url}
                 alt={post.title}
                 className="w-full max-h-[420px] object-cover"
+                loading="eager"
+                decoding="async"
               />
             </div>
           </div>

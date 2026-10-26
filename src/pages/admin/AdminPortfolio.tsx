@@ -9,8 +9,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { logAudit } from "@/lib/audit";
+import { triggerRebuild } from "@/lib/functions";
 import { Plus, Pencil, Trash2, Briefcase, Eye, Upload, X, Image } from "lucide-react";
 
 interface CaseStudy {
@@ -28,12 +30,16 @@ interface CaseStudy {
   status: string;
   published_at: string | null;
   created_at: string;
+  meta_title: string | null;
+  meta_description: string | null;
+  seo_noindex: boolean;
 }
 
 const emptyForm = {
   title: "", slug: "", client_name: "", industry: "", description: "",
   challenge: "", solution: "", results: "", technologies: "",
   cover_image_url: "", status: "draft",
+  metaTitle: "", metaDescription: "", seoNoindex: false,
 };
 
 const generateSlug = (title: string) =>
@@ -83,6 +89,8 @@ const AdminPortfolio = () => {
       technologies: (item.technologies || []).join(", "),
       cover_image_url: item.cover_image_url || "",
       status: item.status,
+      metaTitle: item.meta_title || "", metaDescription: item.meta_description || "",
+      seoNoindex: item.seo_noindex || false,
     });
     setImagePreview(item.cover_image_url || null);
     setShowDialog(true);
@@ -160,6 +168,9 @@ const AdminPortfolio = () => {
       cover_image_url: form.cover_image_url.trim() || null,
       status: form.status,
       published_at: form.status === "published" ? new Date().toISOString() : null,
+      meta_title: form.metaTitle.trim() || null,
+      meta_description: form.metaDescription.trim() || null,
+      seo_noindex: form.seoNoindex,
     };
 
     if (editingId) {
@@ -173,6 +184,7 @@ const AdminPortfolio = () => {
       await logAudit({ action: "create", entity_type: "case_study", entity_id: data?.id, details: { title: payload.title } });
       toast({ title: "Case study created" });
     }
+    if (payload.status === "published") triggerRebuild();
 
     setSaving(false);
     setShowDialog(false);
@@ -344,6 +356,21 @@ const AdminPortfolio = () => {
             <div className="space-y-2">
               <Label>Technologies (comma-separated)</Label>
               <Input value={form.technologies} onChange={(e) => set("technologies", e.target.value)} placeholder="React, Node.js, Solidity" />
+            </div>
+            <div className="space-y-4 rounded-lg border border-border/50 p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Search & social (optional)</p>
+              <div className="space-y-2">
+                <Label>SEO title override</Label>
+                <Input value={form.metaTitle} onChange={(e) => set("metaTitle", e.target.value)} placeholder={form.title || "Falls back to the case study title"} maxLength={60} />
+              </div>
+              <div className="space-y-2">
+                <Label>SEO description override</Label>
+                <Textarea rows={2} value={form.metaDescription} onChange={(e) => set("metaDescription", e.target.value)} placeholder="Falls back to the description. Aim for 110–160 characters." maxLength={160} />
+              </div>
+              <div className="flex items-center gap-2">
+                <Checkbox id="case-study-noindex" checked={form.seoNoindex} onCheckedChange={(v) => setForm((f) => ({ ...f, seoNoindex: v === true }))} />
+                <Label htmlFor="case-study-noindex" className="font-normal cursor-pointer">Keep this case study out of search results (noindex)</Label>
+              </div>
             </div>
             <div className="space-y-2">
               <Label>Status</Label>

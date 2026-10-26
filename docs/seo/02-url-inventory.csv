@@ -1,0 +1,42 @@
+url,page_type,http_status,indexable,title,canonical,h1_present,search_intent,structured_data,sitemap_eligible,notes
+/,homepage,200,yes,"Teevexa | AI-Native Software Development in Nairobi",https://www.teevexa.com,yes,navigational+commercial,"Organization,WebSite",yes,priority 1.0
+/about,company,200,yes,"About Teevexa | AI-Native Product Engineering Company",https://www.teevexa.com/about,yes,informational,AboutPage,yes,
+/accessibility,company,200,yes,"Accessibility Statement | Teevexa",https://www.teevexa.com/accessibility,yes,informational,none,yes,low priority 0.3 yearly
+/services,service-hub,200,yes,"Software Development Services: Web, Mobile, AI | Teevexa",https://www.teevexa.com/services,yes,commercial,none,yes,links to 6 detail pages
+/services/ai-agents,service-detail,200,yes,"AI Agent Development Company | Teevexa",https://www.teevexa.com/services/ai-agents,yes,commercial,Service,yes,
+/services/web-development,service-detail,200,yes,"Custom Web Development Services | Teevexa",https://www.teevexa.com/services/web-development,yes,commercial,Service,yes,
+/services/mobile-development,service-detail,200,yes,"Mobile App Development Company | Teevexa",https://www.teevexa.com/services/mobile-development,yes,commercial,Service,yes,
+/services/e-commerce-systems,service-detail,200,yes,"E-Commerce Development & Payments Integration | Teevexa",https://www.teevexa.com/services/e-commerce-systems,yes,commercial,Service,yes,
+/services/enterprise-software,service-detail,200,yes,"Enterprise Software Development: ERP & CRM | Teevexa",https://www.teevexa.com/services/enterprise-software,yes,commercial,Service,yes,
+/services/ui-ux-design,service-detail,200,yes,"UI/UX Design Services | Teevexa",https://www.teevexa.com/services/ui-ux-design,yes,commercial,Service,yes,
+/prototype-to-production,landing,200,yes,"Take Your AI Prototype to Production | Teevexa",https://www.teevexa.com/prototype-to-production,yes,commercial,"Service,FAQPage",yes,priority 0.95 highest after home
+/start-project,conversion,200,yes,"Get a Quote for Your Software Project | Teevexa",https://www.teevexa.com/start-project,yes,transactional,none,yes,primary conversion goal
+/book-consultation,conversion,200,yes,"Book a Free 20-Minute Consultation | Teevexa",https://www.teevexa.com/book-consultation,yes,transactional,none,yes,
+/contact,conversion,200,yes,"Contact Teevexa | Software Development Team, Nairobi",https://www.teevexa.com/contact,yes,navigational+transactional,"ContactPage,FAQPage",yes,
+/portfolio,portfolio-hub,200,yes,"Our Work: Apps & Open-Source Projects | Teevexa",https://www.teevexa.com/portfolio,yes,commercial,CollectionPage,yes,0 case studies live
+/portfolio/:slug,portfolio-detail,n/a,yes-when-published,derived from case_studies.title,dynamic,yes,commercial,none,yes,0 live rows
+/insights,blog-index,200,yes,"Engineering Blog & Insights | Teevexa",https://www.teevexa.com/insights,yes,informational,none,yes,0 posts live
+/insights/:slug,blog-post,n/a,yes-when-published,derived from blog_posts.title,dynamic,yes,informational,Article,yes,0 live rows; body not in prerendered HTML
+/careers,careers-index,200,yes,"Careers at Teevexa | Software Engineering Jobs",https://www.teevexa.com/careers,yes,informational+transactional,none,yes,0 jobs live
+/careers/:slug,job-posting,n/a,yes-when-published,derived from jobs.title,dynamic,yes,transactional,JobPosting,yes,0 live rows
+/teevexa-trace,product,200,yes,"Teevexa Trace | Supply Chain Traceability App",https://www.teevexa.com/teevexa-trace,yes,commercial,SoftwareApplication,yes,
+/teevexa-field,product,200,yes,"Teevexa Field | Offline Field Data Collection App",https://www.teevexa.com/teevexa-field,yes,commercial,SoftwareApplication,yes,
+/pricing,product,200,yes,"Teevexa Trace & Field Pricing | Free While We Launch",https://www.teevexa.com/pricing,yes,commercial,none,yes,
+/verify,utility,200,yes,"Verify a Product Batch | Teevexa Trace",https://www.teevexa.com/verify,yes,transactional-utility,none,yes,account-less lookup form
+/trace/:batchId,utility-result,200,no,derived per batch,dynamic,yes,transactional-utility,none,no,deliberately noindex
+/api-docs,docs,200,yes,"Teevexa Trace API Docs | Batch Verification API",https://www.teevexa.com/api-docs,yes,informational,none,yes,developer audience
+/open-source,open-source-hub,200,yes,"Open-Source Projects: TeeDesk & CyberGuard AI | Teevexa",https://www.teevexa.com/open-source,yes,informational,none,yes,
+/teedesk,open-source-project,200,yes,"TeeDesk | Open-Source AI Customer Support Platform",https://www.teevexa.com/teedesk,yes,informational+commercial,SoftwareSourceCode,yes,
+/cyberguard-ai,open-source-project,200,yes,"CyberGuard AI | Open-Source Threat Detection",https://www.teevexa.com/cyberguard-ai,yes,informational+commercial,SoftwareSourceCode,yes,Apache 2.0 license property
+/legal/privacy-policy,legal,200,no,"Privacy Policy | Teevexa",https://www.teevexa.com/legal/privacy-policy,yes,informational,none,no,deliberate noindex
+/legal/terms-of-service,legal,200,no,"Terms of Service | Teevexa",https://www.teevexa.com/legal/terms-of-service,yes,informational,none,no,deliberate noindex
+/legal/cookies,legal,200,no,"Cookie Policy | Teevexa",https://www.teevexa.com/legal/cookies,yes,informational,none,no,deliberate noindex
+/account/delete,account,200,no,"Delete Your Account | Teevexa Trace",https://www.teevexa.com/account/delete,yes,informational,none,no,deliberate noindex
+/teevexa-desk,redirect,404-before-fix,no,n/a,n/a,n/a,n/a,none,no,"301 to /teedesk after fix, was broken 404"
+/teevexa-base,redirect,404-before-fix,no,n/a,n/a,n/a,n/a,none,no,"301 to / after fix, was broken 404"
+/auth,auth,404-before-fix,no,n/a,n/a,yes,n/a,none,no,"robots.txt disallow; broken before rewrite fix"
+/forgot-password,auth,404-before-fix,no,n/a,n/a,yes,n/a,none,no,"robots.txt disallow; broken before rewrite fix"
+/reset-password,auth,404-before-fix,no,n/a,n/a,yes,n/a,none,no,"robots.txt disallow; broken before rewrite fix; used by real password-reset emails"
+/client-portal/*,portal,404-before-fix,no,n/a,n/a,n/a,n/a,none,no,"14 routes total; robots.txt disallow; RLS + role guard is real protection"
+/admin/*,admin,404-before-fix,no,n/a,n/a,n/a,n/a,none,no,"22 routes total; robots.txt disallow; RLS + role guard is real protection"
+/*(unmatched),error,404-or-soft-200,no,"Page not found",n/a,yes,n/a,none,no,"NotFound.tsx sets noindex client-side; see audit 4.1/4.9"

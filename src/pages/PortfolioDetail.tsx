@@ -10,6 +10,7 @@ interface CaseStudy {
   id: string; title: string; slug: string; client_name: string | null; industry: string | null; description: string;
   challenge: string | null; solution: string | null; results: string | null; technologies: string[] | null;
   cover_image_url: string | null; published_at: string | null;
+  meta_title?: string | null; meta_description?: string | null; seo_noindex?: boolean;
 }
 
 const Block = ({ title, text }: { title: string; text: string | null }) =>
@@ -55,7 +56,14 @@ const PortfolioDetail = () => {
 
   return (
     <>
-      <SEO title={item.title} description={item.description.slice(0, 155)} canonical={`/portfolio/${item.slug}`} breadcrumb={item.title} ogImage={item.cover_image_url || undefined} />
+      <SEO
+        title={item.meta_title || item.title}
+        description={item.meta_description || item.description.slice(0, 155)}
+        canonical={`/portfolio/${item.slug}`}
+        breadcrumb={item.title}
+        ogImage={item.cover_image_url || undefined}
+        noindex={item.seo_noindex || undefined}
+      />
       <section className="pt-28 pb-10  gradient-hero network-bg">
         <div className="container mx-auto">
           <Link to="/portfolio" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary mb-6"><ArrowLeft size={15} /> All case studies</Link>
@@ -66,7 +74,7 @@ const PortfolioDetail = () => {
       </section>
       <article className="py-12 px-4">
         <div className="container mx-auto">
-          {item.cover_image_url && <img src={item.cover_image_url} alt={item.title} className="rounded-2xl w-full mb-10" />}
+          {item.cover_image_url && <img src={item.cover_image_url} alt={item.title} className="rounded-2xl w-full mb-10" loading="eager" decoding="async" />}
           <p className="text-lg text-muted-foreground leading-relaxed mb-10 whitespace-pre-line">{item.description}</p>
           <Block title="The challenge" text={item.challenge} />
           <Block title="Our solution" text={item.solution} />

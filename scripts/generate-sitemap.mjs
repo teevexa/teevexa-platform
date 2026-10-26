@@ -14,7 +14,7 @@ const staticRoutes = Object.entries(seo.PAGES)
 const dynamic = [];
 for (const d of DYNAMIC) {
   for (const r of await fetchRows(d.table, d.select, d.filter)) {
-    if (r.slug) dynamic.push({ path: `${d.base}/${r.slug}`, freq: "monthly", prio: 0.6, lastmod: r.updated_at || r.published_at || r.created_at });
+    if (r.slug && !r.seo_noindex) dynamic.push({ path: `${d.base}/${r.slug}`, freq: "monthly", prio: 0.6, lastmod: r.updated_at || r.published_at || r.created_at });
   }
 }
 
