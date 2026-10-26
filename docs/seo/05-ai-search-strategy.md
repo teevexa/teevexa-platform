@@ -69,7 +69,7 @@ Reasoning:
 | Indexed vs. submitted URL count | Search Console Pages report, sitemap status | Monthly, or after any sitemap change |
 | Crawl errors | Search Console Pages report ("Why pages aren't indexed") and Bing Webmaster Tools' Crawl Information | Monthly |
 | Referral traffic from identifiable AI platforms (`chat.openai.com`, `perplexity.ai`, `www.bing.com/chat`, etc. as referrers) | Plausible's referrer breakdown (already installed; no new tool needed) | Monthly |
-| Manual sampling: ask ChatGPT/Perplexity/Google AI Overviews a handful of the site's target queries (from `03-keyword-and-content-map.md`) and record whether/how Teevexa is mentioned | Manual, by a person, logged in a simple spreadsheet or doc | Quarterly |
+| Manual sampling: ask ChatGPT/Perplexity/Google AI Overviews a handful of the site's target queries (from `03-keyword-and-content-map.md`) and record whether/how Teevexa is mentioned | Logged in `10-search-visibility-log.md`; first baseline entry added 2026-10-26 using `WebSearch` as a documented proxy (see that file's caveat on what it is and is not equivalent to) | Quarterly |
 
 **Explicit caveat to carry into every one of these reports**: a missing citation in a small manual sample does not mean the site is never cited; AI answers vary by session, model version, and phrasing. Treat the manual sampling as a rough directional signal, not a pass/fail test, consistent with this engagement's own instruction on this point.
 

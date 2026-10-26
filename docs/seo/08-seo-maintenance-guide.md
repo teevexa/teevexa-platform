@@ -53,7 +53,7 @@ Services are a special case of the above: add the slug's data to `serviceData` i
 | Indexed vs. submitted URLs | Search Console → Pages | Catch indexing problems (a page that stops being indexed is often a real technical regression) |
 | Crawl errors | Search Console and Bing Webmaster Tools | Same |
 | AI-platform referral traffic | Plausible's referrer breakdown, filter for `chat.openai.com`, `perplexity.ai`, `bing.com/chat` and similar | Directional signal only (see `05-ai-search-strategy.md`) |
-| Manual AI-answer spot check (quarterly) | Ask ChatGPT/Perplexity/Google a handful of target queries from `03-keyword-and-content-map.md`, note whether/how Teevexa comes up | Directional signal only |
+| Manual AI-answer spot check (quarterly) | Ask ChatGPT/Perplexity/Google a handful of target queries from `03-keyword-and-content-map.md`, note whether/how Teevexa comes up, and record it as a new dated entry in `10-search-visibility-log.md` (first baseline entry already in there from 2026-10-26) | Directional signal only |
 | Run `npm test` and `npm run build` | Locally or in CI, before any deploy that touches `src/seo/`, `scripts/`, or page SEO | Catches a broken/duplicated/missing title or description before it ships |
 
 ## 8. Things never to do (carried over from this engagement's rules, worth repeating here)

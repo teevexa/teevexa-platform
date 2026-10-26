@@ -29,8 +29,8 @@ All four immediate items from this engagement are now complete. The only thing l
 
 | Item | Why | Reference |
 | --- | --- | --- |
-| Establish a steady publishing cadence for blog content, following the two-way internal-linking discipline (every post names the page it supports) | Content compounds; a single burst of posts followed by silence is weaker than steady, linked output | `03-keyword-and-content-map.md` §3-4 |
-| Begin the quarterly manual AI-answer spot check | Starts building a real history of AI-search visibility rather than a one-time snapshot | `05-ai-search-strategy.md` §5, `08-seo-maintenance-guide.md` §7 |
+| ~~Establish a steady publishing cadence~~ | **On track.** All four originally-identified posts are now published or drafted (3 live, 1 handed over for review); two more genuinely-grounded topics identified for after those land, deliberately not a longer list, to avoid padding. | `03-keyword-and-content-map.md` §3 |
+| ~~Begin the quarterly manual AI-answer spot check~~ | **Started.** First baseline entry logged in the new `10-search-visibility-log.md` (2026-10-26): checked the bare brand name plus the query clusters behind all three published posts. Headline finding: zero visibility everywhere checked, including the bare brand name, which is roughly expected for a week-old content push but the brand-name result specifically is worth confirming directly in Search Console rather than trusting this tool alone. Next entry due ~2027-01. | `10-search-visibility-log.md` |
 | Consider self-hosting fonts if the PageSpeed numbers from the short-term item above show it matters | Don't guess; decide from the measured baseline | `04-technical-seo-plan.md` §4 |
 | Consider a frontend bundle-splitting pass if real-user performance data shows it matters | Same: decide from measurement, not assumption | `04-technical-seo-plan.md` §4 |
 

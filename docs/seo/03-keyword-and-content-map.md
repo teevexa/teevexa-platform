@@ -41,12 +41,21 @@ Since zero blog posts, case studies or jobs currently exist (confirmed in `01-in
 
 These follow directly from the site's own differentiators, which is the right starting point when there is no query data yet:
 
-1. A detailed walkthrough of taking a Lovable/Bolt/v0/Cursor prototype to production (directly supports `/prototype-to-production`). **Published during this engagement** as the first real post; see §5 for a corrected, search-verified read on how competitive this topic actually is.
-2. A technical piece on offline-first mobile architecture (directly supports `/services/mobile-development` and both Android products; Teevexa has real, shipped proof of this, which is a legitimate expertise claim, not a marketing assertion).
-3. A piece on integrating regional African payment gateways (M-Pesa, Pesapal, Flutterwave) into a web app, which supports `/services/e-commerce-systems` and is a narrow enough topic that it is unlikely to face the same competition as generic "how to accept online payments" content.
-4. A supply chain traceability / compliance explainer (EUDR-style reporting is mentioned in the Trace product; a plain-language explainer of what compliance reporting actually requires would support `/teevexa-trace` and `/api-docs`).
+1. A detailed walkthrough of taking a Lovable/Bolt/v0/Cursor prototype to production (directly supports `/prototype-to-production`). **Published**, slug `your-ai-prototype-works-here-is-what-production-actually-requires`; see §5 for a corrected, search-verified read on how competitive this topic actually is.
+2. A technical piece on offline-first mobile architecture (directly supports `/services/mobile-development` and `/teevexa-field`). **Published**, slug `what-offline-first-actually-means-in-mobile-app-architecture`.
+3. A piece on integrating regional African payment gateways (M-Pesa, Pesapal, Flutterwave) into a web app, supporting `/services/e-commerce-systems`. **Published**, slug `integrating-m-pesa-pesapal-and-flutterwave-alongside-stripe-what-actually-differs`.
+4. A supply chain traceability / compliance explainer, grounded in the real, current EU Deforestation Regulation requirements (verified via web search before writing, not assumed), supporting `/teevexa-trace` and `/api-docs`. **Drafted**, slug `supply-chain-compliance-reporting-explained`, handed to you for review and publish the same way as the first three.
 
-Each of these maps directly to an existing static page, which matters for internal linking (Section 4): a blog post with nowhere relevant to link to is a weaker SEO asset than one that can pull readers straight into a service or product page.
+All four of the originally identified topics are now published or drafted. Each maps directly to an existing static page, which matters for internal linking (Section 4): a blog post with nowhere relevant to link to is a weaker SEO asset than one that can pull readers straight into a service or product page. Every published post's internal links were verified live in the rendered HTML, not just assumed from the draft (see `07-validation-report.md` §9c).
+
+### Next topics, once the original four are all live
+
+Two more that follow the same rule (a real page to support, genuine Teevexa expertise, not generic filler):
+
+5. Row-level security and role-based access patterns in multi-tenant applications, supporting `/services/enterprise-software`. This site's own Supabase RLS implementation (documented in every sibling repo's README produced in an earlier phase of this engagement) is real, demonstrable expertise, not a marketing claim.
+6. What WCAG 2.2 AA accessibility actually requires in practice, supporting `/services/ui-ux-design` and `/accessibility`, a stated site-wide goal already.
+
+Deliberately not proposing more than two at a time: padding this list to "fill a cadence" is exactly what this engagement's brief warns against. Add the next one only once these are live and there is a genuine next page or expertise area to support.
 
 ### Content assignment principle going forward
 
