@@ -65,11 +65,17 @@ Live verification against `https://www.teevexa.com` (before the fix):
 
 **Impact**: this is a production-breaking bug, not only an SEO one. Supabase password-reset emails link to `/reset-password`; any user who clicked that link (a fresh navigation, not a client-side route change) landed on a bare "NOT_FOUND" page with no way to complete the reset. The same applies to `/auth` (sign-in/sign-up links shared outside the app, e.g. in emails or bookmarks), and to `/admin` or `/client-portal` opened fresh or refreshed. It also means any URL that is not in the static route table and not yet prerendered (for example a blog post slug published without a redeploy, see 4.2) returns a hard 404 instead of the SPA shell.
 
-**Fix applied** (`vercel.json`): replaced the rewrite with the standard, documented Vercel SPA pattern:
+**First fix attempted** (deployed, then disproven live): replaced the rewrite with the pattern commonly documented for Vercel SPAs:
 ```json
 "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
 ```
-This is the pattern Vercel's own documentation recommends for single-page apps, uses plain path-to-regexp syntax with no lookahead, and does not change behavior for any currently-working route, because Vercel's filesystem-first matching still serves the real prerendered files directly. **This fix is only live once deployed.** It has not been pushed or deployed as part of this session; see the implementation log (`06-implementation-log.md`) and Section 9.
+This was deployed and then re-tested live against `https://www.teevexa.com` with a cache-busted, never-before-seen path. The retired-URL `redirects` added alongside it (below) worked immediately, confirming the new `vercel.json` was live, but `/reset-password`, `/auth`, `/admin` and `/client-portal` still returned Vercel's bare `NOT_FOUND` page. The regex-lookahead theory above was therefore not the complete explanation.
+
+**Second fix applied** (not yet deployed as of this writing): the likely remaining cause is `cleanUrls: true` interacting with a rewrite *destination* that includes a `.html` extension, is a documented Vercel gotcha, since `cleanUrls` can also normalize the destination path, which would make Vercel look for a literal file named `index` (no extension) rather than `index.html`, and fail to find one. The destination was changed to the extension-free root instead:
+```json
+"rewrites": [{ "source": "/(.*)", "destination": "/" }]
+```
+`/` is already proven to resolve correctly (it is the homepage itself), so this sidesteps the interaction entirely. **This has not yet been verified live**; it needs to be deployed and re-tested the same way the first attempt was, before this finding can be marked resolved. If it still fails, the next diagnostic step is checking the Vercel project dashboard's Framework Preset and Output Directory settings directly, since those are not visible from this repository and could not be ruled out from here.
 
 **Same bug, additional casualty found**: `App.tsx` defines two client-side redirects for retired product URLs, `/teevexa-desk` → `/teedesk` and `/teevexa-base` → `/` (comment: "keep old inbound links working"), using React Router's `<Navigate replace>`. Because neither path is in `PAGES` (so neither is prerendered), both are live-confirmed returning the same bare Vercel 404 instead of redirecting:
 ```
