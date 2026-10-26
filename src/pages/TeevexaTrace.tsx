@@ -62,13 +62,14 @@ const TeevexaTrace = () => {
           <SectionHeading label="The Problem" title="Supply Chains Lack Transparency" />
           <div className="mt-8 grid md:grid-cols-3 gap-6">
             {[
-              { stat: "65%", label: "of consumers don't trust product origin claims" },
-              { stat: "$1.8T", label: "lost annually to counterfeit goods globally" },
-              { stat: "30%", label: "of African agricultural exports face compliance rejection" },
+              { stat: "$467B", label: "in counterfeit goods traded globally each year", source: "OECD/EUIPO, 2021" },
+              { stat: "~60%", label: "of consumers won't buy from a brand whose origin claims they don't trust", source: "Oritain, 2026" },
+              { stat: "~30%", label: "of EU food-safety violations (2008–2013) involved African shipments", source: "GlobalFood study" },
             ].map((s) => (
               <div key={s.stat} className="glass rounded-2xl p-6 text-center">
                 <p className="text-3xl font-display font-bold gradient-text">{s.stat}</p>
                 <p className="text-sm text-muted-foreground mt-2">{s.label}</p>
+                <p className="text-xs text-muted-foreground/60 mt-2">{s.source}</p>
               </div>
             ))}
           </div>
