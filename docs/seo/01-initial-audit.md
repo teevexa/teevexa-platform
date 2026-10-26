@@ -71,11 +71,21 @@ Live verification against `https://www.teevexa.com` (before the fix):
 ```
 This was deployed and then re-tested live against `https://www.teevexa.com` with a cache-busted, never-before-seen path. The retired-URL `redirects` added alongside it (below) worked immediately, confirming the new `vercel.json` was live, but `/reset-password`, `/auth`, `/admin` and `/client-portal` still returned Vercel's bare `NOT_FOUND` page. The regex-lookahead theory above was therefore not the complete explanation.
 
-**Second fix applied** (not yet deployed as of this writing): the likely remaining cause is `cleanUrls: true` interacting with a rewrite *destination* that includes a `.html` extension, is a documented Vercel gotcha, since `cleanUrls` can also normalize the destination path, which would make Vercel look for a literal file named `index` (no extension) rather than `index.html`, and fail to find one. The destination was changed to the extension-free root instead:
+**Second fix applied and confirmed deployed**: the remaining cause was `cleanUrls: true` interacting with a rewrite *destination* that includes a `.html` extension, is a documented Vercel gotcha, since `cleanUrls` can also normalize the destination path, which would make Vercel look for a literal file named `index` (no extension) rather than `index.html`, and fail to find one. The destination was changed to the extension-free root instead:
 ```json
 "rewrites": [{ "source": "/(.*)", "destination": "/" }]
 ```
-`/` is already proven to resolve correctly (it is the homepage itself), so this sidesteps the interaction entirely. **This has not yet been verified live**; it needs to be deployed and re-tested the same way the first attempt was, before this finding can be marked resolved. If it still fails, the next diagnostic step is checking the Vercel project dashboard's Framework Preset and Output Directory settings directly, since those are not visible from this repository and could not be ruled out from here.
+`/` is already proven to resolve correctly (it is the homepage itself), so this sidesteps the interaction entirely.
+
+**Confirmed resolved, live.** After this second fix was deployed, all five previously-broken paths were re-tested with fresh, cache-busted requests:
+```
+/reset-password -> 200
+/auth -> 200
+/forgot-password -> 200
+/admin -> 200
+/client-portal -> 200
+```
+The retired-URL redirects (`/teevexa-desk`, `/teevexa-base`) still correctly return `308`, and both known-good static pages (`/`, `/about`) are unaffected, confirming the fix did not regress anything. A genuinely unknown path (`/this-still-doesnt-exist-xyz`) now returns `200` with the SPA shell rather than Vercel's platform error page, which is the expected, documented soft-404 tradeoff from §4.9, not a new issue. This finding is closed.
 
 **Same bug, additional casualty found**: `App.tsx` defines two client-side redirects for retired product URLs, `/teevexa-desk` → `/teedesk` and `/teevexa-base` → `/` (comment: "keep old inbound links working"), using React Router's `<Navigate replace>`. Because neither path is in `PAGES` (so neither is prerendered), both are live-confirmed returning the same bare Vercel 404 instead of redirecting:
 ```
@@ -194,8 +204,8 @@ I have deliberately not invented or assumed any of the following:
 
 | # | Severity | Finding | Status |
 | --- | --- | --- | --- |
-| 1 | Critical | SPA rewrite broken: password reset, auth, admin, portal all return bare 404 in production | **Fixed locally in `vercel.json`; not yet deployed** |
-| 1b | High | Retired-URL redirects (`/teevexa-desk`, `/teevexa-base`) were dead 404s instead of redirecting, same root cause | **Fixed locally with real HTTP 301/308 redirects; not yet deployed** |
+| 1 | Critical | SPA rewrite broken: password reset, auth, admin, portal all return bare 404 in production | **Fixed and confirmed live** (took two attempts; see §4.1) |
+| 1b | High | Retired-URL redirects (`/teevexa-desk`, `/teevexa-base`) were dead 404s instead of redirecting, same root cause | **Fixed and confirmed live** |
 | 2 | High | No publish-triggered rebuild; dynamic content invisible to sitemap/prerender until next deploy | Open; needs a Deploy Hook URL from you |
 | 3 | High | Zero blog posts/case studies/jobs exist; content pipeline is empty | Business/content gap, not a code defect |
 | 4 | Medium-High | Dynamic content body not present in prerendered HTML, metadata-only | Open; scoped fix identified |

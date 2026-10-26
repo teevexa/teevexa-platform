@@ -62,7 +62,9 @@ python3 -c "import json; json.load(open('vercel.json')); print('valid')"
 ```
 Result: valid JSON. This does not verify Vercel's runtime behavior (that requires an actual deployment, which has not happened), only that the file itself is syntactically correct.
 
-## 8. Live HTTP checks against production (performed before any fix was applied)
+## 8. Live HTTP checks against production
+
+**Before any fix** (same session, prior to deploy):
 
 | Path | Status observed |
 | --- | --- |
@@ -72,15 +74,46 @@ Result: valid JSON. This does not verify Vercel's runtime behavior (that require
 | `/teevexa-desk`, `/teevexa-base` | 404 (should redirect) |
 | `/sitemap.xml`, `/robots.txt` | 200 |
 
-These are the findings behind `01-initial-audit.md` §4.1. **They have not been re-checked post-fix, because the fix has not been deployed** (your decision; see `01-initial-audit.md` §9). Re-run the same `curl -o /dev/null -w "%{http_code}"` checks after deploying to confirm the fix in production.
+**After the first deploy** (redirects added, rewrite destination still `/index.html`): redirects (`/teevexa-desk`, `/teevexa-base`) confirmed working (`308`); the five auth/admin/portal paths still returned the Vercel platform 404. This disproved the first rewrite fix and led to the second attempt (destination `/` instead of `/index.html`; see `01-initial-audit.md` §4.1).
 
-## 9. What was explicitly NOT verified, and why
+**After the second deploy**, re-tested with fresh, cache-busted requests:
+
+```
+/reset-password -> 200
+/auth -> 200
+/forgot-password -> 200
+/admin -> 200
+/client-portal -> 200
+/teevexa-desk -> 308
+/teevexa-base -> 308
+/about -> 200
+/ -> 200
+/this-still-doesnt-exist-xyz -> 200 (expected soft-404 shell, see §4.9 of the audit, not a regression)
+```
+
+All previously-broken paths resolve correctly, nothing previously working regressed. **This finding is closed and confirmed in production**, not just locally.
+
+## 9a. Migration and edge function, verified after this report was first drafted
+
+With a temporary Supabase access token, the following were completed and verified live, not just assumed:
+
+- **Migration applied**: `supabase migration list` confirmed only `20261027000000_blog_and_case_study_seo_fields.sql` was pending (everything else already in sync, no drift), then `supabase db push` applied it cleanly. Verified by querying `blog_posts`/`case_studies` for the new columns directly: `200` with an empty array (0 rows, as expected), where the same query returned `400` before the migration.
+- **Edge function deployed**: `supabase functions deploy trigger-rebuild` succeeded. Verified live: an unauthenticated request returns Supabase's own gateway `401`; a request authenticated with only the anon key (no real staff session) returns our function's own `{"error":"Forbidden"}` `403`. This confirms the function is deployed, reachable, and its `isTeam` role gate works, without spending a real Vercel build on the test.
+- **`DEPLOY_HOOK_URL` secret set**: confirmed present via `supabase secrets list` (name and digest shown; the CLI never displays secret values, by design).
+
+## 9c. End-to-end verification with the first real published post, and a real bug it caught
+
+You published the first real post (`your-ai-prototype-works-here-is-what-production-actually-requires`, drafted from `03-keyword-and-content-map.md`). This exercised the full pipeline for the first time with real data, and it worked: `triggerRebuild()` fired, the edge function called the Vercel deploy hook, a new deployment ran, and the live site picked up the new prerendered page and sitemap entry automatically, with no manual deploy step. Verified live: `/insights/<slug>` returns `200` with the correct `<title>`, meta description, canonical URL, `og:type: article`, and `Article` JSON-LD; the sitemap contains the new URL.
+
+**It also caught a real bug.** The prerendered article body was present but empty, just the title and date, no actual content. Root cause: `DYNAMIC`'s `select` string for `blog_posts` in `scripts/seo-lib.mjs` never included the `content` column (it only needed metadata before this engagement added body rendering, and the select list was never updated to match), so `r.content` was `undefined` and `renderMarkdown(undefined)` correctly rendered nothing. The same bug existed for `case_studies` (`challenge`/`solution`/`results` were also missing from that table's select). Both were fixed (`content` added to the `blog_posts` select; `challenge,solution,results` added to the `case_studies` select) and verified by rebuilding locally against the real live database: the regenerated `dist/insights/<slug>/index.html` now contains the full 6,388-character rendered article body, correct heading levels, lists and bold text all intact.
+
+This is exactly the gap flagged in Section 5 of this report before any content existed ("what remains unverified is the full path against a real published row"): the isolated test of `renderMarkdown()` proved the renderer worked, but could not catch a missing database column, since that only surfaces when a real row with real data flows through the real fetch. Noted here as a concrete example of why this report consistently separated "verified in isolation" from "verified end-to-end," rather than treating the former as sufficient.
+
+## 9b. What was explicitly NOT verified, and why
 
 | Item | Why not verified | What would verify it |
 | --- | --- | --- |
-| The `vercel.json` fix actually resolves the 404s in production | Not deployed in this session | Re-run the Section 8 checks against production after deploy |
-| Prerendering/sitemap behavior with a real published blog post | Zero posts exist; migration not applied | Apply the migration, publish one real post, re-run `npm run build`, inspect `dist/insights/<slug>/index.html` |
-| `trigger-rebuild` edge function actually triggers a Vercel build | No `DEPLOY_HOOK_URL` secret exists yet, and the function isn't deployed | Set the secret, deploy the function, publish a post, confirm a new Vercel deployment starts |
+| Prerendering/sitemap behavior with a real published blog post, and the full publish → rebuild → live round trip | Zero posts exist | Publish one real post, confirm the rebuild fires and the resulting deployment includes `dist/insights/<slug>/index.html` |
 | Real Core Web Vitals (LCP/INP/CLS) | No live browser/Lighthouse tool access from this environment | Run PageSpeed Insights or Lighthouse against `https://www.teevexa.com` |
 | Structured data renders correctly in Google's Rich Results Test | No live browser access to submit a URL to Google's tool | Paste `https://www.teevexa.com` and a couple of inner pages into `https://search.google.com/test/rich-results` |
 | Whether `teevexa.com` apex redirects to `www.teevexa.com` | DNS/domain configuration outside this repository | Check in Vercel's domain settings, or `curl -I https://teevexa.com` |
@@ -96,4 +129,5 @@ These are the findings behind `01-initial-audit.md` §4.1. **They have not been 
 | New rendering logic | Verified in isolation |
 | Sitemap/prerender counts | Reconcile exactly with the code |
 | `vercel.json` syntax | Valid |
-| Live production fix | Not yet verifiable (not deployed) |
+| Live production fix | Confirmed, deployed and re-tested live (took two attempts) |
+| Migration, edge function, deploy hook secret | All three applied and verified live |

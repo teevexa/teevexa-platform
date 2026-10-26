@@ -57,7 +57,7 @@ export async function fetchRows(table, select, filter) {
 }
 
 export const DYNAMIC = [
-  { table: "blog_posts", base: "/insights", select: "slug,title,excerpt,cover_image_url,published_at,updated_at,meta_title,meta_description,seo_noindex,author_name", filter: "status=eq.published" },
-  { table: "case_studies", base: "/portfolio", select: "slug,title,description,cover_image_url,published_at,updated_at,meta_title,meta_description,seo_noindex", filter: "status=eq.published" },
+  { table: "blog_posts", base: "/insights", select: "slug,title,content,excerpt,cover_image_url,published_at,updated_at,meta_title,meta_description,seo_noindex,author_name", filter: "status=eq.published" },
+  { table: "case_studies", base: "/portfolio", select: "slug,title,description,challenge,solution,results,cover_image_url,published_at,updated_at,meta_title,meta_description,seo_noindex", filter: "status=eq.published" },
   { table: "jobs", base: "/careers", select: "slug,title,department,location,employment_type,description,created_at,updated_at", filter: "status=eq.open" },
 ];

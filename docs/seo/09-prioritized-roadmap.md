@@ -6,10 +6,12 @@ Every item below is cross-referenced to where it's explained in full. Severity/p
 
 | Item | Why now | Reference |
 | --- | --- | --- |
-| Deploy the `vercel.json` fix | Password reset, direct admin/portal access, and the two retired-URL redirects are broken in production right now | `01-initial-audit.md` §4.1, `06-implementation-log.md` |
-| Apply the `blog_and_case_study_seo_fields` migration | Blocks the new admin SEO fields from saving; low-risk, additive, nullable | `06-implementation-log.md` |
-| Create the Vercel Deploy Hook and set `DEPLOY_HOOK_URL` | Unblocks automatic rebuild-on-publish; a five-minute dashboard task | `06-implementation-log.md` §"What needs to happen outside this session" |
-| Deploy the `trigger-rebuild` edge function | Completes the above | Same |
+| ~~Deploy the `vercel.json` fix~~ | **Done.** Confirmed live: password reset, auth, admin, portal and the two retired-URL redirects all resolve correctly in production as of this writing | `01-initial-audit.md` §4.1, `07-validation-report.md` §8 |
+| ~~Apply the `blog_and_case_study_seo_fields` migration~~ | **Done.** Applied and verified live | `06-implementation-log.md`, `07-validation-report.md` §9a |
+| ~~Create the Vercel Deploy Hook and set `DEPLOY_HOOK_URL`~~ | **Done.** | Same |
+| ~~Deploy the `trigger-rebuild` edge function~~ | **Done.** Deployed and verified live (role gate confirmed working) | Same |
+
+All four immediate items from this engagement are now complete. The only thing left in this bucket is end-to-end verification once real content is published (see Short-term, below).
 
 ## Short-term (this month)
 
