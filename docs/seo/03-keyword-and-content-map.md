@@ -41,7 +41,7 @@ Since zero blog posts, case studies or jobs currently exist (confirmed in `01-in
 
 These follow directly from the site's own differentiators, which is the right starting point when there is no query data yet:
 
-1. A detailed walkthrough of taking a Lovable/Bolt/v0/Cursor prototype to production (directly supports `/prototype-to-production`, and is genuinely underserved content: most "AI app builder" content is about building the prototype, not what comes after).
+1. A detailed walkthrough of taking a Lovable/Bolt/v0/Cursor prototype to production (directly supports `/prototype-to-production`). **Published during this engagement** as the first real post; see §5 for a corrected, search-verified read on how competitive this topic actually is.
 2. A technical piece on offline-first mobile architecture (directly supports `/services/mobile-development` and both Android products; Teevexa has real, shipped proof of this, which is a legitimate expertise claim, not a marketing assertion).
 3. A piece on integrating regional African payment gateways (M-Pesa, Pesapal, Flutterwave) into a web app, which supports `/services/e-commerce-systems` and is a narrow enough topic that it is unlikely to face the same competition as generic "how to accept online payments" content.
 4. A supply chain traceability / compliance explainer (EUDR-style reporting is mentioned in the Trace product; a plain-language explainer of what compliance reporting actually requires would support `/teevexa-trace` and `/api-docs`).
@@ -54,20 +54,31 @@ For every future blog post, case study, or job posting, the question to ask befo
 
 ## 4. Internal linking gaps found during the audit
 
-- **`/prototype-to-production`** (priority 0.95, the second-highest-priority page on the site after the homepage) is not linked from the main navigation in a prominent way relative to its priority (confirmed by reading `Navbar.tsx`'s structure during the broader audit; it is reachable but not a top-level nav item the way `/services` is). Given this is the site's most differentiated page, consider a dedicated homepage section or banner linking to it, not just a services sub-link. This is a content/design decision, not a code defect; flagged here as an opportunity rather than implemented unilaterally, since it affects the homepage's visual design.
+- **`/prototype-to-production`** (priority 0.95, the second-highest-priority page on the site after the homepage): initially flagged here as needing more prominent linking, based on `Navbar.tsx` alone not listing it as a top-level item. On closer inspection of `Index.tsx`, that concern doesn't hold up: the homepage already has a dedicated section for it directly below the hero and stats bar (`Index.tsx` lines 182-208), a glass card with its own headline, a bulleted feature list, and two calls to action (`Price my prototype`, `How it works`), well ahead of the generic services section. `Footer.tsx` also links it directly. **Correcting the record**: no further internal-linking work is needed here; the earlier recommendation in this document and in `09-prioritized-roadmap.md` is withdrawn.
 - **`/open-source`** and its two project pages are not linked from `/services` at all, even though `TeeDesk` and `CyberGuard AI` double as credibility/portfolio evidence for engineering capability. `/portfolio` does link to them (confirmed in `Portfolio.tsx`), which is the right primary location; a secondary mention from `/about` (engineering culture/credibility) would reinforce entity signals for AI-search purposes (Section 7 of `01-initial-audit.md`) without duplicating `/portfolio`'s role.
 - Once blog content exists, every post should link to at least one relevant service, product, or portfolio page (Section 3 above) and the relevant service/product pages should, over time, link back to the posts that support them. This is a two-way linking discipline to establish from the first post, not retrofit later.
 
-## 5. Why `/prototype-to-production` deserves disproportionate attention
+## 5. Why `/prototype-to-production` deserves attention, corrected with real search data
 
-This is the one page on the site targeting a genuinely novel, well-defined, lower-competition search intent: businesses and individuals who used an AI app builder (Lovable, Bolt, v0, Cursor, or similar) to get a working prototype, and now need it hardened, secured, and deployed for real users. This is:
+**Correction to an earlier claim in this document**: this section originally described the "AI prototype to production" intent as "lower-competition" and "genuinely underserved," based on reasoning about the market rather than an actual search. A real `WebSearch` run during this engagement (query: "AI prototype to production Lovable Bolt v0 Cursor security audit") disproved that: this is an **actively contested space**, not a gap. Real competitors found include RaftLabs, Pagepro, Southleft, Magora, DreamzTech, and multiple individual freelancers offering near-identical "AI-built app security and code audit" services on Upwork and Contra. `teevexa.com` does not appear anywhere in these results, which is the honest current baseline, not a ranking yet, for a brand-new post on a young site.
 
-- A real, current market gap (AI app builders are new enough that "what happens after the prototype" content is genuinely underserved, as of this audit).
-- Something Teevexa can substantiate with real work (this is explicitly how Teevexa positions itself per `prototype-to-production`'s FAQ and the site's own copy).
-- Already reasonably well optimized at the page level (title, description, `Service` + `FAQPage` JSON-LD all present and correct, per `02-url-inventory.md`).
+This does not mean the page or the first blog post built around it were a wrong choice. It means the opportunity is **differentiation and execution within a real market**, not an empty field:
 
-The gap is distribution, not on-page optimization: more internal links pointing at it, and the first blog posts (Section 3) reinforcing it. This is the single highest-leverage, lowest-cost recommendation in this entire content strategy.
+- Teevexa can substantiate its version of this with real work (this is explicitly how Teevexa positions itself per `prototype-to-production`'s FAQ and the site's own copy), which not every competitor in the search results above can claim as credibly.
+- The page is already reasonably well optimized at the page level (title, description, `Service` + `FAQPage` JSON-LD all present and correct, per `02-url-inventory.md`).
+- Competing well here means the content needs to be genuinely more specific and useful than the search results above, not just present. The first blog post (`03-keyword-and-content-map.md` §3, published during this engagement) leads with a concrete checklist rather than generic claims, which is a reasonable starting position but will need to earn its ranking against real competition over time, not assume one by default.
 
-## 6. What I will not do
+The original "highest-leverage, lowest-cost" framing is replaced with a more honest one: this is a worthwhile, defensible position to build from, in a market that has to be competed in, not a gap that can be filled once and left alone.
+
+## 6. Real search-visibility baseline for the other content-map hypotheses
+
+Two more `WebSearch` checks run during this engagement, to validate hypotheses rather than leave them all as guesses:
+
+- **"offline-first mobile app development company Africa"**: a genuinely thinner field. One real specialist found (a firm describing local-first sync, conflict resolution and queued operations for low-bandwidth environments), versus the crowded result for the prototype-to-production query above. This supports the original hypothesis for this topic better than the prototype-to-production one did; `teevexa.com` does not appear, same honest baseline.
+- **"software development company Nairobi AI native"**: a crowded local market, not a gap. Multiple real Nairobi-based competitors surfaced directly (Moshcode Studio, Qaribuhub, Afrisyntech, VelocityAI Solutions, Tripleaim Software), and GoodFirms alone lists 132 software development companies in Kenya as of August 2026. `teevexa.com` does not appear in the search results, and **Teevexa is not listed on GoodFirms**, which turns the speculative "consider business directories" suggestion in `05-ai-search-strategy.md` §3 into a concrete, verified gap: GoodFirms specifically, and likely comparable directories (Clutch, The Manifest, which also surfaced in these results), do not currently list Teevexa at all.
+
+This is a small, representative sample, three queries, not a full keyword audit, but it is three real data points instead of zero, and it already corrected one of this document's own hypotheses (§5). Treat the rest of this document's keyword hypotheses with the same scrutiny before relying on them for content decisions; see the caveat at the top of this document.
+
+## 7. What I will not do
 
 Per this engagement's explicit rules: no keyword-stuffed pages, no doorway pages, no artificial location pages (Teevexa serves "Worldwide" from one Nairobi base; there is no legitimate second office or service area to build a page for), and no mass-produced near-duplicate articles targeting keyword variations. A keyword list with fifty variations of "software development company X" does not justify fifty pages; it justifies one well-targeted page (which already exists: `/`) and, at most, a handful of genuinely distinct service pages (which also already exist).

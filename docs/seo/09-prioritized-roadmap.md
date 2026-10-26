@@ -17,13 +17,13 @@ All four immediate items from this engagement are now complete. The only thing l
 
 | Item | Why | Reference |
 | --- | --- | --- |
-| Publish the first 2-3 blog posts, chosen from `03-keyword-and-content-map.md` §3, each linking to the static page it supports | The single biggest lever available: right now the "content marketing" half of this engagement has nothing to work with | `03-keyword-and-content-map.md` |
-| Run PageSpeed Insights against the homepage and 2-3 inner pages; record real LCP/INP/CLS numbers | No real Core Web Vitals baseline exists yet; needed before claiming any performance improvement | `04-technical-seo-plan.md` §4, `07-validation-report.md` §9 |
-| Submit a couple of URLs to Google's Rich Results Test to confirm the structured data renders as expected in Google's own tooling | Haven't been able to verify this from this environment | `07-validation-report.md` §9 |
-| Confirm `teevexa.com` (apex) correctly redirects to `www.teevexa.com` | Canonical host consistency; a 2-minute DNS/Vercel domain check | `01-initial-audit.md` §9 |
-| Audit the `SOCIAL_PROFILES` links for liveness/branding consistency | Entity trust signal; a 10-minute manual check | `05-ai-search-strategy.md` §3 |
-| Reconcile `03-keyword-and-content-map.md`'s keyword hypotheses against real Search Console query data, now that GSC access is confirmed | Replace guesses with real data where it exists | `03-keyword-and-content-map.md` (caveat at top) |
-| Give `/prototype-to-production` more prominent internal linking (homepage section, not just a services sub-link) | Highest-leverage, lowest-cost content opportunity identified in this engagement | `03-keyword-and-content-map.md` §5 |
+| ~~Publish the first blog post~~ | **Done.** Published, pipeline verified end to end, caught and fixed a real content-rendering bug along the way. Two more drafted (offline-first mobile architecture, regional payment gateways), ready for you to review and publish the same way. | `03-keyword-and-content-map.md`, `07-validation-report.md` §9c |
+| Run PageSpeed Insights; record real LCP/INP/CLS numbers | **Attempted, blocked on a missing API key**, not skipped. See `07-validation-report.md` §9. | `04-technical-seo-plan.md` §4 |
+| Submit a couple of URLs to Google's Rich Results Test | **Substituted with a manual, evidence-based validation** of the real live JSON-LD against schema.org's requirements (all passed); Google's own tool needs a JS session I don't have. See `04-technical-seo-plan.md` §5. | `07-validation-report.md` §9 |
+| ~~Confirm `teevexa.com` (apex) correctly redirects to `www.teevexa.com`~~ | **Done, confirmed correct.** `308` to the canonical host, normal 2-hop chain. No issue found. | `07-validation-report.md` §9 |
+| ~~Audit the `SOCIAL_PROFILES` links for liveness/branding consistency~~ | **Done.** All seven resolve to real, correctly-branded Teevexa profiles. Found two real issues: LinkedIn's About text spells the company name three different ways, and LinkedIn's "Founded" field (2025) doesn't match the website's (2026). Both need fixing on LinkedIn directly. | `05-ai-search-strategy.md` §3 |
+| Reconcile `03-keyword-and-content-map.md`'s keyword hypotheses against real Search Console query data | Still needs you: Search Console's own query data, not something I can pull without API/OAuth access I don't have in this environment. Partially substituted with three real `WebSearch` baseline checks, which already corrected one hypothesis (`03-keyword-and-content-map.md` §5-6) and surfaced a concrete directory-listing gap (GoodFirms, `05-ai-search-strategy.md` §3). | `03-keyword-and-content-map.md` §6 |
+| ~~Give `/prototype-to-production` more prominent internal linking~~ | **Withdrawn.** On inspection, a dedicated homepage section already exists (`Index.tsx` lines 182-208) with its own headline, bullets and two CTAs; the earlier recommendation was based on checking `Navbar.tsx` alone and not catching this. See `03-keyword-and-content-map.md` §4 for the correction. | `03-keyword-and-content-map.md` §4 |
 
 ## Medium-term (this quarter)
 

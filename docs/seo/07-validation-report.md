@@ -114,9 +114,10 @@ This is exactly the gap flagged in Section 5 of this report before any content e
 | Item | Why not verified | What would verify it |
 | --- | --- | --- |
 | Prerendering/sitemap behavior with a real published blog post, and the full publish → rebuild → live round trip | Zero posts exist | Publish one real post, confirm the rebuild fires and the resulting deployment includes `dist/insights/<slug>/index.html` |
-| Real Core Web Vitals (LCP/INP/CLS) | No live browser/Lighthouse tool access from this environment | Run PageSpeed Insights or Lighthouse against `https://www.teevexa.com` |
-| Structured data renders correctly in Google's Rich Results Test | No live browser access to submit a URL to Google's tool | Paste `https://www.teevexa.com` and a couple of inner pages into `https://search.google.com/test/rich-results` |
-| Whether `teevexa.com` apex redirects to `www.teevexa.com` | DNS/domain configuration outside this repository | Check in Vercel's domain settings, or `curl -I https://teevexa.com` |
+| Real Core Web Vitals (LCP/INP/CLS) | Attempted via the real PageSpeed Insights API; it returned `429` with `quota_limit_value: "0"` for unauthenticated use, confirmed a hard requirement for an API key, not a retry-later rate limit | Run PageSpeed Insights yourself at pagespeed.web.dev (no key needed for the human-facing tool), or give me a free Google Cloud API key and I will run it |
+| Structured data renders correctly in Google's Rich Results Test specifically | The tool's own page requires client-side JavaScript to run a validation (confirmed: fetching it returns only the empty input form); substituted with a manual, evidence-based check of the real live JSON-LD from four representative pages against schema.org's documented requirements, all passed (`04-technical-seo-plan.md` §5) | Paste `https://www.teevexa.com` and the published post's URL into `https://search.google.com/test/rich-results` yourself for Google's own verdict |
+
+**Resolved, not just attempted**: whether `teevexa.com` apex redirects to `www.teevexa.com`. Checked directly: `https://teevexa.com/` returns `308` to `https://www.teevexa.com/`, and `http://teevexa.com/` resolves to the canonical host in a normal 2-hop chain (`http → https apex → https www`, `curl -L` confirms `num_redirects: 2`, final status `200`). Canonical host is correctly enforced; no issue found.
 
 ## 10. Summary
 
