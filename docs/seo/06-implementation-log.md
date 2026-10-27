@@ -28,8 +28,9 @@ Nothing in this session was committed or pushed. All changes below exist only in
 | --- | --- |
 | `supabase/migrations/20261027000000_blog_and_case_study_seo_fields.sql` | Adds `meta_title`, `meta_description`, `seo_noindex`, `author_name` (blog only) columns. Additive, nullable, no RLS changes, no data migration needed. **Not yet applied to the database** (see below). |
 | `supabase/functions/trigger-rebuild/index.ts` | New edge function, gated to staff roles (`getCaller(...).isTeam`), that POSTs to a `DEPLOY_HOOK_URL` secret to trigger a Vercel rebuild. Rate-limited to once per minute in-process. Responds `{ skipped: true }` rather than erroring when the secret isn't set, so a missing deploy hook can never block someone from publishing content. |
-| `docs/seo/01-initial-audit.md` through `09-prioritized-roadmap.md` | This engagement's required documentation set |
+| `docs/seo/01-initial-audit.md` through `10-search-visibility-log.md` | This engagement's documentation set |
 | `docs/seo/02-url-inventory.csv` | Machine-readable companion to the URL inventory |
+| `public/llms.txt` | Added after a real PageSpeed Insights run showed Lighthouse's new Agentic Browsing category checking for one; reverses the earlier "wait" recommendation with concrete new evidence. Built from the same verified facts as the rest of the site, no new claims. See `05-ai-search-strategy.md` §4. |
 
 ## What needs to happen outside this session, in order
 

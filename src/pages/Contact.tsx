@@ -233,7 +233,7 @@ const Contact = () => {
                   {[
                     { href: "https://www.linkedin.com/company/teevexa", icon: Linkedin,  label: "LinkedIn" },
                     { href: "https://www.instagram.com/teevexa",        icon: Instagram, label: "Instagram" },
-                    { href: "https://x.com/teevexa",                    icon: Twitter,   label: "X" },
+                    { href: "https://x.com/teevexa_",                   icon: Twitter,   label: "X" },
                     { href: "https://www.facebook.com/teevexa",          icon: Facebook,  label: "Facebook" },
                   ].map(({ href, icon: Icon, label }) => (
                     <a

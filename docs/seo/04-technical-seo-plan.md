@@ -45,6 +45,26 @@ I did not run a live Lighthouse/PageSpeed Insights measurement against the produ
 
 **What I recommend doing next**: either (a) run `https://pagespeed.web.dev/` yourself against `https://www.teevexa.com` for the homepage and one or two inner pages, no key needed for the human-facing tool, or (b) give me a free Google Cloud API key with the PageSpeed Insights API enabled and I will run it and record the real numbers here. I have deliberately not invented or estimated LCP/INP/CLS values in their place.
 
+**Resolved: real measurement obtained (2026-10-27).** You ran `pagespeed.web.dev` against the homepage yourself and shared both reports.
+
+| Metric | Desktop | Mobile |
+| --- | --- | --- |
+| Performance score | 98 | 78 |
+| Accessibility / Best Practices / SEO | 100 / 100 / 100 | 100 / 100 / 100 |
+| FCP | 0.8s | 3.8s |
+| LCP | 0.9s | 4.1s |
+| TBT | 0ms | 0ms |
+| CLS | **0** | **0** |
+| Speed Index | 0.8s | 3.8s |
+
+Both reports show "Discover what your real users are experiencing: No Data", meaning Google has no CrUX field data for this domain yet (too young/low-traffic to have accumulated it). This lab score, especially the mobile 78, is measured under Lighthouse's deliberately pessimistic "Slow 4G" throttling profile, not representative of most real visitors' actual connections, and Core Web Vitals as an actual Google ranking signal is based on real-user field data, which doesn't exist yet for this domain either way.
+
+**CLS = 0 on both confirms a judgment call from earlier in this plan was correct**: the decision not to add explicit `width`/`height` attributes to images, reasoning that the existing Tailwind `aspect-video`/fixed-height containers already prevented layout shift, is now empirically validated rather than just argued.
+
+**The flagged "177 KiB unused JavaScript" was investigated, not assumed.** The concern was that the admin dashboard's charting library (Recharts, ~368 KB) might be leaking into the public bundle. Checked directly against the real build output (`npm run build`): it isn't, Recharts' heavy code (`generateCategoricalChart-*.js`) sits in its own separate chunk, never downloaded by a public visitor, confirming the bundle-size note earlier in this document was accurate. The actual cause is that `App.tsx` imports every public page eagerly rather than route-splitting them the way admin/portal routes already are, so visiting the homepage downloads code for pages not yet visited. This is a real, fixable architectural choice, but a genuine trade-off (instant public-page navigation today vs. a brief first-visit loading flicker if split), not a bug; given scores are already strong, this is left as an optional future item, not implemented, pending your input on whether the trade-off is worth it.
+
+**Render-blocking requests (160ms desktop, 750ms mobile) is most likely the Google Fonts `<link>`**, exactly the self-hosting option flagged earlier in this document as "worth doing once there's a measured baseline." That baseline now exists; self-hosting the fonts is proposed but not yet implemented, pending your go-ahead since it touches every page's font loading.
+
 ## 5. Structured data
 
 All structured data in the codebase was audited (full list in `01-initial-audit.md` §3) before any change was made, per this engagement's explicit instruction. Changes made:
@@ -60,5 +80,8 @@ All structured data in the codebase was audited (full list in `01-initial-audit.
 1. ~~**Vercel Deploy Hook URL**~~ **Done.** You created the hook, I deployed `trigger-rebuild` and set the secret; both verified live (see `06-implementation-log.md`, `07-validation-report.md` §9a/§9c), and proven end-to-end when the first real post published itself through the pipeline automatically.
 2. ~~**Apply the database migration**~~ **Done.** Applied and verified live.
 3. **Edge Middleware for true 404s**: deferred; see `01-initial-audit.md` §4.9 and `09-prioritized-roadmap.md`.
-4. **Real Core Web Vitals measurement**: attempted via the real API, blocked on a missing API key (see above), not a code-access problem.
-5. **Font self-hosting**: deferred, flagged as a possible future optimization only.
+4. ~~**Real Core Web Vitals measurement**~~ **Done.** You ran `pagespeed.web.dev` and shared real desktop and mobile reports; see above.
+5. **Font self-hosting**: no longer a speculative "maybe," there's now a real measured baseline (160-750ms render-blocking) justifying it; proposed, awaiting your go-ahead to implement since it changes font loading on every page.
+6. **Public-page route-splitting**: identified as the real cause of the "unused JavaScript" flag, not Recharts leakage as initially suspected. Real trade-off (first-visit loading flicker vs. today's instant navigation); not implemented, needs your input on whether it's worth it given scores are already strong.
+7. **`llms.txt`**: added (`public/llms.txt`), reversing the earlier "wait" recommendation in `05-ai-search-strategy.md` after Lighthouse's new Agentic Browsing category (Lighthouse 13.3, ~2026-05) started checking for one directly, concrete new evidence, not present when the original call was made.
+8. **WebMCP / the "Agentic Browsing" `ai-catalog.json` check**: deliberately not pursued. Genuinely experimental (most sites fail this check currently), the browser API itself is still being defined, and implementing it would be real speculative engineering against an unstable spec. Revisit in 6-12 months, not now.

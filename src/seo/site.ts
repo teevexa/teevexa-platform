@@ -4,13 +4,13 @@
 export const SITE_URL = "https://www.teevexa.com";
 export const SITE_NAME = "Teevexa";
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.png`;
-export const TWITTER_HANDLE = "@teevexa";
+export const TWITTER_HANDLE = "@teevexa_";
 export const LOCALE = "en_US";
 export const THEME_COLOR = "#0e7490";
 
 export const SOCIAL_PROFILES = [
   "https://www.linkedin.com/company/teevexa",
-  "https://x.com/teevexa",
+  "https://x.com/teevexa_",
   "https://www.instagram.com/teevexa",
   "https://www.facebook.com/teevexa",
   "https://www.tiktok.com/@teevexa",

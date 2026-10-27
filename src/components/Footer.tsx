@@ -12,7 +12,7 @@ const TikTokIcon = ({ size = 18 }: { size?: number }) => (
 const socials = [
   { href: "https://www.linkedin.com/company/teevexa", label: "LinkedIn", icon: <Linkedin size={18} /> },
   { href: "https://www.instagram.com/teevexa", label: "Instagram", icon: <Instagram size={18} /> },
-  { href: "https://x.com/teevexa", label: "X (Twitter)", icon: <Twitter size={18} /> },
+  { href: "https://x.com/teevexa_", label: "X (Twitter)", icon: <Twitter size={18} /> },
   { href: "https://www.facebook.com/teevexa", label: "Facebook", icon: <Facebook size={18} /> },
   { href: "https://www.tiktok.com/@teevexa", label: "TikTok", icon: <TikTokIcon size={18} /> },
   { href: "https://www.youtube.com/@teevexa", label: "YouTube", icon: <Youtube size={18} /> },

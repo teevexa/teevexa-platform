@@ -1,0 +1,41 @@
+# Teevexa
+
+> Nairobi-based engineering team building custom software, AI agents and production-ready apps for businesses worldwide.
+
+Teevexa Ltd is a Kenya-registered, AI-native product engineering company founded in March 2026 by Benjamin Baya. It builds custom software for clients worldwide and ships its own supply chain traceability products. It is remote-first, based in Nairobi, Kenya.
+
+## Services
+
+- [Software Development Services](https://www.teevexa.com/services): Overview of all services below.
+- [AI Agent Development](https://www.teevexa.com/services/ai-agents): Custom AI agents using open-source, self-hosted models, no per-query API fees.
+- [Web Development](https://www.teevexa.com/services/web-development): Custom web applications, from marketing sites to SaaS platforms.
+- [Mobile Development](https://www.teevexa.com/services/mobile-development): Cross-platform iOS and Android apps with offline-first architecture.
+- [E-Commerce Systems](https://www.teevexa.com/services/e-commerce-systems): Commerce platforms with global (Stripe, PayPal) and regional (M-Pesa, Pesapal, Flutterwave) payment gateways.
+- [Enterprise Software](https://www.teevexa.com/services/enterprise-software): Custom ERP, CRM and workflow automation.
+- [UI/UX Design](https://www.teevexa.com/services/ui-ux-design): Research-driven design systems and accessible interfaces.
+- [Prototype to Production](https://www.teevexa.com/prototype-to-production): Security hardening, live payments, deployment and support for apps built with AI tools (Lovable, Bolt, v0, Cursor).
+
+## Products
+
+- [Teevexa Trace](https://www.teevexa.com/teevexa-trace): Supply chain traceability app with QR verification and blockchain-anchored audit trails. Live on Google Play.
+- [Teevexa Field](https://www.teevexa.com/teevexa-field): Offline-first companion app for supply chain field agents. Live on Google Play.
+- [Public batch verification](https://www.teevexa.com/verify): Account-less lookup of a product's supply chain history by batch ID.
+- [Teevexa Trace API docs](https://www.teevexa.com/api-docs): REST API for programmatic batch verification.
+
+## Open source
+
+- [TeeDesk](https://www.teevexa.com/teedesk): Open-source AI customer support platform. Self-hosted, local LLMs via Ollama, no paid AI APIs. Source: https://github.com/teevexa/teedesk
+- [CyberGuard AI](https://www.teevexa.com/cyberguard-ai): Open-source AI-enhanced threat detection. Source: https://github.com/teevexa/cyberguard-ai
+
+## Company
+
+- [About](https://www.teevexa.com/about): Company background and founding story.
+- [Our Work](https://www.teevexa.com/portfolio): Products built and client case studies.
+- [Insights](https://www.teevexa.com/insights): Engineering blog.
+- [Careers](https://www.teevexa.com/careers): Open roles, remote-first.
+- [Contact](https://www.teevexa.com/contact): hello@teevexa.com
+
+## Optional
+
+- [Get a quote](https://www.teevexa.com/start-project): Account-less project quote funnel, response within 24 hours.
+- [Accessibility statement](https://www.teevexa.com/accessibility)
