@@ -7,39 +7,44 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import Layout from "@/components/Layout";
 import Index from "@/pages/Index";
-import About from "@/pages/About";
-import Services from "@/pages/Services";
-import ServiceDetail from "@/pages/ServiceDetail";
-import Contact from "@/pages/Contact";
-import StartProject from "@/pages/StartProject";
-import BookConsultation from "@/pages/BookConsultation";
-import Auth from "@/pages/Auth";
-import ForgotPassword from "@/pages/ForgotPassword";
-import ResetPassword from "@/pages/ResetPassword";
-import Careers from "@/pages/Careers";
-import CareerDetail from "@/pages/CareerDetail";
-import Insights from "@/pages/Insights";
-import InsightDetail from "@/pages/InsightDetail";
-import PrivacyPolicy from "@/pages/PrivacyPolicy";
-import TermsOfService from "@/pages/TermsOfService";
-import CookiePolicy from "@/pages/CookiePolicy";
 import { CookieBanner } from "@/components/CookieBanner";
 import NotFound from "@/pages/NotFound";
-import TeevexaTrace from "@/pages/TeevexaTrace";
-import TeeDesk from "@/pages/TeeDesk";
-import OpenSource from "@/pages/OpenSource";
-import CyberGuardAI from "@/pages/CyberGuardAI";
-import Accessibility from "@/pages/Accessibility";
-import Portfolio from "@/pages/Portfolio";
-import PortfolioDetail from "@/pages/PortfolioDetail";
-import PrototypeToProduction from "@/pages/PrototypeToProduction";
-import TeevexaField from "@/pages/TeevexaField";
-import AccountDeletion from "@/pages/AccountDeletion";
-import TraceBatch from "@/pages/TraceBatch";
-import VerifyBatch from "@/pages/VerifyBatch";
-import Pricing from "@/pages/Pricing";
-import ApiDocs from "@/pages/ApiDocs";
 import ScrollToTop from "@/components/ScrollToTop";
+
+// Every public page below Index is loaded on demand: a visitor landing on the homepage (the most
+// common entry point) gets the smallest possible bundle, and the code for pages they never visit
+// is never downloaded. Index and Layout stay static so the most common first paint has zero extra
+// network round trip. See docs/seo/04-technical-seo-plan.md for the measured justification.
+const About = lazy(() => import("@/pages/About"));
+const Services = lazy(() => import("@/pages/Services"));
+const ServiceDetail = lazy(() => import("@/pages/ServiceDetail"));
+const Contact = lazy(() => import("@/pages/Contact"));
+const StartProject = lazy(() => import("@/pages/StartProject"));
+const BookConsultation = lazy(() => import("@/pages/BookConsultation"));
+const Auth = lazy(() => import("@/pages/Auth"));
+const ForgotPassword = lazy(() => import("@/pages/ForgotPassword"));
+const ResetPassword = lazy(() => import("@/pages/ResetPassword"));
+const Careers = lazy(() => import("@/pages/Careers"));
+const CareerDetail = lazy(() => import("@/pages/CareerDetail"));
+const Insights = lazy(() => import("@/pages/Insights"));
+const InsightDetail = lazy(() => import("@/pages/InsightDetail"));
+const PrivacyPolicy = lazy(() => import("@/pages/PrivacyPolicy"));
+const TermsOfService = lazy(() => import("@/pages/TermsOfService"));
+const CookiePolicy = lazy(() => import("@/pages/CookiePolicy"));
+const TeevexaTrace = lazy(() => import("@/pages/TeevexaTrace"));
+const TeeDesk = lazy(() => import("@/pages/TeeDesk"));
+const OpenSource = lazy(() => import("@/pages/OpenSource"));
+const CyberGuardAI = lazy(() => import("@/pages/CyberGuardAI"));
+const Accessibility = lazy(() => import("@/pages/Accessibility"));
+const Portfolio = lazy(() => import("@/pages/Portfolio"));
+const PortfolioDetail = lazy(() => import("@/pages/PortfolioDetail"));
+const PrototypeToProduction = lazy(() => import("@/pages/PrototypeToProduction"));
+const TeevexaField = lazy(() => import("@/pages/TeevexaField"));
+const AccountDeletion = lazy(() => import("@/pages/AccountDeletion"));
+const TraceBatch = lazy(() => import("@/pages/TraceBatch"));
+const VerifyBatch = lazy(() => import("@/pages/VerifyBatch"));
+const Pricing = lazy(() => import("@/pages/Pricing"));
+const ApiDocs = lazy(() => import("@/pages/ApiDocs"));
 
 // Portal and admin are only needed after sign-in: load them on demand to keep the public bundle small.
 const PortalLayout = lazy(() => import("@/components/portal/PortalLayout"));

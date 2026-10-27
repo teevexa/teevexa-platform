@@ -21,6 +21,10 @@ Nothing in this session was committed or pushed. All changes below exist only in
 | `src/pages/admin/AdminCareers.tsx` | Calls `triggerRebuild()` after creating a job (jobs are published immediately by this form, there is no draft state) | Keeps the sitemap/prerender current without waiting for the next code deploy |
 | `src/lib/functions.ts` | Added `triggerRebuild()`, a fire-and-forget wrapper around the new `trigger-rebuild` edge function that never throws and never blocks a save | Shared helper used by all three admin editors above |
 | `src/test/seo.test.ts` | Added two tests asserting `articleLd`'s new author behavior (Person when given, Organization fallback otherwise) | Per the brief's instruction to add automated tests for shared structured-data generation where practical |
+| `src/App.tsx` | Every public page except `Index` and `Layout` converted from static `import` to `React.lazy()`, using the same `Suspense`/`RouteFallback` pattern already in place for admin/portal | Real PageSpeed Insights run flagged 177 KiB of unused JS on first load; confirmed (not assumed) this was public pages being bundled eagerly, not Recharts leaking in. Main bundle: 606 KB → 178 KB. See `04-technical-seo-plan.md` §4. |
+| `src/index.css` | Added `@font-face` rules for self-hosted Inter and Sora (variable fonts, latin + latin-ext subsets) | Replaces the external Google Fonts stylesheet; see `index.html` row below |
+| `index.html` | Removed the external Google Fonts `<link rel="stylesheet">` and its two `preconnect` tags; added `<link rel="preload">` for the two primary (latin) font files | Real PageSpeed run measured 160-750ms of render-blocking time from this external request |
+| `src/seo/site.ts`, `src/pages/Contact.tsx` | Fixed the X/Twitter handle (`teevexa` → `teevexa_`) in `TWITTER_HANDLE`, `SOCIAL_PROFILES`, and a hardcoded link in `Contact.tsx`, all of which had drifted out of sync with a handle change you'd already made in `Footer.tsx` | Found while reviewing `git status` for unrelated changes; confirmed the correct handle with you before fixing, rather than guessing which of the two was right |
 
 ## Files created
 
@@ -31,6 +35,7 @@ Nothing in this session was committed or pushed. All changes below exist only in
 | `docs/seo/01-initial-audit.md` through `10-search-visibility-log.md` | This engagement's documentation set |
 | `docs/seo/02-url-inventory.csv` | Machine-readable companion to the URL inventory |
 | `public/llms.txt` | Added after a real PageSpeed Insights run showed Lighthouse's new Agentic Browsing category checking for one; reverses the earlier "wait" recommendation with concrete new evidence. Built from the same verified facts as the rest of the site, no new claims. See `05-ai-search-strategy.md` §4. |
+| `public/fonts/{inter,sora}-{latin,latin-ext}.woff2` | 4 variable-font files (~167 KB total), downloaded once from Google Fonts' own CDN and now self-hosted | Removes the external Google Fonts request entirely; see `04-technical-seo-plan.md` §4 |
 
 ## What needs to happen outside this session, in order
 
