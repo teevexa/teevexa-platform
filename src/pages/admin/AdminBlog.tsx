@@ -14,6 +14,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { logAudit } from "@/lib/audit";
 import { triggerRebuild } from "@/lib/functions";
+import { validateSeoFields } from "@/lib/seoValidation";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Plus, FileText, Pencil, Trash2, Bold, Italic, Heading2, Link2, Code2, List } from "lucide-react";
 
@@ -71,6 +72,25 @@ const AdminBlog = () => {
       toast({ title: "Title and content are required", variant: "destructive" });
       return;
     }
+
+    const validationError = await validateSeoFields({
+      table: "blog_posts",
+      excludeId: editing,
+      title: form.title,
+      metaTitle: form.metaTitle,
+      metaDescription: form.metaDescription,
+      summary: form.excerpt,
+      status: form.status,
+    });
+    if (validationError) {
+      toast({ title: "Can't publish yet", description: validationError, variant: "destructive" });
+      return;
+    }
+    if (form.status === "published" && form.seoNoindex) {
+      const proceed = confirm("This post will be published and visible on the site, but hidden from search results (noindex). Continue?");
+      if (!proceed) return;
+    }
+
     setSaving(true);
     const slug = form.slug.trim() || generateSlug(form.title);
     const tags = form.tags.split(",").map((t) => t.trim()).filter(Boolean);

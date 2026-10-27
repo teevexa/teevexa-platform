@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import { PAGES, INDEXABLE_PATHS, breadcrumbItems } from "../seo/routes";
 import { articleLd, breadcrumbLd, faqLd, fullTitle, globalJsonLd, jobPostingLd, absoluteUrl } from "../seo/site";
 import { prototypeFaqs } from "../content/faqs";
+import { extractFaqs } from "../lib/markdown";
 
 const entries = Object.entries(PAGES);
 
@@ -110,5 +111,35 @@ describe("structured data", () => {
   it("uses no trailing slash in canonical URLs", () => {
     expect(absoluteUrl("/")).toBe("https://www.teevexa.com");
     expect(absoluteUrl("/about")).toBe("https://www.teevexa.com/about");
+  });
+});
+
+describe("extractFaqs", () => {
+  it("pulls real Q&A pairs out of a post's Frequently asked questions section", () => {
+    const md = [
+      "# Why this matters",
+      "",
+      "Some intro text.",
+      "",
+      "# Frequently asked questions",
+      "",
+      "**Does this work?**",
+      "Yes, it does.",
+      "",
+      "**Is it hard?**",
+      "No, not really.",
+    ].join("\n");
+    expect(extractFaqs(md)).toEqual([
+      { q: "Does this work?", a: "Yes, it does." },
+      { q: "Is it hard?", a: "No, not really." },
+    ]);
+  });
+
+  it("returns an empty array for a post with no FAQ section", () => {
+    expect(extractFaqs("# Just a heading\n\nSome text, no FAQs here.")).toEqual([]);
+  });
+
+  it("returns an empty array for empty or missing content", () => {
+    expect(extractFaqs("")).toEqual([]);
   });
 });

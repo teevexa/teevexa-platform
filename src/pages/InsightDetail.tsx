@@ -1,4 +1,4 @@
-import { renderMarkdown } from "@/lib/markdown";
+import { renderMarkdown, extractFaqs } from "@/lib/markdown";
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, Clock, FileText } from "lucide-react";
 import SEO from "@/components/SEO";
-import { articleLd } from "@/seo/site";
+import { articleLd, faqLd } from "@/seo/site";
 
 interface Post {
   id: string;
@@ -77,6 +77,7 @@ const InsightDetail = () => {
   const seoTitle = post.meta_title || post.title;
   const seoDescription = post.meta_description || post.excerpt || `Read ${post.title} on the Teevexa engineering blog.`;
   const author = post.author_name || "Teevexa";
+  const faqs = extractFaqs(post.content);
 
   return (
     <>
@@ -91,15 +92,18 @@ const InsightDetail = () => {
         publishedAt={post.published_at || undefined}
         modifiedAt={post.updated_at || undefined}
         author={author}
-        structuredData={articleLd({
-          title: seoTitle,
-          description: seoDescription,
-          path: `/insights/${post.slug}`,
-          image: post.cover_image_url,
-          published: post.published_at,
-          modified: post.updated_at,
-          author,
-        })}
+        structuredData={[
+          articleLd({
+            title: seoTitle,
+            description: seoDescription,
+            path: `/insights/${post.slug}`,
+            image: post.cover_image_url,
+            published: post.published_at,
+            modified: post.updated_at,
+            author,
+          }),
+          ...(faqs.length > 0 ? [faqLd(faqs)] : []),
+        ]}
       />
       {/* ── Hero ── */}
       <section className="relative pt-32 pb-16  gradient-hero network-bg overflow-hidden">

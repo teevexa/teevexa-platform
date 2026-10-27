@@ -107,3 +107,20 @@ export function renderMarkdown(md: string): string {
   closeList();
   return out.join("\n");
 }
+
+/**
+ * Pulls real Q&A pairs out of a post's own "Frequently asked questions" section (the convention
+ * used by every blog post), so FAQPage structured data is generated from the single source of
+ * truth, the article body, rather than a separate field an editor could forget to keep in sync.
+ * Matches the authored pattern exactly: a `**Question?**` line followed by its answer paragraph,
+ * pairs separated by a blank line. Returns [] if the post has no such section; that's expected
+ * for posts that don't end in an FAQ, not an error.
+ */
+export function extractFaqs(markdown: string): { q: string; a: string }[] {
+  const section = /#{1,4}\s*Frequently asked questions\s*\n+([\s\S]*)/i.exec(markdown || "");
+  if (!section) return [];
+  const pairs = [...section[1].matchAll(/\*\*([^*]+)\*\*\n([\s\S]*?)(?=\n\n\*\*|\s*$)/g)];
+  return pairs
+    .map((m) => ({ q: m[1].trim(), a: m[2].trim().replace(/\s+/g, " ") }))
+    .filter((f) => f.q && f.a);
+}

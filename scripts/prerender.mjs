@@ -107,10 +107,14 @@ for (const d of DYNAMIC) {
       const description = trim(r.meta_description || r.excerpt || `Read ${r.title} on the Teevexa engineering blog.`, 158);
       const title = r.meta_title || r.title;
       const dateLabel = r.published_at ? new Date(r.published_at).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }) : "";
+      const faqs = seo.extractFaqs(r.content);
       write(path, {
         title, h1: r.title, description, crumb: r.title, ogType: "article", image: r.cover_image_url,
         published: r.published_at, modified: r.updated_at, noindex: !!r.seo_noindex,
-        jsonLd: [seo.articleLd({ title, description, path, image: r.cover_image_url, published: r.published_at, modified: r.updated_at, author: r.author_name })],
+        jsonLd: [
+          seo.articleLd({ title, description, path, image: r.cover_image_url, published: r.published_at, modified: r.updated_at, author: r.author_name }),
+          ...(faqs.length > 0 ? [seo.faqLd(faqs)] : []),
+        ],
         bodyHtml: articleBody(r.title, dateLabel, r.content),
       });
     } else if (d.table === "case_studies") {

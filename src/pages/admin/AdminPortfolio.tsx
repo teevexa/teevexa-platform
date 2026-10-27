@@ -13,6 +13,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { logAudit } from "@/lib/audit";
 import { triggerRebuild } from "@/lib/functions";
+import { validateSeoFields } from "@/lib/seoValidation";
 import { Plus, Pencil, Trash2, Briefcase, Eye, Upload, X, Image } from "lucide-react";
 
 interface CaseStudy {
@@ -152,6 +153,25 @@ const AdminPortfolio = () => {
       toast({ title: "Title and description are required", variant: "destructive" });
       return;
     }
+
+    const validationError = await validateSeoFields({
+      table: "case_studies",
+      excludeId: editingId,
+      title: form.title,
+      metaTitle: form.metaTitle,
+      metaDescription: form.metaDescription,
+      summary: form.description,
+      status: form.status,
+    });
+    if (validationError) {
+      toast({ title: "Can't publish yet", description: validationError, variant: "destructive" });
+      return;
+    }
+    if (form.status === "published" && form.seoNoindex) {
+      const proceed = confirm("This case study will be published and visible on the site, but hidden from search results (noindex). Continue?");
+      if (!proceed) return;
+    }
+
     setSaving(true);
     const slug = form.slug.trim() || generateSlug(form.title);
     const techs = form.technologies.split(",").map((t) => t.trim()).filter(Boolean);
